@@ -17,7 +17,7 @@ namespace GoingOn.Tests.Controllers
         public void Get()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            NewsController controller = new NewsController();
 
             // Act
             IEnumerable<string> result = controller.Get();
@@ -33,7 +33,7 @@ namespace GoingOn.Tests.Controllers
         public void GetById()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            NewsController controller = new NewsController();
 
             // Act
             string result = controller.Get(5);
@@ -46,7 +46,7 @@ namespace GoingOn.Tests.Controllers
         public void Post()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            NewsController controller = new NewsController();
 
             // Act
             controller.Post("value");
@@ -58,7 +58,7 @@ namespace GoingOn.Tests.Controllers
         public void Put()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            NewsController controller = new NewsController();
 
             // Act
             controller.Put(5, "value");
@@ -70,7 +70,7 @@ namespace GoingOn.Tests.Controllers
         public void Delete()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            NewsController controller = new NewsController();
 
             // Act
             controller.Delete(5);
