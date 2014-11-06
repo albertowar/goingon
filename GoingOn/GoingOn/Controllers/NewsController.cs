@@ -1,5 +1,4 @@
-﻿
-namespace GoingOn.Controllers
+﻿namespace GoingOn.Controllers
 {
     using GoingOn.Frontend;
     using System;
