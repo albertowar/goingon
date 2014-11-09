@@ -1,17 +1,17 @@
-﻿namespace GoingOn.Persistence
+﻿namespace GoingOn.Persistence.MemoryStorage
 {
-    using GoingOn.Frontend;
+    using GoingOn.Models.EntitiesBll;
     using GoingOn.Persistence.MemoryDB;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
 
-    public class UserMemoryDB : IUserDB
+    public class UserMemoryStorage : IUserStorage
     {
-        private static List<User> storage = new List<User>();
+        private static List<UserBll> storage = new List<UserBll>();
 
-        public void AddUser(User user)
+        public void AddUser(UserBll user)
         {
             if (user == null)
             {
@@ -26,7 +26,7 @@
             storage.Add(user);
         }
 
-        public User GetUser(string username)
+        public UserBll GetUser(string username)
         {
             if (!storage.Any(user => user.Nickname == username))
             {
@@ -36,7 +36,12 @@
             return storage.Where(user => user.Nickname == username).First();
         }
 
-        public void DeleteUser(User user)
+        public IEnumerable<UserBll> GetAllUsers()
+        {
+            return storage;
+        }
+
+        public void DeleteUser(UserBll user)
         {
             if (!storage.Contains(user))
             {

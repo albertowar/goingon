@@ -1,5 +1,7 @@
-﻿namespace GoingOn.Frontend
+﻿namespace GoingOn.Frontend.Entities
 {
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Models.EntitiesBll;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,6 +11,7 @@
     {
         public string Nickname { get; private set; }
         public string Password { get; private set; }
+        //public City City { get; private set; }
 
         public User(string nickname, string password)
         {
@@ -26,6 +29,16 @@
         public override int GetHashCode()
         {
             return Nickname.GetHashCode() ^ Password.GetHashCode();
+        }
+
+        public static UserBll ToUserBll(User user)
+        {
+            return new UserBll(user.Nickname, user.Password);
+        }
+
+        public static User FromUserBll(UserBll user)
+        {
+            return new User(user.Nickname, user.Password);
         }
     }
 }

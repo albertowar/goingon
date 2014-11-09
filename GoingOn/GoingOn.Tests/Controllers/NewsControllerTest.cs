@@ -11,7 +11,7 @@ using GoingOn.Controllers;
 namespace GoingOn.Tests.Controllers
 {
     [TestClass]
-    public class ValuesControllerTest
+    public class NewsControllerTest
     {
         [TestMethod]
         public void Get()
