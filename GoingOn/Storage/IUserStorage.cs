@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="ApiValidationChecks.cs" company="Universidad de Malaga">
+// <copyright file="IUserStorage.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,17 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+using Model.EntitiesBll;
+
+public interface IUserStorage
 {
-    using System.Web.Mvc;
-
-    public class HomeController : Controller
-    {
-        public ActionResult Index()
-        {
-            ViewBag.Title = "Home Page";
-
-            return View();
-        }
-    }
+    void AddUser(UserBll userBll);
+    bool ContainsUser(UserBll userBll);
+    void DeleteUser(UserBll userBll);
+    void DeleteAllUser();
 }

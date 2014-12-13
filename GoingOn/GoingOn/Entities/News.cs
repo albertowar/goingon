@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="ApiValidationChecks.cs" company="Universidad de Malaga">
+// <copyright file="News.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,17 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+namespace GoingOn.Entities
 {
-    using System.Web.Mvc;
-
-    public class HomeController : Controller
+    public class News
     {
-        public ActionResult Index()
-        {
-            ViewBag.Title = "Home Page";
+        public string Content { get; private set; }
 
-            return View();
+        public News(string content)
+        {
+            this.Content = content;
         }
     }
 }

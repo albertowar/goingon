@@ -98,6 +98,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="Controllers\NewsControllerTest.cs" />
+    <Compile Include="Validation\ApiBusinessLogicValidationChecksTests.cs" />
+    <Compile Include="Validation\ApiInputValidationChecksTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -106,11 +108,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GoingOn\GoingOn.csproj">
+    <ProjectReference Include="..\GoingOn\Frontend.csproj">
       <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>
-      <Name>GoingOn</Name>
+      <Name>Frontend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{73d68ff8-7f66-426f-8320-89bc224d3b09}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{90e34909-07f8-4eac-bf0e-285474bfd909}</Project>
+      <Name>Storage</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\packages\StyleCop.MSBuild.4.7.49.0\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.49.0\build\StyleCop.MSBuild.Targets')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

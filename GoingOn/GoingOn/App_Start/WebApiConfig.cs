@@ -1,23 +1,35 @@
-﻿using GoingOn.Persistence;
-using GoingOn.Persistence.MemoryStorage;
-using Microsoft.Practices.Unity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Dependencies;
+﻿// ****************************************************************************
+// <copyright file="WebApiConfig.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// TODO: write a summary
+// </summary>
+// ****************************************************************************
+
+using GoingOn.Controllers;
+using GoingOn.Validation;
 
 namespace GoingOn
 {
+    using Microsoft.Practices.Unity;
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Http;
+    using System.Web.Http.Dependencies;
+
+    using MemoryStorage;
+
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration configuration)
         {
-            // Web API configuration and services
-
             // Dependy injection configuration
             var container = new UnityContainer();
             container.RegisterType<IUserStorage, UserMemoryStorage>(new HierarchicalLifetimeManager());
+            container.RegisterType<IApiInputValidationChecks, ApiInputValidationChecks>(new HierarchicalLifetimeManager());
+            container.RegisterType<IApiBusinessLogicValidationChecks, ApiBusinessLogicValidationChecks>(new HierarchicalLifetimeManager());
             configuration.DependencyResolver = new UnityResolver(container);
 
             // Web API routes
@@ -42,6 +54,7 @@ namespace GoingOn
             {
                 throw new ArgumentNullException("container");
             }
+
             this.container = container;
         }
 

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
-namespace GoingOn.Controllers
+namespace Frontend.Entities
 {
-    public class ApiValidationChecks
+    public class City
     {
     }
 }

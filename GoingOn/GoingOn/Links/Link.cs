@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="ApiValidationChecks.cs" company="Universidad de Malaga">
+// <copyright file="Link.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,17 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+namespace GoingOn.Links
 {
-    using System.Web.Mvc;
+    using System;
 
-    public class HomeController : Controller
+    public class Link
     {
-        public ActionResult Index()
-        {
-            ViewBag.Title = "Home Page";
-
-            return View();
-        }
+        public string Rel { get; set; }
+        public Uri Href { get; set; }
+        public string Action { get; set; }
     }
 }

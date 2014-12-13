@@ -1,10 +1,19 @@
-﻿using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GoingOn;
-using GoingOn.Controllers;
+﻿// ****************************************************************************
+// <copyright file="HomeControllerTest.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// TODO: write a summary
+// </summary>
+// ****************************************************************************
 
 namespace GoingOn.Tests.Controllers
 {
+    using System.Web.Mvc;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using GoingOn.Controllers;
+
     [TestClass]
     public class HomeControllerTest
     {

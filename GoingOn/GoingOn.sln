@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoingOn", "GoingOn\GoingOn.csproj", "{4E84C04B-D78D-433D-97EA-CB52B72C04C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "GoingOn\Frontend.csproj", "{4E84C04B-D78D-433D-97EA-CB52B72C04C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoingOn.Tests", "GoingOn.Tests\GoingOn.Tests.csproj", "{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend.Tests", "GoingOn.Tests\Frontend.Tests.csproj", "{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{BF52FA53-5870-4F87-9C8C-12A5A128AFC1}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,6 +17,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 	ProjectSection(SolutionItems) = preProject
 		PublishScripts\Configurations\GoingOn-WAWS-dev.json = PublishScripts\Configurations\GoingOn-WAWS-dev.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{73D68FF8-7F66-426F-8320-89BC224D3B09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "Storage\Storage.csproj", "{90E34909-07F8-4EAC-BF0E-285474BFD909}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEnd.Tests", "EndToEndTests\EndToEnd.Tests.csproj", "{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Tests", "Storage.Tests\Storage.Tests.csproj", "{465DE491-DF00-4D48-BDB7-E3053A84A1F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +44,30 @@ Global
 		{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D68FF8-7F66-426F-8320-89BC224D3B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D68FF8-7F66-426F-8320-89BC224D3B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D68FF8-7F66-426F-8320-89BC224D3B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D68FF8-7F66-426F-8320-89BC224D3B09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E34909-07F8-4EAC-BF0E-285474BFD909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E34909-07F8-4EAC-BF0E-285474BFD909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E34909-07F8-4EAC-BF0E-285474BFD909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E34909-07F8-4EAC-BF0E-285474BFD909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465DE491-DF00-4D48-BDB7-E3053A84A1F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465DE491-DF00-4D48-BDB7-E3053A84A1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465DE491-DF00-4D48-BDB7-E3053A84A1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{465DE491-DF00-4D48-BDB7-E3053A84A1F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

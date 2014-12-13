@@ -40,6 +40,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HawkNet">
+      <HintPath>..\packages\HawkNet.1.4.2.0\lib\net45\HawkNet.dll</HintPath>
+    </Reference>
+    <Reference Include="HawkNet.WebApi">
+      <HintPath>..\packages\HawkNet.WebApi.1.4.3.0\lib\net45\HawkNet.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Unity">
       <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
@@ -170,21 +176,23 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\ApiValidationChecks.cs" />
+    <Compile Include="Validation\ApiBusinessLogicValidationChecks.cs" />
+    <Compile Include="Validation\ApiInputValidationChecks.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Frontend\Entities\City.cs" />
-    <Compile Include="Frontend\Entities\News.cs" />
-    <Compile Include="Frontend\Entities\User.cs" />
+    <Compile Include="Entities\City.cs" />
+    <Compile Include="Entities\News.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\EntitiesBll\UserBll.cs" />
-    <Compile Include="Persistence\IUserStorage.cs" />
-    <Compile Include="Persistence\PersistenceException.cs" />
-    <Compile Include="Persistence\MemoryStorage\UserMemoryStorage.cs" />
+    <Compile Include="Links\Link.cs" />
+    <Compile Include="Links\LinkFactory.cs" />
+    <Compile Include="Links\UserLinkFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\IApiBusinessLogicValidationChecks.cs" />
+    <Compile Include="Validation\IApiInputValidationChecks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -213,7 +221,16 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{73d68ff8-7f66-426f-8320-89bc224d3b09}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{90e34909-07f8-4eac-bf0e-285474bfd909}</Project>
+      <Name>Storage</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

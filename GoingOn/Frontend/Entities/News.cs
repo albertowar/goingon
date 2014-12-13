@@ -1,9 +1,8 @@
-﻿namespace GoingOn.Frontend
+﻿namespace Frontend
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web;
 
     public class News
     {

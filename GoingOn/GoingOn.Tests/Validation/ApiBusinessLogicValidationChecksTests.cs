@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="ApiValidationChecks.cs" company="Universidad de Malaga">
+// <copyright file="ApiBusinessLogicValidationChecksTests.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,17 +8,9 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+namespace GoingOn.Tests.Validation
 {
-    using System.Web.Mvc;
-
-    public class HomeController : Controller
+    public class ApiBusinessLogicValidationChecksTests
     {
-        public ActionResult Index()
-        {
-            ViewBag.Title = "Home Page";
-
-            return View();
-        }
     }
 }
