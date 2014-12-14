@@ -24,12 +24,12 @@ namespace GoingOn.Validation
 
         private bool IsValidNickName(string nickName)
         {
-            return string.IsNullOrWhiteSpace(nickName);
+            return !string.IsNullOrWhiteSpace(nickName);
         }
 
         private bool IsValidPassword(string password)
         {
-            return string.IsNullOrWhiteSpace(password);
+            return !string.IsNullOrWhiteSpace(password);
         }
     }
 }

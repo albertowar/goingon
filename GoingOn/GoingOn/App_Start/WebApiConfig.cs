@@ -8,9 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using GoingOn.Controllers;
-using GoingOn.Validation;
-
 namespace GoingOn
 {
     using Microsoft.Practices.Unity;
@@ -19,6 +16,7 @@ namespace GoingOn
     using System.Web.Http;
     using System.Web.Http.Dependencies;
 
+    using GoingOn.Validation;
     using MemoryStorage;
 
     public static class WebApiConfig
