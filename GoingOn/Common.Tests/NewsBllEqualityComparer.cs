@@ -11,8 +11,11 @@
 namespace Common.Tests
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+
     using Model.EntitiesBll;
 
+    [ExcludeFromCodeCoverage]
     public class NewsBllEqualityComparer : IEqualityComparer<NewsBll>
     {
         public bool Equals(NewsBll news1, NewsBll news2)

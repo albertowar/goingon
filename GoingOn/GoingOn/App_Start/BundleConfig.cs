@@ -1,8 +1,19 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿// ****************************************************************************
+// <copyright file="BundleConfig.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// TODO: write a summary
+// </summary>
+// ****************************************************************************
 
 namespace GoingOn
 {
+    using System.Diagnostics.CodeAnalysis;
+    using System.Web.Optimization;
+
+    [ExcludeFromCodeCoverage]
     public class BundleConfig
     {
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862

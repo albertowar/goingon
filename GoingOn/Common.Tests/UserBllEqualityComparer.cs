@@ -12,9 +12,11 @@ namespace Common.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     using Model.EntitiesBll;
 
+    [ExcludeFromCodeCoverage]
     public class UserBllEqualityComparer : IEqualityComparer<UserBll>
     {
         public bool Equals(UserBll user1, UserBll user2)

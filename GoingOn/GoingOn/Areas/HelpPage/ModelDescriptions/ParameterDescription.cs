@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GoingOn.Areas.HelpPage.ModelDescriptions
 {
     public class ParameterDescription
     {
+        [ExcludeFromCodeCoverage]
         public ParameterDescription()
         {
             Annotations = new Collection<ParameterAnnotation>();

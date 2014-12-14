@@ -11,9 +11,11 @@
 namespace Common.Tests
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    [ExcludeFromCodeCoverage]
     public class AssertExtensions
     {
         public static void Throws<T>(Action func) where T : Exception

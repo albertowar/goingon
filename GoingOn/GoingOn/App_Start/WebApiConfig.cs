@@ -10,15 +10,18 @@
 
 namespace GoingOn
 {
-    using Microsoft.Practices.Unity;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
     using System.Web.Http.Dependencies;
+
+    using Microsoft.Practices.Unity;
 
     using GoingOn.Validation;
     using MemoryStorage;
 
+    [ExcludeFromCodeCoverage]
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration configuration)
@@ -42,6 +45,7 @@ namespace GoingOn
     }
 
     #region Dependency injection helpers
+    [ExcludeFromCodeCoverage]
     public class UnityResolver : IDependencyResolver
     {
         protected IUnityContainer container;

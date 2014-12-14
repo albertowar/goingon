@@ -15,6 +15,7 @@ using GoingOn.Areas.HelpPage.Models;
 
 namespace GoingOn.Areas.HelpPage
 {
+    [ExcludeFromCodeCoverage]
     public static class HelpPageConfigurationExtensions
     {
         private const string ApiModelPrefix = "MS_HelpPageApiModel_";
