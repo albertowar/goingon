@@ -32,19 +32,19 @@ namespace GoingOn.Tests.Validation
         }
 
         [TestMethod]
-        public void TestIsValidUserSucceedsIfStorageContainsTheUser()
-        {
-            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(true);
-
-            Assert.IsTrue(businessValidation.IsValidUser(storageMock.Object, user));
-        }
-
-        [TestMethod]
-        public void TestIsValidUserSucceedsIfStorageDoesNotContainTheUser()
+        public void TestIsValidCreateUserSucceedsIfStorageDoesNotContainsTheUser()
         {
             storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(false);
 
-            Assert.IsFalse(businessValidation.IsValidUser(storageMock.Object, user));
+            Assert.IsTrue(businessValidation.IsValidCreateUser(storageMock.Object, user));
+        }
+
+        [TestMethod]
+        public void TestIsValidCreateUserFailsIfStorageContainsTheUser()
+        {
+            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(true);
+
+            Assert.IsFalse(businessValidation.IsValidCreateUser(storageMock.Object, user));
         }
     }
 }

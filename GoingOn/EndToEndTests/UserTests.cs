@@ -16,27 +16,30 @@ namespace EndToEndTests
     using System.Net.Http;
     using System.Web.Http;
 
+    using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Client.Entities;
 
+    using GoingOn;
+
     [TestClass]
     public class UserTests
     {
+        private static IDisposable webService;
+
         private HttpServer server;
 
-        [TestInitialize]
-        public void TestInitialize()
+        [AssemblyInitialize]
+        public static void TestInitialize(TestContext context)
         {
-            var configuration = new HttpConfiguration();
+            webService = WebApp.Start<Startup>("http://*:80/");
+        }
 
-            configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
-
-            server = new HttpServer(configuration);
+        [AssemblyCleanup]
+        public static void TestCleanup()
+        {
+            webService.Dispose();
         }
 
         [TestMethod]
@@ -44,7 +47,7 @@ namespace EndToEndTests
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:4162/");
+                client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

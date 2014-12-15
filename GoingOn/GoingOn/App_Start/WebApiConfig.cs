@@ -8,12 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-using System.CodeDom.Compiler;
-using GoingOn.Authentication;
-
 namespace GoingOn
 {
     using System;
+    using System.CodeDom.Compiler;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
@@ -21,22 +19,12 @@ namespace GoingOn
 
     using Microsoft.Practices.Unity;
 
-    using GoingOn.Validation;
-    using MemoryStorage;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration configuration)
         {
-            // Dependy injection configuration
-            var container = new UnityContainer();
-            container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
-            container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
-            container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
-            configuration.DependencyResolver = new UnityResolver(container);
-
             // Web API routes
             configuration.MapHttpAttributeRoutes();
 

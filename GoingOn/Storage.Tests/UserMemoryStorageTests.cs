@@ -12,6 +12,7 @@ namespace Storage.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using Common.Tests;
     using MemoryStorage;
     using Model.EntitiesBll;
 
@@ -43,7 +44,32 @@ namespace Storage.Tests
         }
 
         [TestMethod]
-        public void TestContainsUser()
+        public void TestAddExistingUser()
+        {
+            storage.AddUser(User);
+            storage.AddUser(User);
+
+            Assert.IsTrue(storage.ContainsUser(User));
+        }
+
+        [TestMethod]
+        public void TestGetUser()
+        {
+            storage.AddUser(User);
+
+            UserBll actualUser = storage.GetUser(User.Nickname);
+
+            Assert.IsTrue(new UserBllEqualityComparer().Equals(User, actualUser));
+        }
+
+        [TestMethod]
+        public void TestGetNonExistingUser()
+        {
+            Assert.IsNull(storage.GetUser("not an user"));
+        }
+
+        [TestMethod]
+        public void TestContainsExistingUser()
         {
             storage.AddUser(User);
 
@@ -51,10 +77,24 @@ namespace Storage.Tests
         }
 
         [TestMethod]
+        public void TestContainsNonExistingUser()
+        {
+            Assert.IsFalse(storage.ContainsUser(User));
+        }
+
+        [TestMethod]
         public void TestDeleteUser()
         {
             storage.AddUser(User);
 
+            storage.DeleteUser(User);
+
+            Assert.IsFalse(storage.ContainsUser(User));
+        }
+
+        [TestMethod]
+        public void TestDeleteNonExistingUser()
+        {
             storage.DeleteUser(User);
 
             Assert.IsFalse(storage.ContainsUser(User));

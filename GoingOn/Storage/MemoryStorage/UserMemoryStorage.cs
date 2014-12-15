@@ -35,7 +35,12 @@ namespace MemoryStorage
 
         public UserBll GetUser(string nickname)
         {
-            return UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname))));
+            if (storage.Any(user => user.Equals(new UserMemory(nickname))))
+            {
+                return UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname))));
+            }
+
+            return null;
         }
 
         public bool ContainsUser(UserBll userBll)

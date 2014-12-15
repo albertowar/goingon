@@ -42,14 +42,14 @@ namespace GoingOn.Tests.Controllers
         public void TestPostUserReturn200OkWhenCreatesUser()
         {
             inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
-            businessValidation.Setup(validation => validation.IsValidUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
+            businessValidation.Setup(validation => validation.IsValidCreateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user");
 
             HttpResponseMessage response = userController.Post(user);
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             userStorageMock.Verify(storage => storage.AddUser(It.IsAny<UserBll>()), Times.Once());
         }
 
@@ -57,7 +57,7 @@ namespace GoingOn.Tests.Controllers
         public void TestPostUserReturn400BadRequestWhenInputValidationFails()
         {
             inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(false);
-            businessValidation.Setup(validation => validation.IsValidUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
+            businessValidation.Setup(validation => validation.IsValidCreateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user");
@@ -72,7 +72,7 @@ namespace GoingOn.Tests.Controllers
         public void TestPostUserReturn400BadRequestWhenBusinessValidationFails()
         {
             inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
-            businessValidation.Setup(validation => validation.IsValidUser(userStorageMock.Object, It.IsAny<User>())).Returns(false);
+            businessValidation.Setup(validation => validation.IsValidCreateUser(userStorageMock.Object, It.IsAny<User>())).Returns(false);
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user");

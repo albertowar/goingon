@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace GoingOn.Areas.HelpPage.ModelDescriptions

@@ -9,7 +9,6 @@ namespace GoingOn.Areas.HelpPage.ModelDescriptions
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class ParameterDescription
     {
-        [ExcludeFromCodeCoverage]
         public ParameterDescription()
         {
             Annotations = new Collection<ParameterAnnotation>();

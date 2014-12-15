@@ -1,7 +1,16 @@
-﻿using System.CodeDom.Compiler;
+﻿// ****************************************************************************
+// <copyright file="WebApiApplication.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// TODO: write a summary
+// </summary>
+// ****************************************************************************
 
 namespace GoingOn
 {
+    using System.CodeDom.Compiler;
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
     using System.Web.Mvc;
@@ -15,9 +24,8 @@ namespace GoingOn
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
