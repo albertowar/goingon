@@ -8,12 +8,15 @@
 // </summary>
 // ****************************************************************************
 
+using System.CodeDom.Compiler;
+
 namespace GoingOn
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Mvc;
 
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class FilterConfig
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)

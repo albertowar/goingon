@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -16,6 +17,7 @@ using GoingOn.Areas.HelpPage.Models;
 namespace GoingOn.Areas.HelpPage
 {
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public static class HelpPageConfigurationExtensions
     {
         private const string ApiModelPrefix = "MS_HelpPageApiModel_";

@@ -8,12 +8,15 @@
 // </summary>
 // ****************************************************************************
 
+using System.CodeDom.Compiler;
+
 namespace GoingOn
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Optimization;
 
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class BundleConfig
     {
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862

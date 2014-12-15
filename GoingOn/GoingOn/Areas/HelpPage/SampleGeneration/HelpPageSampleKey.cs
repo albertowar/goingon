@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -10,6 +11,7 @@ namespace GoingOn.Areas.HelpPage
     /// This is used to identify the place where the sample should be applied.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpPageSampleKey
     {
         /// <summary>

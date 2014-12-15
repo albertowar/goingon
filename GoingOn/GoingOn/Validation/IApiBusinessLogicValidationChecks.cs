@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-using GoingOn.Entities;
-
 namespace GoingOn.Validation
 {
+    using GoingOn.Entities;
+
     public interface IApiBusinessLogicValidationChecks
     {
-        bool IsValidUser(IUserStorage storage, User user);
+        bool IsValidCreateUser(IUserStorage storage, User user);
     }
 }

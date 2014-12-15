@@ -1,4 +1,6 @@
-﻿namespace GoingOn
+﻿using System.CodeDom.Compiler;
+
+namespace GoingOn
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
@@ -7,6 +9,7 @@
     using System.Web.Routing;
 
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class WebApiApplication : System.Web.HttpApplication
     {
         protected void Application_Start()

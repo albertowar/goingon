@@ -12,6 +12,7 @@ namespace MemoryStorage
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using MemoryStorage.Entities;
     using Model.EntitiesBll;
 
@@ -30,6 +31,11 @@ namespace MemoryStorage
         public void AddUser(UserBll userBll)
         {
             storage.Add(UserMemory.FromUserBll(userBll));
+        }
+
+        public UserBll GetUser(string nickname)
+        {
+            return UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname))));
         }
 
         public bool ContainsUser(UserBll userBll)

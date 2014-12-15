@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +12,7 @@ namespace GoingOn.Areas.HelpPage.Models
     /// The model that represents an API displayed on the help page.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpPageApiModel
     {
         /// <summary>

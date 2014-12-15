@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -5,6 +6,7 @@ using System.Web.Mvc;
 namespace GoingOn.Areas.HelpPage
 {
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpPageAreaRegistration : AreaRegistration
     {
         public override string AreaName

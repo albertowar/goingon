@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -11,6 +12,7 @@ namespace GoingOn.Areas.HelpPage.Controllers
     /// The controller that will handle requests for the help page.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpController : Controller
     {
         private const string ErrorViewName = "Error";

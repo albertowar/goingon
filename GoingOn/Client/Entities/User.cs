@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="PersistenceException.cs" company="Universidad de Malaga">
+// <copyright file="UserTests.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,13 +8,17 @@
 // </summary>
 // ****************************************************************************
 
-using System;
+using System.Runtime.Serialization;
 
-[Serializable]
-public class StorageException : Exception
+namespace Client.Entities
 {
-    public StorageException(string message)
-        : base(message)
+    [DataContract]
+    public class User
     {
+        [DataMember]
+        public string Nickname { get; set; }
+
+        [DataMember]
+        public string Password { get; set; }
     }
 }

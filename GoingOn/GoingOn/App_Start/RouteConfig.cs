@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using System.CodeDom.Compiler;
+
 namespace GoingOn
 {
     using System.Diagnostics.CodeAnalysis;
@@ -16,6 +18,7 @@ namespace GoingOn
     using System.Web.Routing;
 
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)

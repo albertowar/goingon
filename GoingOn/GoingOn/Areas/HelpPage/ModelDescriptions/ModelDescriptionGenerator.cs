@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,6 +19,7 @@ namespace GoingOn.Areas.HelpPage.ModelDescriptions
     /// Generates model descriptions for given types.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class ModelDescriptionGenerator
     {
         // Modify this to support more data annotation attributes.

@@ -17,6 +17,12 @@ namespace MemoryStorage.Entities
         public string Nickname { get; private set; }
         public string Password { get; private set; }
 
+        public UserMemory(string nickname)
+        {
+            Nickname = nickname;
+            Password = string.Empty;
+        }
+
         public UserMemory(string nickname, string password)
         {
             Nickname = nickname;

@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 namespace GoingOn.Areas.HelpPage.ModelDescriptions
 {
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     internal static class ModelNameHelper
     {
         // Modify this to provide custom model name mapping.

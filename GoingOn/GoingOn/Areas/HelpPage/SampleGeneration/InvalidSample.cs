@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 
 namespace GoingOn.Areas.HelpPage
@@ -7,6 +8,7 @@ namespace GoingOn.Areas.HelpPage
     /// This represents an invalid sample on the help page. There's a display template named InvalidSample associated with this class.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class InvalidSample
     {
         public InvalidSample(string errorMessage)

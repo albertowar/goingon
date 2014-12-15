@@ -10,6 +10,7 @@
 
 namespace GoingOn.Controllers
 {
+    using GoingOn.Authentication;
     using GoingOn.Entities;
     using MemoryStorage;
     using Model.EntitiesBll;
@@ -31,37 +32,11 @@ namespace GoingOn.Controllers
         }
 
         // POST api/news
-        public async Task<HttpResponseMessage> Post(News news)
+        [IdentityBasicAuthentication]
+        [Authorize]
+        public HttpResponseMessage Post(News news)
         {
-            string authorizationScheme = Request.Headers.Authorization.Scheme;
-            string authorizationUserPassword = Request.Headers.Authorization.Parameter;
-
-            // Check the scheme and return an appropiate response error in case it is not Basic
-            if (authorizationScheme != "Basic" || string.IsNullOrWhiteSpace(authorizationUserPassword))
-            {
-                var response = new HttpResponseMessage();
-                response.StatusCode = HttpStatusCode.Unauthorized;
-
-                return response;
-            }
-
-            string usernameColonPassword = Encoding.ASCII.GetString(Convert.FromBase64String(authorizationUserPassword));
-            string username = usernameColonPassword.Split(new char[] { ':' }).First();
-            string password = usernameColonPassword.Split(new char[] { ':' }).Last();
-
-            UserMemoryStorage storage = UserMemoryStorage.GetInstance();
-
-            if (storage.ContainsUser(new UserBll(username, password)))
-            {
-                // Add the news to the storage
-            }
-            else
-            {
-                var response = new HttpResponseMessage();
-                response.StatusCode = HttpStatusCode.Unauthorized;
-
-                return response;
-            }
+            // Add the news to the storage
             
             return null;
         }

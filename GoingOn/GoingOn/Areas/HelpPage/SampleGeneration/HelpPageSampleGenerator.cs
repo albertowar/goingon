@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,6 +20,7 @@ namespace GoingOn.Areas.HelpPage
     /// This class will generate the samples for the help page.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpPageSampleGenerator
     {
         /// <summary>

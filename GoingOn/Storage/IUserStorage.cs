@@ -13,6 +13,7 @@ using Model.EntitiesBll;
 public interface IUserStorage
 {
     void AddUser(UserBll userBll);
+    UserBll GetUser(string nickname);
     bool ContainsUser(UserBll userBll);
     void DeleteUser(UserBll userBll);
     void DeleteAllUser();

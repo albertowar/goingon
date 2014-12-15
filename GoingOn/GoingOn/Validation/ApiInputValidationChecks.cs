@@ -14,6 +14,11 @@ namespace GoingOn.Validation
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
+        public ApiInputValidationChecks()
+        {
+            
+        }
+
         public bool IsValidUser(User user)
         {
             return 

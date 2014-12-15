@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +13,7 @@ namespace GoingOn.Areas.HelpPage
     /// This class will create an object of a given type and populate it with sample data.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class ObjectGenerator
     {
         internal const int DefaultCollectionSize = 2;

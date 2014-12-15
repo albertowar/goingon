@@ -14,9 +14,14 @@ namespace GoingOn.Validation
 
     public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
-        public bool IsValidUser(IUserStorage storage, User user)
+        public ApiBusinessLogicValidationChecks()
         {
-            return storage.ContainsUser(User.ToUserBll(user));
+            
+        }
+
+        public bool IsValidCreateUser(IUserStorage storage, User user)
+        {
+            return !storage.ContainsUser(User.ToUserBll(user));
         }
     }
 }

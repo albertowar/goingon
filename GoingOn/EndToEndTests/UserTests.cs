@@ -6,20 +6,24 @@
 // <summary>
 // TODO: write a summary
 // </summary>
-// ****************************************************************************using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using System.Net.Http;
-using System.Web.Http;
+// ****************************************************************************
 
 namespace EndToEndTests
 {
+    using System;
+    using System.Net;
+    using System.Net.Http.Headers;
+    using System.Net.Http;
+    using System.Web.Http;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using Client.Entities;
 
     [TestClass]
     public class UserTests
     {
         private HttpServer server;
-        private HttpClient client;
 
         [TestInitialize]
         public void TestInitialize()
@@ -33,14 +37,24 @@ namespace EndToEndTests
             );
 
             server = new HttpServer(configuration);
-            client = new HttpClient(server);
         }
 
         [TestMethod]
         public void TestCreateUser()
         {
-            // transform json
-            //var task = client.PostAsync("http://test.com/api/user", new StringContent(@"{"n"}"));
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:4162/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var user = new User { Nickname = "Alberto", Password = "1234" };
+                var task = client.PostAsJsonAsync("api/user", user);
+                task.Wait();
+                var response = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+            }
         }
     }
 }

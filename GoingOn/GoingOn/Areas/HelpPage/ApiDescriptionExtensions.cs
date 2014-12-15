@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Web;
@@ -7,6 +8,7 @@ using System.Web.Http.Description;
 namespace GoingOn.Areas.HelpPage
 {
     [ExcludeFromCodeCoverage]
+    [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public static class ApiDescriptionExtensions
     {
         /// <summary>

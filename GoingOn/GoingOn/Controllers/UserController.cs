@@ -8,14 +8,17 @@
 // </summary>
 // ****************************************************************************
 
+using GoingOn.Links;
+
 namespace GoingOn.Controllers
 {
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
-    using FrontendEntities = GoingOn.Entities;
 
+    using GoingOn.Authentication;
     using GoingOn.Validation;
+    using FrontendEntities = GoingOn.Entities;
 
     public class UserController : ApiController
     {
@@ -30,6 +33,13 @@ namespace GoingOn.Controllers
             this.businessValidation = businessValidation;
         }
 
+        [IdentityBasicAuthentication]
+        [Authorize]
+        public FrontendEntities.User Get(string nickname)
+        {
+            return FrontendEntities.User.FromUserBll(storage.GetUser(nickname));
+        }
+
         // POST api/user
         public HttpResponseMessage Post([FromBody]FrontendEntities.User user)
         {
@@ -38,14 +48,17 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidUser(storage, user))
+            if (!this.businessValidation.IsValidCreateUser(storage, user))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
 
             storage.AddUser(FrontendEntities.User.ToUserBll(user));
 
-            return Request.CreateResponse(HttpStatusCode.OK, "The user was added to the database");
+            var response = Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
+            response.Headers.Location = new UserLinkFactory(Request).Self(user.Nickname).Href;
+
+            return response;
         }
     }
 }
