@@ -10,6 +10,8 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Web.Http;
 using GoingOn.Entities;
 using GoingOn.Validation;
 using Model.EntitiesBll;
@@ -28,7 +30,7 @@ namespace GoingOn.Tests.Controllers
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
-        private static readonly User user = new User("nickname", "passowrd");
+        private static readonly User user = new User("nickname", "password");
 
         [TestInitialize]
         public void Initizalize()
@@ -36,6 +38,32 @@ namespace GoingOn.Tests.Controllers
             userStorageMock = new Mock<IUserStorage>();
             inputValidation = new Mock<IApiInputValidationChecks>();
             businessValidation = new Mock<IApiBusinessLogicValidationChecks>();
+        }
+
+        [TestMethod]
+        public void TestGetUserReturns200OkWhenTheUserIsInTheDatabase()
+        {
+            userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(true);
+            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(new UserBll("username", "password"));
+
+            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
+            userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user");
+
+            var getAction = userController.Get("username");
+            var getTask = getAction.ExecuteAsync(new CancellationToken());
+
+            getTask.Wait();
+
+            HttpResponseMessage response = getTask.Result;
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            // Check the user too
+        }
+
+        [TestMethod]
+        public void TestGetUserReturns404NotFoundWhenTheUserIsNotInTheDatabase()
+        {
+
         }
 
         [TestMethod]

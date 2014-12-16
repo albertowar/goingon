@@ -9,6 +9,7 @@
 // ****************************************************************************
 
 using GoingOn.Links;
+using Model.EntitiesBll;
 
 namespace GoingOn.Controllers
 {
@@ -35,9 +36,16 @@ namespace GoingOn.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        public FrontendEntities.User Get(string nickname)
+        public IHttpActionResult Get(string nickname)
         {
-            return FrontendEntities.User.FromUserBll(storage.GetUser(nickname));
+            if (storage.ContainsUser(new UserBll(nickname, string.Empty)))
+            {
+                var user = FrontendEntities.User.FromUserBll(storage.GetUser(nickname));
+
+                return Ok(user);
+            }
+
+            return NotFound();
         }
 
         // POST api/user

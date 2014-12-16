@@ -8,6 +8,9 @@
 // </summary>
 // ****************************************************************************
 
+using MemoryStorage;
+using Model.EntitiesBll;
+
 namespace EndToEndTests
 {
     using System;
@@ -30,14 +33,16 @@ namespace EndToEndTests
 
         private HttpServer server;
 
-        [AssemblyInitialize]
-        public static void TestInitialize(TestContext context)
+        private static readonly User user = new User { Nickname = "Alberto", Password = "1234" };
+
+        [TestInitialize]
+        public void TestInitialize()
         {
             webService = WebApp.Start<Startup>("http://*:80/");
         }
 
-        [AssemblyCleanup]
-        public static void TestCleanup()
+        [TestCleanup]
+        public void TestCleanup()
         {
             webService.Dispose();
         }
@@ -51,12 +56,41 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var user = new User { Nickname = "Alberto", Password = "1234" };
                 var task = client.PostAsJsonAsync("api/user", user);
                 task.Wait();
                 var response = task.Result;
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                IUserStorage storage = UserMemoryStorage.GetInstance();
+                Assert.IsTrue(storage.ContainsUser(new UserBll("Alberto", "1234")));
+            }
+        }
+
+        [TestMethod]
+        public void TestGetExistingUser()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:80/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var task = client.PostAsJsonAsync("api/user", user);
+                task.Wait();
+            }
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:80/");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+
+                var task = client.GetAsync("api/user?nickname=Alberto");
+                task.Wait();
+                var response = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                // Get the user
             }
         }
     }
