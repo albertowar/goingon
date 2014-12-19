@@ -8,13 +8,15 @@
 // </summary>
 // ****************************************************************************
 
+using System.Threading.Tasks;
+
 using Model.EntitiesBll;
 
 public interface IUserStorage
 {
-    void AddUser(UserBll userBll);
-    UserBll GetUser(string nickname);
-    bool ContainsUser(UserBll userBll);
-    void DeleteUser(UserBll userBll);
-    void DeleteAllUser();
+    Task AddUser(UserBll userBll);
+    Task<UserBll> GetUser(string nickname);
+    Task<bool> ContainsUser(UserBll userBll);
+    Task DeleteUser(UserBll userBll);
+    Task DeleteAllUser();
 }

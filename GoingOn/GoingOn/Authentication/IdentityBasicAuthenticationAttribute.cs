@@ -24,7 +24,10 @@ namespace GoingOn.Authentication
         {
             IUserStorage storage = UserMemoryStorage.GetInstance();
 
-            if (storage.ContainsUser(User.ToUserBll(new User(nickname, password))))
+            var containsUserTask = storage.ContainsUser(User.ToUserBll(new User(nickname, password)));
+            containsUserTask.Wait(cancellationToken);
+
+            if (containsUserTask.Result)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 

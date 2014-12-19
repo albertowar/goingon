@@ -40,7 +40,10 @@ namespace Storage.Tests
         {
             storage.AddUser(User);
 
-            Assert.IsTrue(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsTrue(containsUserTask.Result);
         }
 
         [TestMethod]
@@ -49,7 +52,10 @@ namespace Storage.Tests
             storage.AddUser(User);
             storage.AddUser(User);
 
-            Assert.IsTrue(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsTrue(containsUserTask.Result);
         }
 
         [TestMethod]
@@ -57,7 +63,10 @@ namespace Storage.Tests
         {
             storage.AddUser(User);
 
-            UserBll actualUser = storage.GetUser(User.Nickname);
+            var getUserTask = storage.GetUser(User.Nickname);
+            getUserTask.Wait();
+
+            UserBll actualUser = getUserTask.Result;
 
             Assert.IsTrue(new UserBllEqualityComparer().Equals(User, actualUser));
         }
@@ -73,13 +82,19 @@ namespace Storage.Tests
         {
             storage.AddUser(User);
 
-            Assert.IsTrue(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsTrue(containsUserTask.Result);
         }
 
         [TestMethod]
         public void TestContainsNonExistingUser()
         {
-            Assert.IsFalse(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsFalse(containsUserTask.Result);
         }
 
         [TestMethod]
@@ -89,7 +104,10 @@ namespace Storage.Tests
 
             storage.DeleteUser(User);
 
-            Assert.IsFalse(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsFalse(containsUserTask.Result);
         }
 
         [TestMethod]
@@ -97,7 +115,10 @@ namespace Storage.Tests
         {
             storage.DeleteUser(User);
 
-            Assert.IsFalse(storage.ContainsUser(User));
+            var containsUserTask = storage.ContainsUser(User);
+            containsUserTask.Wait();
+
+            Assert.IsFalse(containsUserTask.Result);
         }
 
         [TestMethod]
@@ -109,7 +130,10 @@ namespace Storage.Tests
 
             for (int i = 0; i < 10; ++i)
             {
-                Assert.IsFalse(storage.ContainsUser(new UserBll(nickname: "nickname" + i, password: "password" + i)));
+                var containsUserTask = storage.ContainsUser(new UserBll(nickname: "nickname" + i, password: "password" + i));
+                containsUserTask.Wait();
+
+                Assert.IsFalse(containsUserTask.Result);
             }
         }
 

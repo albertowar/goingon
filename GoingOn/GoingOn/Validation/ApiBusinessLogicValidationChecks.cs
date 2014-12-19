@@ -21,7 +21,10 @@ namespace GoingOn.Validation
 
         public bool IsValidCreateUser(IUserStorage storage, User user)
         {
-            return !storage.ContainsUser(User.ToUserBll(user));
+            var containsUserTask = storage.ContainsUser(User.ToUserBll(user));
+            containsUserTask.Wait();
+
+            return !containsUserTask.Result;
         }
     }
 }

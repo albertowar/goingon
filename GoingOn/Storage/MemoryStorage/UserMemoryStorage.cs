@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using System.Threading.Tasks;
+
 namespace MemoryStorage
 {
     using System.Collections.Generic;
@@ -28,34 +30,40 @@ namespace MemoryStorage
             this.storage = new List<UserMemory>();
         }
 
-        public void AddUser(UserBll userBll)
+        public Task AddUser(UserBll userBll)
         {
             storage.Add(UserMemory.FromUserBll(userBll));
+
+            return Task.FromResult(0);
         }
 
-        public UserBll GetUser(string nickname)
+        public Task<UserBll> GetUser(string nickname)
         {
             if (storage.Any(user => user.Equals(new UserMemory(nickname))))
             {
-                return UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname))));
+                return Task.FromResult(UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname)))));
             }
 
             return null;
         }
 
-        public bool ContainsUser(UserBll userBll)
+        public Task<bool> ContainsUser(UserBll userBll)
         {
-            return storage.Contains(UserMemory.FromUserBll(userBll));
+            return Task.FromResult(storage.Contains(UserMemory.FromUserBll(userBll)));
         }
 
-        public void DeleteUser(UserBll userBll)
+        public Task DeleteUser(UserBll userBll)
         {
             storage.Remove(UserMemory.FromUserBll(userBll));
+
+            return Task.FromResult(0);
         }
 
-        public void DeleteAllUser()
+        public Task DeleteAllUser()
         {
-            storage.Clear();;
+            storage.Clear();
+
+            return Task.FromResult(0);
         }
 
         public static UserMemoryStorage GetInstance()

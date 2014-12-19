@@ -11,6 +11,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
 using GoingOn.Entities;
 using GoingOn.Validation;
@@ -43,14 +44,13 @@ namespace GoingOn.Tests.Controllers
         [TestMethod]
         public void TestGetUserReturns200OkWhenTheUserIsInTheDatabase()
         {
-            userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(true);
-            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(new UserBll("username", "password"));
+            userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
+            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll("username", "password")));
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user");
 
-            var getAction = userController.Get("username");
-            var getTask = getAction.ExecuteAsync(new CancellationToken());
+            var getTask = userController.Get("username");
 
             getTask.Wait();
 

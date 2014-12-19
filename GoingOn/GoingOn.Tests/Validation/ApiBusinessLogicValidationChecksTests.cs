@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using System.Threading.Tasks;
+
 namespace GoingOn.Tests.Validation
 {
     using GoingOn.Entities;
@@ -34,7 +36,7 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidCreateUserSucceedsIfStorageDoesNotContainsTheUser()
         {
-            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(false);
+            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(false));
 
             Assert.IsTrue(businessValidation.IsValidCreateUser(storageMock.Object, user));
         }
@@ -42,7 +44,7 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidCreateUserFailsIfStorageContainsTheUser()
         {
-            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(true);
+            storageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
 
             Assert.IsFalse(businessValidation.IsValidCreateUser(storageMock.Object, user));
         }

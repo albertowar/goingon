@@ -8,6 +8,7 @@
 // </summary>
 // ****************************************************************************
 
+using System.Threading.Tasks;
 using GoingOn.Links;
 using Model.EntitiesBll;
 
@@ -36,16 +37,16 @@ namespace GoingOn.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        public IHttpActionResult Get(string nickname)
+        public async Task<HttpResponseMessage> Get(string id)
         {
-            if (storage.ContainsUser(new UserBll(nickname, string.Empty)))
+            if (await storage.ContainsUser(new UserBll(id, string.Empty)))
             {
-                var user = FrontendEntities.User.FromUserBll(storage.GetUser(nickname));
+                var user = FrontendEntities.User.FromUserBll(await storage.GetUser(id));
 
-                return Ok(user);
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
 
-            return NotFound();
+            return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
         }
 
         // POST api/user

@@ -8,9 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using MemoryStorage;
-using Model.EntitiesBll;
-
 namespace EndToEndTests
 {
     using System;
@@ -23,8 +20,9 @@ namespace EndToEndTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Client.Entities;
-
     using GoingOn;
+    using MemoryStorage;
+    using Model.EntitiesBll;
 
     [TestClass]
     public class UserTests
@@ -56,14 +54,19 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var task = client.PostAsJsonAsync("api/user", user);
-                task.Wait();
-                var response = task.Result;
+                var createUserTask = client.PostAsJsonAsync("api/user", user);
+                createUserTask.Wait();
+                var response = createUserTask.Result;
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
                 IUserStorage storage = UserMemoryStorage.GetInstance();
-                Assert.IsTrue(storage.ContainsUser(new UserBll("Alberto", "1234")));
+
+                var containsUserTask = storage.ContainsUser(new UserBll("Alberto", "1234"));
+
+                containsUserTask.Wait();
+
+                Assert.IsTrue(containsUserTask.Result);
             }
         }
 
@@ -85,7 +88,7 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                var task = client.GetAsync("api/user?nickname=Alberto");
+                var task = client.GetAsync("api/user/Alberto");
                 task.Wait();
                 var response = task.Result;
 
