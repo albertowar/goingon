@@ -43,7 +43,9 @@ namespace GoingOn.Controllers
             {
                 var user = FrontendEntities.User.FromUserBll(await storage.GetUser(id));
 
-                return Request.CreateResponse(HttpStatusCode.OK);
+                var response = Request.CreateResponse(HttpStatusCode.OK, user);
+
+                return response;
             }
 
             return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
