@@ -15,5 +15,11 @@ namespace GoingOn.Validation
     public interface IApiBusinessLogicValidationChecks
     {
         bool IsValidCreateUser(IUserStorage storage, User user);
+
+        bool IsValidGetUser(IUserStorage storage, string nickname);
+
+        bool IsValidUpdateUser(IUserStorage storage, User user);
+
+        bool IsValidDeleteUser(IUserStorage storage, string nickname);
     }
 }

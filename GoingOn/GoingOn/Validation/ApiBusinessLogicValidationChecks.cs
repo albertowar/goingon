@@ -21,10 +21,34 @@ namespace GoingOn.Validation
 
         public bool IsValidCreateUser(IUserStorage storage, User user)
         {
+            return !this.IsUserStored(storage, user);
+        }
+
+        public bool IsValidGetUser(IUserStorage storage, string nickname)
+        {
+            return this.IsUserStored(storage, new User(nickname, string.Empty));
+        }
+
+        public bool IsValidUpdateUser(IUserStorage storage, User user)
+        {
+            return this.IsUserStored(storage, user);
+        }
+
+        public bool IsValidDeleteUser(IUserStorage storage, string nickname)
+        {
+            return this.IsUserStored(storage, new User(nickname, string.Empty));
+        }
+
+        #region Helper methods
+
+        private bool IsUserStored(IUserStorage storage,  User user)
+        {
             var containsUserTask = storage.ContainsUser(User.ToUserBll(user));
             containsUserTask.Wait();
 
-            return !containsUserTask.Result;
+            return containsUserTask.Result;
         }
+
+        #endregion
     }
 }

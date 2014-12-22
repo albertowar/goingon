@@ -8,18 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-using System.Threading.Tasks;
-using GoingOn.Links;
-using Model.EntitiesBll;
-
 namespace GoingOn.Controllers
 {
+    using System;
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
+    using System.Threading.Tasks;
 
     using GoingOn.Authentication;
+    using GoingOn.Links;
     using GoingOn.Validation;
+    using Model.EntitiesBll;
+
     using FrontendEntities = GoingOn.Entities;
 
     public class UserController : ApiController
@@ -37,22 +38,28 @@ namespace GoingOn.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
+        // GET api/user/{id}
         public async Task<HttpResponseMessage> Get(string id)
         {
-            if (await storage.ContainsUser(new UserBll(id, string.Empty)))
+            if (!this.inputValidation.IsValidNickName(id))
             {
-                var user = FrontendEntities.User.FromUserBll(await storage.GetUser(id));
-
-                var response = Request.CreateResponse(HttpStatusCode.OK, user);
-
-                return response;
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
+            if (!this.businessValidation.IsValidGetUser(storage, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
+            }
+                
+            var user = FrontendEntities.User.FromUserBll(await storage.GetUser(id), Request);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK, user);
+
+            return response;
         }
 
         // POST api/user
-        public HttpResponseMessage Post([FromBody]FrontendEntities.User user)
+        public async Task<HttpResponseMessage> Post([FromBody]FrontendEntities.User user)
         {
             if (!this.inputValidation.IsValidUser(user))
             {
@@ -64,12 +71,52 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
 
-            storage.AddUser(FrontendEntities.User.ToUserBll(user));
+            await storage.AddUser(FrontendEntities.User.ToUserBll(user));
 
             var response = Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
             response.Headers.Location = new UserLinkFactory(Request).Self(user.Nickname).Href;
 
             return response;
+        }
+
+        [IdentityBasicAuthentication]
+        [Authorize]
+        // PUT api/user/{id}
+        public async Task<HttpResponseMessage> Put(string id, [FromBody]FrontendEntities.User user)
+        {
+            if (!this.inputValidation.IsValidNickName(id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidUpdateUser(storage, user))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
+            }
+
+            await storage.UpdateUser(FrontendEntities.User.ToUserBll(user));
+
+            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
+        }
+
+        [IdentityBasicAuthentication]
+        [Authorize]
+        // PUT api/user/{id}
+        public async Task<HttpResponseMessage> Delete(string id)
+        {
+            if (!this.inputValidation.IsValidNickName(id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidDeleteUser(storage, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
+            }
+
+            await storage.DeleteUser(FrontendEntities.User.ToUserBll(new FrontendEntities.User(id, string.Empty)));
+
+            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
         }
     }
 }

@@ -19,14 +19,14 @@ namespace MemoryStorage.Entities
 
         public UserMemory(string nickname)
         {
-            Nickname = nickname;
-            Password = string.Empty;
+            this.Nickname = nickname;
+            this.Password = string.Empty;
         }
 
         public UserMemory(string nickname, string password)
         {
-            Nickname = nickname;
-            Password = password;
+            this.Nickname = nickname;
+            this.Password = password;
         }
 
         public static UserMemory FromUserBll(UserBll userBll)
@@ -53,6 +53,14 @@ namespace MemoryStorage.Entities
             return 
                 Nickname.GetHashCode() ^ 
                 Password.GetHashCode();
+        }
+
+        public void Merge(UserMemory user)
+        {
+            if (user.Equals(this))
+            {
+                this.Password = user.Password;
+            }
         }
     }
 }

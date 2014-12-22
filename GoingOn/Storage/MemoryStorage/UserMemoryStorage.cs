@@ -8,12 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-using System.Threading.Tasks;
-
 namespace MemoryStorage
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MemoryStorage.Entities;
     using Model.EntitiesBll;
@@ -44,12 +43,26 @@ namespace MemoryStorage
                 return Task.FromResult(UserMemory.ToUserBll(storage.First(user => user.Equals(new UserMemory(nickname)))));
             }
 
-            return null;
+            return Task.FromResult<UserBll>(null);
         }
 
         public Task<bool> ContainsUser(UserBll userBll)
         {
             return Task.FromResult(storage.Contains(UserMemory.FromUserBll(userBll)));
+        }
+
+        public Task UpdateUser(UserBll userBll)
+        {
+            var userMemory = UserMemory.FromUserBll(userBll);
+
+            var foundUser = storage.Find(user => user.Equals(userMemory));
+
+            if (foundUser != null)
+            {
+                foundUser.Merge(userMemory);
+            }
+
+            return Task.FromResult(0);
         }
 
         public Task DeleteUser(UserBll userBll)

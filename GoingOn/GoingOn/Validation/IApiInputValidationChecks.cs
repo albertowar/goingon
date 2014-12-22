@@ -15,5 +15,9 @@ namespace GoingOn.Validation
     public interface IApiInputValidationChecks
     {
         bool IsValidUser(User user);
+
+        bool IsValidNickName(string nickName);
+
+        bool IsValidPassword(string password);
     }
 }

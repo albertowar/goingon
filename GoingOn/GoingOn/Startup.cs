@@ -8,19 +8,23 @@
 // </summary>
 // ****************************************************************************
 
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
+using GoingOn.Links;
 using Microsoft.Owin;
 
 [assembly: OwinStartup(typeof(GoingOn.Startup))]
 
 namespace GoingOn
 {
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
     using System.Web.Mvc;
+
+    using Microsoft.Practices.Unity;
+
     using GoingOn.Validation;
     using MemoryStorage;
-    using Microsoft.Practices.Unity;
+    
     using Owin;
 
     [ExcludeFromCodeCoverage]

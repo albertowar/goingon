@@ -74,7 +74,12 @@ namespace Storage.Tests
         [TestMethod]
         public void TestGetNonExistingUser()
         {
-            Assert.IsNull(storage.GetUser("not an user"));
+            var getUserTask = storage.GetUser(User.Nickname);
+            getUserTask.Wait();
+
+            UserBll actualUser = getUserTask.Result;
+
+            Assert.IsNull(actualUser);
         }
 
         [TestMethod]
@@ -95,6 +100,40 @@ namespace Storage.Tests
             containsUserTask.Wait();
 
             Assert.IsFalse(containsUserTask.Result);
+        }
+
+        [TestMethod]
+        public void TestUpdateUser()
+        {
+            storage.AddUser(User);
+
+            UserBll updatedUser = new UserBll(nickname: User.Nickname, password: "other password");
+
+            storage.UpdateUser(updatedUser);
+
+            var getUserTask = storage.GetUser(User.Nickname);
+            getUserTask.Wait();
+
+            UserBll actualUser = getUserTask.Result;
+            
+            Assert.IsNotNull(actualUser);
+            Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
+            Assert.AreEqual(updatedUser.Password, actualUser.Password);
+        }
+
+        [TestMethod]
+        public void TestUpdateNonExistingUser()
+        {
+            UserBll updatedUser = new UserBll(nickname: User.Nickname, password: "other password");
+
+            storage.UpdateUser(updatedUser);
+
+            var getUserTask = storage.GetUser(User.Nickname);
+            getUserTask.Wait();
+
+            UserBll actualUser = getUserTask.Result;
+
+            Assert.IsNull(actualUser);
         }
 
         [TestMethod]
