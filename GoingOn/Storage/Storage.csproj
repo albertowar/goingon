@@ -39,6 +39,7 @@
     <Compile Include="IUserStorage.cs" />
     <Compile Include="MemoryStorage\Entities\NewsMemory.cs" />
     <Compile Include="MemoryStorage\Entities\UserMemory.cs" />
+    <Compile Include="MemoryStorage\NewsMemoryEqualityComparer.cs" />
     <Compile Include="MemoryStorage\NewsMemoryStorage.cs" />
     <Compile Include="MemoryStorage\UserMemoryStorage.cs" />
     <Compile Include="StorageException.cs" />

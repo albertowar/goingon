@@ -15,29 +15,44 @@ namespace MemoryStorage.Entities
 
     public class NewsMemory
     {
+        public Guid Id { get; private set; } 
         public string Title { get; private set; }
         public string Content { get; private set; }
-        public UserMemory Author { get; private set; }
-        public TimeSpan Date { get; private set; }
+        public string Author { get; private set; }
+        public DateTime Date { get; private set; }
         public int Rating { get; private set; }
 
-        public NewsMemory(string title, string content, UserMemory author, TimeSpan date, int rating)
+        public NewsMemory(Guid id)
         {
-            Title = title;
-            Content = content;
-            Author = author;
-            Date = date;
-            Rating = rating;
+            this.Id = id;
+        }
+
+        public NewsMemory(Guid id, string title, string content, string author, DateTime date, int rating)
+        {
+            this.Id = id;
+            this.Title = title;
+            this.Content = content;
+            this.Author = author;
+            this.Date = date;
+            this.Rating = rating;
         }
 
         public static NewsMemory FromNewsBll(NewsBll newsBll)
         {
-            return new NewsMemory(newsBll.Title, newsBll.Content, UserMemory.FromUserBll(newsBll.Author), newsBll.Date, newsBll.Rating);
+            return new NewsMemory(newsBll.Id, newsBll.Title, newsBll.Content, newsBll.Author, newsBll.Date, newsBll.Rating);
         }
 
         public static NewsBll ToNewsBll(NewsMemory newsMemory)
         {
-            return new NewsBll(newsMemory.Title, newsMemory.Content, UserMemory.ToUserBll(newsMemory.Author), newsMemory.Date, newsMemory.Rating);
+            return new NewsBll
+            {
+                Id = newsMemory.Id,
+                Title = newsMemory.Title,
+                Content = newsMemory.Content,
+                Author = newsMemory.Author,
+                Date = newsMemory.Date,
+                Rating = newsMemory.Rating
+            };
         }
 
         public override bool Equals(object anotherNewsObject)
@@ -46,18 +61,31 @@ namespace MemoryStorage.Entities
 
             return
                 anotherNews != null &&
-                string.Equals(Title, anotherNews.Title) &&
-                Author.Equals(anotherNews.Author);
+                this.Id.Equals(anotherNews.Id);
         }
 
         public override int GetHashCode()
         {
-            return 
-                Title.GetHashCode() ^
-                Content.GetHashCode() ^
-                Author.GetHashCode() ^
-                Date.GetHashCode() ^
-                Rating.GetHashCode();
+            return
+                Id.GetHashCode();
+        }
+
+        public void Merge(NewsMemory newsMemory)
+        {
+            if (this.Equals(newsMemory))
+            {
+                if (newsMemory.Title != null)
+                {
+                    this.Title = newsMemory.Title;
+                }
+
+                if (newsMemory.Content != null)
+                {
+                    this.Content = newsMemory.Content;
+                }
+
+                this.Date = newsMemory.Date;
+            }
         }
     }
 }

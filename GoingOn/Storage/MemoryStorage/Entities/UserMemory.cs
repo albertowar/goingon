@@ -36,7 +36,11 @@ namespace MemoryStorage.Entities
 
         public static UserBll ToUserBll(UserMemory userMemory)
         {
-            return new UserBll(userMemory.Nickname, userMemory.Password);
+            return new UserBll
+            {
+                Nickname = userMemory.Nickname,
+                Password = userMemory.Password
+            };
         }
 
         public override bool Equals(object anotherUserObject)
@@ -55,11 +59,14 @@ namespace MemoryStorage.Entities
                 Password.GetHashCode();
         }
 
-        public void Merge(UserMemory user)
+        public void Merge(UserMemory userMemory)
         {
-            if (user.Equals(this))
+            if (this.Equals(userMemory))
             {
-                this.Password = user.Password;
+                if (!string.IsNullOrWhiteSpace(userMemory.Password))
+                {
+                    this.Password = userMemory.Password;
+                }
             }
         }
     }

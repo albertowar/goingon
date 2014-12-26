@@ -10,35 +10,76 @@
 
 namespace GoingOn.Controllers
 {
-    using GoingOn.Authentication;
-    using GoingOn.Entities;
-    using MemoryStorage;
-    using Model.EntitiesBll;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Http;
 
+    using GoingOn.Authentication;
+    using GoingOn.Entities;
+    using GoingOn.Links;
+    using GoingOn.Validation;
+
     public class NewsController : ApiController
     {
-        // GET api/news
-        public IEnumerable<News> Get()
+        private readonly INewsStorage storage;
+        private readonly IApiInputValidationChecks inputValidation;
+        private readonly IApiBusinessLogicValidationChecks businessValidation;
+
+        public NewsController(INewsStorage storage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            return new News[] { new News("News 1"), new News("News 2") };
+            this.storage = storage;
+            this.inputValidation = inputValidation;
+            this.businessValidation = businessValidation;
+        }
+
+        // GET api/news
+        public async Task<HttpResponseMessage> Get(string id)
+        {
+            if (!this.inputValidation.IsValidNewsId(id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news id format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidGetNews(storage, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
+            var news = News.FromNewsBll(await storage.GetNews(Guid.Parse(id)), Request);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK, news);
+
+            return response;
         }
 
         // POST api/news
         [IdentityBasicAuthentication]
         [Authorize]
-        public HttpResponseMessage Post(News news)
+        public async Task<HttpResponseMessage> Post([FromBody]News news)
         {
-            // Add the news to the storage
-            
-            return null;
+            var nickname = User.Identity.Name;
+
+            if (!this.inputValidation.IsValidNews(news))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidCreateNews(storage, news, nickname))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news is already created");
+            }
+
+            Guid newsId = Guid.NewGuid();
+
+            var nowTime = DateTime.UtcNow;
+            await storage.AddNews(News.ToNewsBll(news, newsId, nickname, new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, 0, 0)));
+
+            var response = Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
+            response.Headers.Location = new NewsLinkFactory(Request).Self(newsId.ToString()).Href;
+
+            return response;
         }
     }
 }

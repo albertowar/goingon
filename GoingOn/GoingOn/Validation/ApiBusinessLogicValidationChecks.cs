@@ -8,17 +8,15 @@
 // </summary>
 // ****************************************************************************
 
+using System;
+
 namespace GoingOn.Validation
 {
     using GoingOn.Entities;
+    using Model.EntitiesBll;
 
     public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
-        public ApiBusinessLogicValidationChecks()
-        {
-            
-        }
-
         public bool IsValidCreateUser(IUserStorage storage, User user)
         {
             return !this.IsUserStored(storage, user);
@@ -39,14 +37,26 @@ namespace GoingOn.Validation
             return this.IsUserStored(storage, new User(nickname, string.Empty));
         }
 
+        public bool IsValidCreateNews(INewsStorage storage, News news, string author)
+        {
+            return !this.IsNewsStored(storage, news, author);
+        }
+
+        public bool IsValidGetNews(INewsStorage storage, string id)
+        {
+            return storage.ContainsNews(Guid.Parse(id)).Result;
+        }
+
         #region Helper methods
 
         private bool IsUserStored(IUserStorage storage,  User user)
         {
-            var containsUserTask = storage.ContainsUser(User.ToUserBll(user));
-            containsUserTask.Wait();
+            return storage.ContainsUser(User.ToUserBll(user)).Result;
+        }
 
-            return containsUserTask.Result;
+        private bool IsNewsStored(INewsStorage storage, News news, string author)
+        {
+            return storage.ContainsNews(News.ToNewsBll(news, author)).Result;
         }
 
         #endregion

@@ -60,9 +60,20 @@ namespace GoingOn.Links
             };
         }
 
+        public Link Author(string id, string route = DefaultApi)
+        {
+            return new Link
+            {
+                Rel = Rels.Author,
+                Href = GetUri(
+                    new { controller = this.controllerName, id = id }, route)
+            };
+        }
+
         public class Rels
         {
             public const string Self = "self";
+            public const string Author = "author";
         }
     }
 

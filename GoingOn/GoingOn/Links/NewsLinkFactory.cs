@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="UserBll.cs" company="Universidad de Malaga">
+// <copyright file="NewsLinkFactory.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,11 +8,16 @@
 // </summary>
 // ****************************************************************************
 
-namespace Model.EntitiesBll
+namespace GoingOn.Links
 {
-    public class UserBll
+    using GoingOn.Controllers;
+    using System.Net.Http;
+
+    public class NewsLinkFactory : LinkFactory<NewsController>
     {
-        public string Nickname { get; set; }
-        public string Password { get; set; }
+        public NewsLinkFactory(HttpRequestMessage message)
+            : base(message)
+        {
+        }
     }
 }

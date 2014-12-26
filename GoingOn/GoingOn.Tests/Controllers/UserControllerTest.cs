@@ -73,7 +73,7 @@ namespace GoingOn.Tests.Controllers
         {
             inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
-            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll("username", "password")));
+            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
@@ -88,7 +88,7 @@ namespace GoingOn.Tests.Controllers
         {
             inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(false);
-            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll("nickname", "password")));
+            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));

@@ -8,7 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using GoingOn.Links;
 using Microsoft.Owin;
 
 [assembly: OwinStartup(typeof(GoingOn.Startup))]
@@ -41,6 +40,7 @@ namespace GoingOn
             // Dependy injection configuration
             var container = new UnityContainer();
             container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
+            container.RegisterInstance<INewsStorage>(NewsMemoryStorage.GetInstance());
             container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
             configuration.DependencyResolver = new UnityResolver(container);

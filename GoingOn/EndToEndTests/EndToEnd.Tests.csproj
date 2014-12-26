@@ -69,6 +69,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="NewsClientEqualityComparer.cs" />
+    <Compile Include="NewsTests.cs" />
     <Compile Include="UserClientEqualityComparer.cs" />
     <Compile Include="UserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

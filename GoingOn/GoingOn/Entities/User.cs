@@ -49,7 +49,11 @@ namespace GoingOn.Entities
 
         public static UserBll ToUserBll(User user)
         {
-            return new UserBll(user.Nickname, user.Password);
+            return new UserBll 
+            {
+                Nickname = user.Nickname,
+                Password = user.Password
+            };
         }
 
         public static User FromUserBll(UserBll user)

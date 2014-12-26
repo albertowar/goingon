@@ -19,7 +19,7 @@ namespace Storage.Tests
     [TestClass]
     public class UserMemoryStorageTests
     {
-        private static readonly UserBll User = new UserBll(nickname: "nickname", password: "password");
+        private static readonly UserBll User = new UserBll{ Nickname = "nickname", Password = "password" };
 
         private IUserStorage storage;
 
@@ -107,7 +107,7 @@ namespace Storage.Tests
         {
             storage.AddUser(User);
 
-            UserBll updatedUser = new UserBll(nickname: User.Nickname, password: "other password");
+            UserBll updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
 
             storage.UpdateUser(updatedUser);
 
@@ -124,7 +124,7 @@ namespace Storage.Tests
         [TestMethod]
         public void TestUpdateNonExistingUser()
         {
-            UserBll updatedUser = new UserBll(nickname: User.Nickname, password: "other password");
+            UserBll updatedUser = new UserBll{ Nickname = User.Nickname, Password = "other password" };
 
             storage.UpdateUser(updatedUser);
 
@@ -169,7 +169,7 @@ namespace Storage.Tests
 
             for (int i = 0; i < 10; ++i)
             {
-                var containsUserTask = storage.ContainsUser(new UserBll(nickname: "nickname" + i, password: "password" + i));
+                var containsUserTask = storage.ContainsUser(new UserBll { Nickname = "nickname" + i, Password = "password" + i });
                 containsUserTask.Wait();
 
                 Assert.IsFalse(containsUserTask.Result);
@@ -182,7 +182,7 @@ namespace Storage.Tests
         {
             for (int i = 0; i < 10; ++i)
             {
-                var news = new UserBll(nickname: "nickname" + i, password: "password" + i);
+                var news = new UserBll{ Nickname = "nickname" + i, Password = "password" + i };
             }
         }
 

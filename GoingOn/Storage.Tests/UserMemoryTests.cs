@@ -8,14 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-using Common.Tests;
-using MemoryStorage.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model.EntitiesBll;
-using Moq;
-
 namespace Storage.Tests
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using Common.Tests;
+    using MemoryStorage.Entities;
+    using Model.EntitiesBll;
+    using Moq;
+
     [TestClass]
     public class UserMemoryTests
     {
@@ -52,7 +53,7 @@ namespace Storage.Tests
         public void TestFromUserBll()
         {
             UserMemory userMemory = new UserMemory("nickname", It.IsAny<string>());
-            UserBll userBll = new UserBll("nickname", It.IsAny<string>());
+            UserBll userBll = new UserBll{ Nickname = "nickname", Password = It.IsAny<string>() };
 
             Assert.AreEqual(userMemory, UserMemory.FromUserBll(userBll));
         }
@@ -61,9 +62,45 @@ namespace Storage.Tests
         public void TestToUserBll()
         {
             UserMemory userMemory = new UserMemory("nickname", It.IsAny<string>());
-            UserBll userBll = new UserBll("nickname", It.IsAny<string>());
+            UserBll userBll = new UserBll { Nickname = "nickname", Password = It.IsAny<string>() };
 
             Assert.IsTrue(new UserBllEqualityComparer().Equals(userBll, UserMemory.ToUserBll(userMemory)));
+        }
+
+        [TestMethod]
+        public void TestMerge()
+        {
+            UserMemory user1 = new UserMemory("nickname", "password");
+            UserMemory user2 = new UserMemory("nickname", "password2");
+
+            user1.Merge(user2);
+
+            Assert.AreEqual(user1.Nickname, user2.Nickname);
+            Assert.AreEqual(user1.Password, user2.Password);
+        }
+
+        [TestMethod]
+        public void TestMergeNullPassword()
+        {
+            UserMemory user1 = new UserMemory("nickname", "password");
+            UserMemory user2 = new UserMemory("nickname", null);
+
+            user1.Merge(user2);
+
+            Assert.AreEqual(user1.Nickname, user2.Nickname);
+            Assert.AreEqual("password", user1.Password);
+        }
+
+        [TestMethod]
+        public void TestMergeDifferentUsers()
+        {
+            UserMemory user1 = new UserMemory("nickname", "password");
+            UserMemory user2 = new UserMemory("other nickname", "other password");
+
+            user1.Merge(user2);
+
+            Assert.AreNotEqual(user1.Nickname, user2.Nickname);
+            Assert.AreNotEqual(user1.Password, user2.Password);
         }
     }
 }

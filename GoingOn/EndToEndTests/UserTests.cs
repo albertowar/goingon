@@ -8,21 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-using System.Net.Http.Formatting;
-
 namespace EndToEndTests
 {
     using System;
     using System.Net;
     using System.Net.Http.Headers;
     using System.Net.Http;
+    using System.Net.Http.Formatting;
     using System.Web.Http;
 
     using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
 
-    using Common.Tests;
     using Client.Entities;
     using GoingOn;
     using MemoryStorage;
@@ -55,18 +53,18 @@ namespace EndToEndTests
         [TestMethod]
         public void TestCreateUser()
         {
-            var response = this.CreateUser();
+            var response = UserTests.CreateUser(userClient);
 
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-            Assert.IsTrue(storage.ContainsUser(new UserBll("Alberto", "1234")).Result);
+            Assert.IsTrue(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
         }
 
         [TestMethod]
         public void TestGetExistingUser()
         {
-            this.CreateUser();
+            UserTests.CreateUser(userClient);
 
-            var response = this.GetUser("Alberto");
+            var response = UserTests.GetUser("Alberto");
 
             var content = response.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -81,7 +79,7 @@ namespace EndToEndTests
         {
             HttpResponseMessage updateResponse, getResponse;
 
-            this.CreateUser();
+            UserTests.CreateUser(userClient);
 
             UserClient updatedUser = new UserClient { Nickname = "Alberto", Password = "4567" };
 
@@ -94,7 +92,7 @@ namespace EndToEndTests
                 updateResponse = client.PutAsync("api/user/Alberto", updatedUser, new JsonMediaTypeFormatter()).Result;
             }
 
-            getResponse = this.GetUser("Alberto");
+            getResponse = UserTests.GetUser("Alberto");
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -108,7 +106,7 @@ namespace EndToEndTests
         [TestMethod]
         public void TestDeleteExistingUser()
         {
-            this.CreateUser();
+            UserTests.CreateUser(userClient);
 
             using (var client = new HttpClient())
             {
@@ -118,13 +116,13 @@ namespace EndToEndTests
                 var response = client.DeleteAsync("api/user/Alberto").Result;
 
                 Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
-                Assert.IsFalse(storage.ContainsUser(new UserBll("Alberto", "1234")).Result);
+                Assert.IsFalse(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
             }
         }
 
         #region Helper methods
 
-        private HttpResponseMessage CreateUser()
+        public static HttpResponseMessage CreateUser(UserClient user)
         {
             using (var client = new HttpClient())
             {
@@ -132,11 +130,11 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                return client.PostAsJsonAsync("api/user", userClient).Result;
+                return client.PostAsJsonAsync("api/user", user).Result;
             }
         }
 
-        private HttpResponseMessage GetUser(string nickname)
+        private static HttpResponseMessage GetUser(string nickname)
         {
             using (var client = new HttpClient())
             {

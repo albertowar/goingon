@@ -19,5 +19,9 @@ namespace GoingOn.Validation
         bool IsValidNickName(string nickName);
 
         bool IsValidPassword(string password);
+
+        bool IsValidNews(News news);
+
+        bool IsValidNewsId(string id);
     }
 }

@@ -14,19 +14,11 @@ namespace Model.EntitiesBll
 
     public class NewsBll
     {
-        public string Title { get; private set; }
-        public string Content { get; private set; }
-        public UserBll Author { get; private set; }
-        public TimeSpan Date { get; private set; }
-        public int Rating { get; private set; }
-
-        public NewsBll(string title, string content, UserBll author, TimeSpan date, int rating)
-        {
-            Title = title;
-            Content = content;
-            Author = author;
-            Date = date;
-            Rating = rating;
-        }
+        public Guid Id { get; set; } 
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string Author { get; set; }
+        public DateTime Date { get; set; }
+        public int Rating { get; set; }
     }
 }

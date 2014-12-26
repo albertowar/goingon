@@ -10,6 +10,7 @@
 
 namespace Common.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
@@ -22,7 +23,7 @@ namespace Common.Tests
         {
             return
                 string.Equals(news1.Title, news2.Title) &&
-                new UserBllEqualityComparer().Equals(news1.Author, news2.Author);
+                string.Equals(news1.Author, news2.Author, StringComparison.OrdinalIgnoreCase);
         }
 
         public int GetHashCode(NewsBll obj)

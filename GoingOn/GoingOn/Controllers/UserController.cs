@@ -10,7 +10,6 @@
 
 namespace GoingOn.Controllers
 {
-    using System;
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
@@ -19,7 +18,6 @@ namespace GoingOn.Controllers
     using GoingOn.Authentication;
     using GoingOn.Links;
     using GoingOn.Validation;
-    using Model.EntitiesBll;
 
     using FrontendEntities = GoingOn.Entities;
 

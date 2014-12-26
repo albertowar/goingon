@@ -10,8 +10,11 @@
 
 namespace MemoryStorage
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+
     using MemoryStorage.Entities;
     using Model.EntitiesBll;
 
@@ -27,34 +30,59 @@ namespace MemoryStorage
             this.storage = new List<NewsMemory>();
         }
 
-        public IEnumerable<NewsBll> GetNews()
-        {
-            return this.storage.Select(NewsMemory.ToNewsBll).ToList();
-        }
-
-        public void AddNews(NewsBll newsBll)
+        public Task AddNews(NewsBll newsBll)
         {
             storage.Add(NewsMemory.FromNewsBll(newsBll));
+
+            return Task.FromResult(0);
         }
 
-        public void UpdateNews(NewsBll newsBll)
+        public Task<NewsBll> GetNews(Guid id)
         {
+            if (storage.Any(news => news.Id.Equals(id)))
+            {
+                return Task.FromResult(NewsMemory.ToNewsBll(this.storage.First(news => news.Id.Equals(id))));
+            }
 
+            return Task.FromResult<NewsBll>(null);
         }
 
-        public void DeleteNews(NewsBll newsBll)
+        public Task<bool> ContainsNews(Guid id)
         {
-            storage.Remove(NewsMemory.FromNewsBll(newsBll));
+            return Task.FromResult(storage.Any(news => news.Id.Equals(id)));
         }
 
-        public void DeleteAllNews()
+        public Task<bool> ContainsNews(NewsBll newsBll)
+        {
+            return Task.FromResult(storage.Any(news => new NewsMemoryEqualityComparer().Equals(news, NewsMemory.FromNewsBll(newsBll))));
+        }
+
+        public Task UpdateNews(Guid id, NewsBll newsBll)
+        {
+            var newsMemory = NewsMemory.FromNewsBll(newsBll);
+
+            var foundNews = storage.Find(news => news.Equals(newsMemory));
+
+            if (foundNews != null)
+            {
+                foundNews.Merge(newsMemory);
+            }
+
+            return Task.FromResult(0);
+        }
+
+        public Task DeleteNews(Guid id)
+        {
+            storage.Remove(new NewsMemory(id));
+
+            return Task.FromResult(0);
+        }
+
+        public Task DeleteAllNews()
         {
             storage.Clear();
-        }
 
-        public bool ContainsNews(NewsBll newsBll)
-        {
-            return storage.Contains(NewsMemory.FromNewsBll(newsBll));
+            return Task.FromResult(0);
         }
 
         public static NewsMemoryStorage GetInstance()

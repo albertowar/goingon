@@ -34,6 +34,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\NewsClient.cs" />
     <Compile Include="Entities\UserClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

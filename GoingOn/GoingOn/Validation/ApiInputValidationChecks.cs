@@ -8,17 +8,14 @@
 // </summary>
 // ****************************************************************************
 
+using System;
+
 namespace GoingOn.Validation
 {
     using GoingOn.Entities;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
-        public ApiInputValidationChecks()
-        {
-            
-        }
-
         public bool IsValidUser(User user)
         {
             return 
@@ -35,6 +32,30 @@ namespace GoingOn.Validation
         public bool IsValidPassword(string password)
         {
             return !string.IsNullOrWhiteSpace(password);
+        }
+
+        public bool IsValidNews(News news)
+        {
+            return
+                news != null &&
+                (news.Title == null || this.IsValidTitle(news.Title)) &&
+                (news.Content == null || this.IsValidContent(news.Content));
+        }
+
+        public bool IsValidNewsId(string id)
+        {
+            Guid guid;
+            return Guid.TryParse(id, out guid);
+        }
+
+        public bool IsValidTitle(string title)
+        {
+            return !string.IsNullOrWhiteSpace(title);
+        }
+
+        public bool IsValidContent(string content)
+        {
+            return !string.IsNullOrWhiteSpace(content);
         }
     }
 }

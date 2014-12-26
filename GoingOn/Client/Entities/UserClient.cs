@@ -14,24 +14,13 @@ namespace Client.Entities
 
     public class UserClient
     {
-        public UserClient()
-        {
-            
-        }
-
-        public UserClient(string nickname, string password)
-        {
-            this.Nickname = nickname;
-            this.Password = password;
-        }
-
         public string Nickname { get; set; }
 
         public string Password { get; set; }
 
         public static UserClient FromFrontendUser(FrontendEntities.User user)
         {
-            return new UserClient(user.Nickname, user.Password);
+            return new UserClient { Nickname = user.Nickname, Password = user.Password };
         }
 
         public static FrontendEntities.User ToFrontendUser(UserClient userClient)

@@ -24,15 +24,13 @@ namespace GoingOn.Authentication
         {
             IUserStorage storage = UserMemoryStorage.GetInstance();
 
-            var containsUserTask = storage.ContainsUser(User.ToUserBll(new User(nickname, password)));
-            containsUserTask.Wait(cancellationToken);
+            var containsUserTask = await storage.ContainsUser(User.ToUserBll(new User(nickname, password)));
 
-            if (containsUserTask.Result)
+            if (containsUserTask)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                ClaimsIdentity identity = new ClaimsIdentity(null, "Basic");
-                return new ClaimsPrincipal(identity);
+                return new GenericPrincipal(new GenericIdentity(nickname), null);
             }
 
             // No user with userName/password exists.

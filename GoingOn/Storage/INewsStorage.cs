@@ -8,15 +8,18 @@
 // </summary>
 // ****************************************************************************
 
-using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
+
 using Model.EntitiesBll;
 
 public interface INewsStorage
 {
-    IEnumerable<NewsBll> GetNews();
-    void AddNews(NewsBll newsBll);
-    void UpdateNews(NewsBll newsBll);
-    void DeleteNews(NewsBll newsBll);
-    void DeleteAllNews();
-    bool ContainsNews(NewsBll newsBll);
+    Task AddNews(NewsBll newsBll);
+    Task<NewsBll> GetNews(Guid id);
+    Task<bool> ContainsNews(Guid id);
+    Task<bool> ContainsNews(NewsBll newsBll);
+    Task UpdateNews(Guid id, NewsBll newsBll);
+    Task DeleteNews(Guid id);
+    Task DeleteAllNews();
 }
