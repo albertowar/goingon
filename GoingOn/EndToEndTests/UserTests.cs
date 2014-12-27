@@ -32,8 +32,6 @@ namespace EndToEndTests
         private static IDisposable webService;
         private static IUserStorage storage;
 
-        private HttpServer server;
-
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234" };
 
         [TestInitialize]
