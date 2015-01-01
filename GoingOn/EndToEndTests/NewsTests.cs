@@ -30,7 +30,7 @@ namespace EndToEndTests
     public class NewsTests
     {
         private static IDisposable webService;
-        //private static IUserStorage userStorage;
+        private static IUserStorage userStorage;
         private static INewsStorage newsStorage;
 
         private HttpServer server;
@@ -42,7 +42,7 @@ namespace EndToEndTests
         public void TestInitialize()
         {
             webService = WebApp.Start<Startup>("http://*:80/");
-            //userStorage = UserMemoryStorage.GetInstance();
+            userStorage = UserMemoryStorage.GetInstance();
             newsStorage = NewsMemoryStorage.GetInstance();
 
             UserTests.CreateUser(userClient);
@@ -53,6 +53,7 @@ namespace EndToEndTests
         {
             webService.Dispose();
             newsStorage.DeleteAllNews();
+            userStorage.DeleteAllUser();
         }
 
         [TestMethod]

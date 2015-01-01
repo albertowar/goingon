@@ -89,13 +89,13 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidNewsFailsWithWrongContent()
         {
-            News nullTitleNews = new News("title", null);
-            News emptyTitleNews = new News("title", string.Empty);
-            News whiteSpaceTitleNews = new News("title", " \n\t");
+            News nullContent = new News("title", null);
+            News emptyContentNews = new News("title", string.Empty);
+            News whiteSpaceContentNews = new News("title", " \n\t");
 
-            Assert.IsFalse(inputValidation.IsValidNews(nullTitleNews));
-            Assert.IsFalse(inputValidation.IsValidNews(emptyTitleNews));
-            Assert.IsFalse(inputValidation.IsValidNews(whiteSpaceTitleNews));
+            Assert.IsFalse(inputValidation.IsValidNews(nullContent));
+            Assert.IsFalse(inputValidation.IsValidNews(emptyContentNews));
+            Assert.IsFalse(inputValidation.IsValidNews(whiteSpaceContentNews));
         }
     }
 }

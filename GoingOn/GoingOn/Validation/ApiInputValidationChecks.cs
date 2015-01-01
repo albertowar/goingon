@@ -38,8 +38,8 @@ namespace GoingOn.Validation
         {
             return
                 news != null &&
-                (news.Title == null || this.IsValidTitle(news.Title)) &&
-                (news.Content == null || this.IsValidContent(news.Content));
+                news.Title != null && IsValidTitle(news.Title) &&
+                news.Content != null && this.IsValidContent(news.Content);
         }
 
         public bool IsValidNewsId(string id)

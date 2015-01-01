@@ -42,12 +42,12 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news id format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidGetNews(storage, id))
+            if (!this.businessValidation.IsValidGetNews(this.storage, id))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            var news = News.FromNewsBll(await storage.GetNews(Guid.Parse(id)), Request);
+            var news = News.FromNewsBll(await this.storage.GetNews(Guid.Parse(id)), Request);
 
             var response = Request.CreateResponse(HttpStatusCode.OK, news);
 
@@ -66,7 +66,7 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidCreateNews(storage, news, nickname))
+            if (!this.businessValidation.IsValidCreateNews(this.storage, news, nickname))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news is already created");
             }
@@ -74,7 +74,7 @@ namespace GoingOn.Controllers
             Guid newsId = Guid.NewGuid();
 
             var nowTime = DateTime.UtcNow;
-            await storage.AddNews(News.ToNewsBll(news, newsId, nickname, new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, 0, 0)));
+            await this.storage.AddNews(News.ToNewsBll(news, newsId, nickname, new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, 0, 0)));
 
             var response = Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
             response.Headers.Location = new NewsLinkFactory(Request).Self(newsId.ToString()).Href;

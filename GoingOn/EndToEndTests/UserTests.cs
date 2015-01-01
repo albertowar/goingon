@@ -15,7 +15,6 @@ namespace EndToEndTests
     using System.Net.Http.Headers;
     using System.Net.Http;
     using System.Net.Http.Formatting;
-    using System.Web.Http;
 
     using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
