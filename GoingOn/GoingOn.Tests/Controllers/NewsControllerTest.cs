@@ -163,7 +163,7 @@ namespace GoingOn.Tests.Controllers
             var guid = Guid.NewGuid();
 
             inputValidation.Setup(validation => validation.IsValidNewsId(It.IsAny<string>())).Returns(true);
-            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>())).Returns(true);
+            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
@@ -180,7 +180,7 @@ namespace GoingOn.Tests.Controllers
             var guid = Guid.NewGuid();
 
             inputValidation.Setup(validation => validation.IsValidNewsId(It.IsAny<string>())).Returns(false);
-            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>())).Returns(true);
+            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
@@ -197,7 +197,7 @@ namespace GoingOn.Tests.Controllers
             var guid = Guid.NewGuid();
 
             inputValidation.Setup(validation => validation.IsValidNewsId(It.IsAny<string>())).Returns(true);
-            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>())).Returns(false);
+            businessValidation.Setup(validation => validation.IsValidDeleteNews(newsStorageMock.Object, It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));

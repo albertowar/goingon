@@ -52,6 +52,11 @@ namespace MemoryStorage
             return Task.FromResult(storage.Any(news => news.Id.Equals(id)));
         }
 
+        public Task<bool> ContainsNews(Guid id, string author)
+        {
+            return Task.FromResult(storage.Any(news => news.Id.Equals(id) && string.Equals(author, news.Author)));
+        }
+
         public Task<bool> ContainsNews(NewsBll newsBll)
         {
             return Task.FromResult(storage.Any(news => new NewsMemoryEqualityComparer().Equals(news, NewsMemory.FromNewsBll(newsBll))));

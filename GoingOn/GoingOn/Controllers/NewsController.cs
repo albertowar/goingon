@@ -82,17 +82,48 @@ namespace GoingOn.Controllers
             return response;
         }
 
+        // PATCH api/news/{guid}
         [IdentityBasicAuthentication]
         [Authorize]
-        // DELETE api/news/{guid}
-        public async Task<HttpResponseMessage> Delete(string id)
+        public async Task<HttpResponseMessage> Patch(string id, [FromBody]News news)
         {
+            var nickname = User.Identity.Name;
+
             if (!this.inputValidation.IsValidNewsId(id))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidDeleteNews(storage, id))
+            if (!this.inputValidation.IsValidNews(news))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidUpdateNews(this.storage, id, nickname))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news does not exist");
+            }
+
+            await this.storage.UpdateNews(Guid.Parse(id), News.ToNewsBll(news, nickname));
+
+            var response = Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
+
+            return response;
+        }
+
+        [IdentityBasicAuthentication]
+        [Authorize]
+        // DELETE api/news/{guid}
+        public async Task<HttpResponseMessage> Delete(string id)
+        {
+            var nickname = User.Identity.Name;
+
+            if (!this.inputValidation.IsValidNewsId(id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidDeleteNews(storage, id, nickname))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news does not exist");
             }

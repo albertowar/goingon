@@ -24,6 +24,7 @@ namespace MemoryStorage
 
             return
                 string.Equals(news1.Title, news2.Title, StringComparison.Ordinal) &&
+                string.Equals(news1.Author, news2.Author, StringComparison.Ordinal) &&
                 date1.Year.Equals(date2.Year) &&
                 date1.Month.Equals(date2.Month) &&
                 date1.Day.Equals(date2.Day) &&

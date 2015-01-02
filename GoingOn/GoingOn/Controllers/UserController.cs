@@ -87,6 +87,11 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
+            if (!this.inputValidation.IsValidUser(user))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+            }
+
             if (!this.businessValidation.IsValidUpdateUser(storage, user))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");

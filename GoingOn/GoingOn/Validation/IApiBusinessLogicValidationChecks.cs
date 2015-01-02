@@ -26,6 +26,8 @@ namespace GoingOn.Validation
 
         bool IsValidGetNews(INewsStorage storage, string id);
 
-        bool IsValidDeleteNews(INewsStorage storage, string id);
+        bool IsValidUpdateNews(INewsStorage storage, string id, string author);
+
+        bool IsValidDeleteNews(INewsStorage storage, string id, string author);
     }
 }
