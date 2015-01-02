@@ -47,6 +47,11 @@ namespace GoingOn.Validation
             return storage.ContainsNews(Guid.Parse(id)).Result;
         }
 
+        public bool IsValidDeleteNews(INewsStorage storage, string id)
+        {
+            return storage.ContainsNews(Guid.Parse(id)).Result;
+        }
+
         #region Helper methods
 
         private bool IsUserStored(IUserStorage storage,  User user)

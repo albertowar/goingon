@@ -19,10 +19,9 @@ namespace Common.Tests
     {
         public bool Equals(News news1, News news2)
         {
-            return 
+            return
                 string.Equals(news1.Title, news2.Title) &&
-                string.Equals(news1.Content, news2.Content) &&
-                string.Equals(news1.Author, news2.Author);
+                string.Equals(news1.Content, news2.Content);
         }
 
         public int GetHashCode(News obj)

@@ -99,7 +99,7 @@ namespace GoingOn.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        // PUT api/user/{id}
+        // DELETE api/user/{id}
         public async Task<HttpResponseMessage> Delete(string id)
         {
             if (!this.inputValidation.IsValidNickName(id))
@@ -114,7 +114,7 @@ namespace GoingOn.Controllers
 
             await storage.DeleteUser(FrontendEntities.User.ToUserBll(new FrontendEntities.User(id, string.Empty)));
 
-            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
+            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
         }
     }
 }

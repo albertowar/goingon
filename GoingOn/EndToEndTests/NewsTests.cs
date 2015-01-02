@@ -76,14 +76,27 @@ namespace EndToEndTests
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            var getResponse = NewsTests.GetUser(guid);
+            var getResponse = NewsTests.GetNews(guid);
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            NewsClient actualNewsClient = JsonConvert.DeserializeObject<NewsClient>(jsonContent);
+            var actualNewsClient = JsonConvert.DeserializeObject<NewsClient>(jsonContent);
 
             Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode);
             Assert.IsTrue(new NewsClientEqualityComparer().Equals(newsClient, actualNewsClient));
+        }
+
+        [TestMethod]
+        public void TestDeleteNews()
+        {
+            var createResponse = NewsTests.CreateNews(newsClient);
+
+            var newsUri = createResponse.Headers.Location;
+            var guid = newsUri.AbsolutePath.Split('/').Last();
+
+            var getResponse = NewsTests.DeleteNews(guid);
+
+            Assert.AreEqual(HttpStatusCode.NoContent, getResponse.StatusCode);
         }
 
         #region Helper methods
@@ -101,13 +114,24 @@ namespace EndToEndTests
             }
         }
 
-        private static HttpResponseMessage GetUser(string guid)
+        private static HttpResponseMessage GetNews(string guid)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:80/");
 
                 return client.GetAsync(string.Format("api/news/{0}", guid)).Result;
+            }
+        }
+
+        private static HttpResponseMessage DeleteNews(string guid)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:80/");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+
+                return client.DeleteAsync(string.Format("api/news/{0}", guid)).Result;
             }
         }
 

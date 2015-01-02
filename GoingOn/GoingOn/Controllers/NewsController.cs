@@ -34,7 +34,7 @@ namespace GoingOn.Controllers
             this.businessValidation = businessValidation;
         }
 
-        // GET api/news
+        // GET api/news/{guid}
         public async Task<HttpResponseMessage> Get(string id)
         {
             if (!this.inputValidation.IsValidNewsId(id))
@@ -80,6 +80,26 @@ namespace GoingOn.Controllers
             response.Headers.Location = new NewsLinkFactory(Request).Self(newsId.ToString()).Href;
 
             return response;
+        }
+
+        [IdentityBasicAuthentication]
+        [Authorize]
+        // DELETE api/news/{guid}
+        public async Task<HttpResponseMessage> Delete(string id)
+        {
+            if (!this.inputValidation.IsValidNewsId(id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
+            }
+
+            if (!this.businessValidation.IsValidDeleteNews(storage, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news does not exist");
+            }
+
+            await storage.DeleteNews(Guid.Parse(id));
+
+            return Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
         }
     }
 }

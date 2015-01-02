@@ -11,7 +11,6 @@
 namespace GoingOn.Validation
 {
     using GoingOn.Entities;
-    using Model.EntitiesBll;
 
     public interface IApiBusinessLogicValidationChecks
     {
@@ -26,5 +25,7 @@ namespace GoingOn.Validation
         bool IsValidCreateNews(INewsStorage storage, News news, string author);
 
         bool IsValidGetNews(INewsStorage storage, string id);
+
+        bool IsValidDeleteNews(INewsStorage storage, string id);
     }
 }
