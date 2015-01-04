@@ -1,0 +1,6 @@
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\bin\Debug\Model.dll.config
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\bin\Debug\Model.dll
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\bin\Debug\Model.pdb
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\obj\Debug\Model.csprojResolveAssemblyReference.cache
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\obj\Debug\Model.dll
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Model\obj\Debug\Model.pdb

@@ -1,0 +1,8 @@
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\bin\Debug\Storage.dll.config
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\bin\Debug\Storage.dll
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\bin\Debug\Storage.pdb
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\bin\Debug\Model.dll
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\bin\Debug\Model.pdb
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\obj\Debug\Storage.csprojResolveAssemblyReference.cache
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\obj\Debug\Storage.dll
+C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Storage\obj\Debug\Storage.pdb
