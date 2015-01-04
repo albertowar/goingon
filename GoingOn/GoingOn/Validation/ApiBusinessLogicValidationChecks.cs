@@ -8,12 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-using System;
-
 namespace GoingOn.Validation
 {
+    using System;
     using GoingOn.Entities;
-    using Model.EntitiesBll;
 
     public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
@@ -32,9 +30,15 @@ namespace GoingOn.Validation
             return this.IsUserStored(storage, user);
         }
 
+        public bool IsAuthorizedUser(string requesterNickname, string userNickname)
+        {
+            return string.Equals(requesterNickname, userNickname);
+        }
+
         public bool IsValidDeleteUser(IUserStorage storage, string nickname)
         {
-            return this.IsUserStored(storage, new User(nickname, string.Empty));
+            return
+                this.IsUserStored(storage, new User(nickname, string.Empty));
         }
 
         public bool IsValidCreateNews(INewsStorage storage, News news, string author)

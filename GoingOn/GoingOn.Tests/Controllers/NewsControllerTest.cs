@@ -158,7 +158,7 @@ namespace GoingOn.Tests.Controllers
         }
 
         [TestMethod]
-        public void TestDeleteUserReturns204NoContentWhenUpdatesUser()
+        public void TestDeleteNewsReturns204NoContentWhenUpdatesUser()
         {
             var guid = Guid.NewGuid();
 
@@ -167,6 +167,7 @@ namespace GoingOn.Tests.Controllers
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            newsController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
 
             HttpResponseMessage response = newsController.Delete(guid.ToString()).Result;
 
@@ -175,7 +176,7 @@ namespace GoingOn.Tests.Controllers
         }
 
         [TestMethod]
-        public void TestDeleteUserReturns400BadRequestWhenInputValidationFails()
+        public void TestDeleteNewsReturns400BadRequestWhenInputValidationFails()
         {
             var guid = Guid.NewGuid();
 
@@ -184,6 +185,7 @@ namespace GoingOn.Tests.Controllers
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            newsController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
 
             HttpResponseMessage response = newsController.Delete(guid.ToString()).Result;
 
@@ -192,7 +194,7 @@ namespace GoingOn.Tests.Controllers
         }
 
         [TestMethod]
-        public void TestDeleteUserReturns404NotFoundWhenBusinessValidationFails()
+        public void TestDeleteNewsReturns404NotFoundWhenBusinessValidationFails()
         {
             var guid = Guid.NewGuid();
 
@@ -201,6 +203,7 @@ namespace GoingOn.Tests.Controllers
 
             var newsController = new NewsController(newsStorageMock.Object, inputValidation.Object, businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/news/" + guid, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            newsController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
 
             HttpResponseMessage response = newsController.Delete(guid.ToString()).Result;
 

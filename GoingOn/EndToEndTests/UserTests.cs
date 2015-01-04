@@ -11,7 +11,6 @@
 namespace EndToEndTests
 {
     using System;
-    using System.Net;
     using System.Net.Http.Headers;
     using System.Net.Http;
     using System.Net.Http.Formatting;
@@ -50,9 +49,8 @@ namespace EndToEndTests
         [TestMethod]
         public void TestCreateUser()
         {
-            var response = UserTests.CreateUser(userClient);
+            UserTests.CreateUser(userClient);
 
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.IsTrue(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
         }
 
@@ -67,15 +65,12 @@ namespace EndToEndTests
             var jsonContent = content.ReadAsStringAsync().Result;
             UserClient actualUserClient = JsonConvert.DeserializeObject<UserClient>(jsonContent);
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.IsTrue(new UserClientEqualityComparer().Equals(userClient, actualUserClient));
         }
 
         [TestMethod]
         public void TestUpdateUser()
         {
-            HttpResponseMessage updateResponse, getResponse;
-
             UserTests.CreateUser(userClient);
 
             UserClient updatedUser = new UserClient { Nickname = "Alberto", Password = "4567" };
@@ -86,18 +81,37 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
                 
-                updateResponse = client.PutAsync("api/user/Alberto", updatedUser, new JsonMediaTypeFormatter()).Result;
+                client.PatchAsync("api/user/Alberto", updatedUser, new JsonMediaTypeFormatter()).Wait();
             }
 
-            getResponse = UserTests.GetUser("Alberto");
+            var getResponse = UserTests.GetUser("Alberto");
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
             UserClient actualUserClient = JsonConvert.DeserializeObject<UserClient>(jsonContent);
 
-            Assert.AreEqual(HttpStatusCode.NoContent, updateResponse.StatusCode);
-            Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode);
             Assert.IsTrue(new UserClientEqualityComparer().Equals(updatedUser, actualUserClient));
+        }
+
+        [TestMethod]
+        public void TestUpdateUnauthorizedUser()
+        {
+            var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
+            UserClient updatedUser = new UserClient { Nickname = "NotAlberto", Password = "4567" };
+
+            UserTests.CreateUser(userClient);
+            UserTests.CreateUser(otherUser);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:80/");
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+
+                client.PatchAsync("api/user/" + otherUser.Nickname, updatedUser, new JsonMediaTypeFormatter()).Wait();
+            }
+
+            Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "NotAlberto", Password = "1234" }).Result);
         }
 
         [TestMethod]
@@ -110,10 +124,28 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                var response = client.DeleteAsync("api/user/Alberto").Result;
+                client.DeleteAsync("api/user/Alberto").Wait();
 
-                Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
                 Assert.IsFalse(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
+            }
+        }
+
+        [TestMethod]
+        public void TestDeleteUnauthorizedUser()
+        {
+            var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
+
+            UserTests.CreateUser(userClient);
+            UserTests.CreateUser(otherUser);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:80/");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+
+                client.DeleteAsync("api/user/" + otherUser.Nickname).Wait();
+
+                Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234" }).Result);
             }
         }
 

@@ -84,12 +84,16 @@
       <Project>{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}</Project>
       <Name>Common.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9fa45d25-4549-4de4-9827-0b218ebab7ce}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoingOn\Frontend.csproj">
       <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>
       <Name>Frontend</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{73D68FF8-7F66-426F-8320-89BC224D3B09}</Project>
+      <Project>{73d68ff8-7f66-426f-8320-89bc224d3b09}</Project>
       <Name>Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\Storage\Storage.csproj">

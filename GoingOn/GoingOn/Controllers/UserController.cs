@@ -79,8 +79,8 @@ namespace GoingOn.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        // PUT api/user/{id}
-        public async Task<HttpResponseMessage> Put(string id, [FromBody]FrontendEntities.User user)
+        // PATCH api/user/{id}
+        public async Task<HttpResponseMessage> Patch(string id, [FromBody]FrontendEntities.User user)
         {
             if (!this.inputValidation.IsValidNickName(id))
             {
@@ -90,6 +90,11 @@ namespace GoingOn.Controllers
             if (!this.inputValidation.IsValidUser(user))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+            }
+
+            if (!this.businessValidation.IsAuthorizedUser(User.Identity.Name, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
             if (!this.businessValidation.IsValidUpdateUser(storage, user))
@@ -110,6 +115,11 @@ namespace GoingOn.Controllers
             if (!this.inputValidation.IsValidNickName(id))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+            }
+
+            if (!this.businessValidation.IsAuthorizedUser(User.Identity.Name, id))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
             if (!this.businessValidation.IsValidDeleteUser(storage, id))

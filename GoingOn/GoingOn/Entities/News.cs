@@ -59,6 +59,19 @@ namespace GoingOn.Entities
             };;
         }
 
+        public static NewsBll ToNewsBll(Guid id, News news, string author)
+        {
+            return new NewsBll
+            {
+                Id = id,
+                Title = news.Title,
+                Content = news.Content,
+                Author = author,
+                Date = DateTime.UtcNow,
+                Rating = 0
+            };;
+        }
+
         public static NewsBll ToNewsBll(News news, string author)
         {
             return new NewsBll

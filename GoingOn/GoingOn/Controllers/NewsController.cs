@@ -87,8 +87,6 @@ namespace GoingOn.Controllers
         [Authorize]
         public async Task<HttpResponseMessage> Patch(string id, [FromBody]News news)
         {
-            var nickname = User.Identity.Name;
-
             if (!this.inputValidation.IsValidNewsId(id))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
@@ -99,12 +97,12 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidUpdateNews(this.storage, id, nickname))
+            if (!this.businessValidation.IsValidUpdateNews(this.storage, id, User.Identity.Name))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news does not exist");
             }
 
-            await this.storage.UpdateNews(Guid.Parse(id), News.ToNewsBll(news, nickname));
+            await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(id), news, User.Identity.Name));
 
             var response = Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
 
@@ -116,14 +114,12 @@ namespace GoingOn.Controllers
         // DELETE api/news/{guid}
         public async Task<HttpResponseMessage> Delete(string id)
         {
-            var nickname = User.Identity.Name;
-
             if (!this.inputValidation.IsValidNewsId(id))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidDeleteNews(storage, id, nickname))
+            if (!this.businessValidation.IsValidDeleteNews(storage, id, User.Identity.Name))
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news does not exist");
             }

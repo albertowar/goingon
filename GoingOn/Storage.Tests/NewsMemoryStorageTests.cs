@@ -145,9 +145,9 @@ namespace Storage.Tests
                 Rating = 1
             }; ;
 
-            storage.UpdateNews(guid1, updatedTitleNews);
-            storage.UpdateNews(guid1, updatedContentNews);
-            storage.UpdateNews(guid1, updatedDateNews);
+            storage.UpdateNews(updatedTitleNews);
+            storage.UpdateNews(updatedContentNews);
+            storage.UpdateNews(updatedDateNews);
 
             Assert.IsTrue(storage.ContainsNews(updatedTitleNews).Result);
             Assert.IsTrue(storage.ContainsNews(updatedContentNews).Result);

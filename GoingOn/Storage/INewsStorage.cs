@@ -20,7 +20,7 @@ public interface INewsStorage
     Task<bool> ContainsNews(Guid id);
     Task<bool> ContainsNews(Guid id, string author);
     Task<bool> ContainsNews(NewsBll newsBll);
-    Task UpdateNews(Guid id, NewsBll newsBll);
+    Task UpdateNews(NewsBll newsBll);
     Task DeleteNews(Guid id);
     Task DeleteAllNews();
 }

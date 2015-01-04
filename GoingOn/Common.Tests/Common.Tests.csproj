@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertExtensions.cs" />
+    <Compile Include="AuthorizationHelper.cs" />
     <Compile Include="NewsBllEqualityComparer.cs" />
     <Compile Include="NewsCompleteEqualityComparer.cs" />
     <Compile Include="UserBllEqualityComparer.cs" />
@@ -55,6 +56,9 @@
       <Project>{73D68FF8-7F66-426F-8320-89BC224D3B09}</Project>
       <Name>Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

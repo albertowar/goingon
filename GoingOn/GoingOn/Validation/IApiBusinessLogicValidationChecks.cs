@@ -20,6 +20,8 @@ namespace GoingOn.Validation
 
         bool IsValidUpdateUser(IUserStorage storage, User user);
 
+        bool IsAuthorizedUser(string requesterNickname, string userNickname);
+
         bool IsValidDeleteUser(IUserStorage storage, string nickname);
 
         bool IsValidCreateNews(INewsStorage storage, News news, string author);
