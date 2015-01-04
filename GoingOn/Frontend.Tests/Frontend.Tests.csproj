@@ -150,7 +150,7 @@
       <Project>{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}</Project>
       <Name>Common.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GoingOn\Frontend.csproj">
+    <ProjectReference Include="..\Frontend\Frontend.csproj">
       <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>
       <Name>Frontend</Name>
     </ProjectReference>

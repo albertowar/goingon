@@ -39,7 +39,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GoingOn\Frontend.csproj">
+    <ProjectReference Include="..\Frontend\Frontend.csproj">
       <Project>{4e84c04b-d78d-433d-97ea-cb52b72c04c6}</Project>
       <Name>Frontend</Name>
     </ProjectReference>

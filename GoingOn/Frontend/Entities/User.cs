@@ -1,14 +1,21 @@
-﻿namespace Frontend.Entities
-{
-    using Frontend.Entities;
-    using GoingOn.Links;
-    using Model.EntitiesBll;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Web;
+﻿// ****************************************************************************
+// <copyright file="User.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// TODO: write a summary
+// </summary>
+// ****************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using GoingOn.Links;
+using Model.EntitiesBll;
+
+namespace Frontend.Entities
+{
     public class User
     {
         public string Nickname { get; private set; }
@@ -42,7 +49,11 @@
 
         public static UserBll ToUserBll(User user)
         {
-            return new UserBll(user.Nickname, user.Password);
+            return new UserBll 
+            {
+                Nickname = user.Nickname,
+                Password = user.Password
+            };
         }
 
         public static User FromUserBll(UserBll user)

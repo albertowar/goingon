@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "GoingOn\Frontend.csproj", "{4E84C04B-D78D-433D-97EA-CB52B72C04C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "Frontend\Frontend.csproj", "{4E84C04B-D78D-433D-97EA-CB52B72C04C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend.Tests", "GoingOn.Tests\Frontend.Tests.csproj", "{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend.Tests", "Frontend.Tests\Frontend.Tests.csproj", "{ABBF45B1-F1A9-49F8-A5A6-56EAB7421E5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{BF52FA53-5870-4F87-9C8C-12A5A128AFC1}"
 	ProjectSection(SolutionItems) = preProject
