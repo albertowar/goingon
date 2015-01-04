@@ -1,7 +1,0 @@
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\bin\Debug\Common.dll
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\bin\Debug\Common.pdb
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\obj\Debug\Common.dll
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\obj\Debug\Common.pdb
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\bin\Debug\System.Net.Http.Formatting.dll
-C:\Users\Alb_Erc\Source\Repos\goingon\GoingOn\Common\bin\Debug\System.Net.Http.Formatting.xml
