@@ -8,10 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Validation
-{
-    using GoingOn.Entities;
+using Frontend.Entities;
 
+namespace Frontend.Validation
+{
     public interface IApiInputValidationChecks
     {
         bool IsValidUser(User user);

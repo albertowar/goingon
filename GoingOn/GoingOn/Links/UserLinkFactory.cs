@@ -8,9 +8,10 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Controllers;
+
 namespace GoingOn.Links
 {
-    using GoingOn.Controllers;
     using System.Net.Http;
 
     public class UserLinkFactory : LinkFactory<UserController>

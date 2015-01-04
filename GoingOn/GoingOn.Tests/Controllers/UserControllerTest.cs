@@ -8,6 +8,10 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Controllers;
+using Frontend.Entities;
+using Frontend.Validation;
+
 namespace GoingOn.Tests.Controllers
 {
     using System;
@@ -24,11 +28,8 @@ namespace GoingOn.Tests.Controllers
     using WebApiContrib.Testing;
 
     using Common.Tests;
-    using GoingOn.Entities;
-    using GoingOn.Validation;
     using Model.EntitiesBll;
-    using GoingOn.Controllers;
-  
+
     [TestClass]
     public class UserControllerTest
     {

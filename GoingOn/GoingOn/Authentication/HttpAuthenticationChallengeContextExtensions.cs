@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Authentication;
+
 namespace GoingOn.Authentication
 {
     using System;

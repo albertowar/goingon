@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend;
+
 namespace EndToEndTests
 {
     using System;

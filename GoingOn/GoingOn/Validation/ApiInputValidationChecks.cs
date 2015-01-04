@@ -9,11 +9,10 @@
 // ****************************************************************************
 
 using System;
+using Frontend.Entities;
 
-namespace GoingOn.Validation
+namespace Frontend.Validation
 {
-    using GoingOn.Entities;
-
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
         public bool IsValidUser(User user)

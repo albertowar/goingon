@@ -9,12 +9,11 @@
 // ****************************************************************************
 
 using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
+using System.Web.Optimization;
 
-namespace GoingOn
+namespace Frontend
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Optimization;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class BundleConfig

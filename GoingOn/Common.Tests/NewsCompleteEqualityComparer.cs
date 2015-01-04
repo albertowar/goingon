@@ -10,7 +10,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using GoingOn.Entities;
+using Frontend.Entities;
 
 namespace Common.Tests
 {

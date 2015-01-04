@@ -8,19 +8,18 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Frontend.Authentication;
+using Frontend.Entities;
+using Frontend.Validation;
+using GoingOn.Authentication;
+using GoingOn.Links;
+
+namespace Frontend.Controllers
 {
-    using System.Net;
-    using System.Net.Http;
-    using System.Web.Http;
-    using System.Threading.Tasks;
-
-    using GoingOn.Authentication;
-    using GoingOn.Links;
-    using GoingOn.Validation;
-
-    using FrontendEntities = GoingOn.Entities;
-
     public class UserController : ApiController
     {
         private readonly IUserStorage storage;
@@ -49,7 +48,7 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
             }
                 
-            var user = FrontendEntities.User.FromUserBll(await storage.GetUser(id), Request);
+            var user = Entities.User.FromUserBll(await storage.GetUser(id), Request);
 
             var response = Request.CreateResponse(HttpStatusCode.OK, user);
 
@@ -57,7 +56,7 @@ namespace GoingOn.Controllers
         }
 
         // POST api/user
-        public async Task<HttpResponseMessage> Post([FromBody]FrontendEntities.User user)
+        public async Task<HttpResponseMessage> Post([FromBody]User user)
         {
             if (!this.inputValidation.IsValidUser(user))
             {
@@ -69,7 +68,7 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
 
-            await storage.AddUser(FrontendEntities.User.ToUserBll(user));
+            await storage.AddUser(Entities.User.ToUserBll(user));
 
             var response = Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
             response.Headers.Location = new UserLinkFactory(Request).Self(user.Nickname).Href;
@@ -80,7 +79,7 @@ namespace GoingOn.Controllers
         [IdentityBasicAuthentication]
         [Authorize]
         // PATCH api/user/{id}
-        public async Task<HttpResponseMessage> Patch(string id, [FromBody]FrontendEntities.User user)
+        public async Task<HttpResponseMessage> Patch(string id, [FromBody]User user)
         {
             if (!this.inputValidation.IsValidNickName(id))
             {
@@ -102,7 +101,7 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
-            await storage.UpdateUser(FrontendEntities.User.ToUserBll(user));
+            await storage.UpdateUser(Entities.User.ToUserBll(user));
 
             return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
         }
@@ -127,7 +126,7 @@ namespace GoingOn.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
-            await storage.DeleteUser(FrontendEntities.User.ToUserBll(new FrontendEntities.User(id, string.Empty)));
+            await storage.DeleteUser(Entities.User.ToUserBll(new User(id, string.Empty)));
 
             return Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
         }

@@ -8,13 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn
-{
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Http;
-    using System.Web.Mvc;
-    using System.Web.Routing;
+using System.Diagnostics.CodeAnalysis;
+using System.Web.Http;
+using System.Web.Mvc;
+using System.Web.Routing;
 
+namespace Frontend
+{
     [ExcludeFromCodeCoverage]
     public class RouteConfig
     {

@@ -8,24 +8,24 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Entities;
+
 namespace Client.Entities
 {
-    using FrontendEntities = GoingOn.Entities;
-
     public class UserClient
     {
         public string Nickname { get; set; }
 
         public string Password { get; set; }
 
-        public static UserClient FromFrontendUser(FrontendEntities.User user)
+        public static UserClient FromFrontendUser(User user)
         {
             return new UserClient { Nickname = user.Nickname, Password = user.Password };
         }
 
-        public static FrontendEntities.User ToFrontendUser(UserClient userClient)
+        public static User ToFrontendUser(UserClient userClient)
         {
-            return new FrontendEntities.User(userClient.Nickname, userClient.Password);
+            return new User(userClient.Nickname, userClient.Password);
         }
     }
 }

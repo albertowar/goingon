@@ -8,10 +8,10 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Entities;
+
 namespace Client.Entities
 {
-    using GoingOn.Entities;
-
     public class NewsClient
     {
         public string Title { get; set; }

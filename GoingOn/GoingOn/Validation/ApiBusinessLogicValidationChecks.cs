@@ -8,11 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Validation
-{
-    using System;
-    using GoingOn.Entities;
+using System;
+using Frontend.Entities;
 
+namespace Frontend.Validation
+{
     public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
         public bool IsValidCreateUser(IUserStorage storage, User user)

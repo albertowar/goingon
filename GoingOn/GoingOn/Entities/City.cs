@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Entities
+namespace Frontend.Entities
 {
     public class City
     {

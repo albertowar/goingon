@@ -8,16 +8,16 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Authentication
-{
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web.Http;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Http;
 
+namespace Frontend.Authentication
+{
     public class AddChallengeOnUnauthorizedResult : IHttpActionResult
     {
         public AddChallengeOnUnauthorizedResult(AuthenticationHeaderValue challenge, IHttpActionResult innerResult)

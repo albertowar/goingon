@@ -8,19 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Frontend.Authentication;
+using Frontend.Entities;
+using Frontend.Validation;
+using GoingOn.Authentication;
+using GoingOn.Links;
+
+namespace Frontend.Controllers
 {
-    using System;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using System.Web.Http;
-
-    using GoingOn.Authentication;
-    using GoingOn.Entities;
-    using GoingOn.Links;
-    using GoingOn.Validation;
-
     public class NewsController : ApiController
     {
         private readonly INewsStorage storage;

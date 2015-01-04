@@ -9,15 +9,14 @@
 // ****************************************************************************
 
 using System;
+using Frontend.Entities;
+using Frontend.Validation;
 using Model.EntitiesBll;
 using Moq;
 
 namespace GoingOn.Tests.Validation
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using GoingOn.Entities;
-    using GoingOn.Validation;
 
     [TestClass]
     public class ApiInputValidationChecksTests

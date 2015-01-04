@@ -8,6 +8,10 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Controllers;
+using Frontend.Entities;
+using Frontend.Validation;
+
 namespace GoingOn.Tests.Controllers
 {
     using System;
@@ -21,9 +25,6 @@ namespace GoingOn.Tests.Controllers
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Common.Tests;
-    using GoingOn.Controllers;
-    using GoingOn.Entities;
-    using GoingOn.Validation;
     using Model.EntitiesBll;
 
     using Moq;

@@ -8,12 +8,13 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Entities;
+
 namespace Common.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using GoingOn.Entities;
 
     [ExcludeFromCodeCoverage]
     public class UserCompleteEqualityComparer : IEqualityComparer<User>

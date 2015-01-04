@@ -8,10 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Controllers
-{
-    using System.Web.Mvc;
+using System.Web.Mvc;
 
+namespace Frontend.Controllers
+{
     public class HomeController : Controller
     {
         public ActionResult Index()

@@ -8,14 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Entities
-{
-    using GoingOn.Links;
-    using Model.EntitiesBll;
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using GoingOn.Links;
+using Model.EntitiesBll;
 
+namespace Frontend.Entities
+{
     public class User
     {
         public string Nickname { get; private set; }

@@ -8,30 +8,35 @@
 // </summary>
 // ****************************************************************************
 
+using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
+using System.Web.Http;
+using System.Web.Mvc;
+using System.Web.Optimization;
+using System.Web.Routing;
+using Frontend;
+using Frontend.Validation;
+using GoingOn;
+using MemoryStorage;
 using Microsoft.Owin;
+using Microsoft.Practices.Unity;
+using Owin;
 
-[assembly: OwinStartup(typeof(GoingOn.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
-namespace GoingOn
+namespace Frontend
 {
-    using System.CodeDom.Compiler;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Http;
-    using System.Web.Mvc;
-
-    using Microsoft.Practices.Unity;
-
-    using GoingOn.Validation;
-    using MemoryStorage;
-    
-    using Owin;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class Startup
     {
         public void Configuration(IAppBuilder app)
         {
+            AreaRegistration.RegisterAllAreas();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             var configuration = new HttpConfiguration();
             WebApiConfig.Register(configuration);
