@@ -22,7 +22,6 @@ namespace EndToEndTests
     using Newtonsoft.Json;
 
     using Client.Entities;
-    using GoingOn;
     using MemoryStorage;
     using Model.EntitiesBll;
 

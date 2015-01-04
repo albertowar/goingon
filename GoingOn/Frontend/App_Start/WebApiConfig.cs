@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
+using Frontend.Validation;
+using MemoryStorage;
 using Microsoft.Practices.Unity;
 
 namespace Frontend
@@ -24,6 +26,14 @@ namespace Frontend
     {
         public static void Register(HttpConfiguration configuration)
         {
+            // Dependy injection configuration
+            var container = new UnityContainer();
+            container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
+            container.RegisterInstance<INewsStorage>(NewsMemoryStorage.GetInstance());
+            container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
+            container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
+            configuration.DependencyResolver = new UnityResolver(container);
+
             // Web API routes
             configuration.MapHttpAttributeRoutes();
 

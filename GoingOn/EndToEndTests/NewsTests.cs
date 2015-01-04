@@ -26,7 +26,6 @@ namespace EndToEndTests
 
     using Common.Tests;
     using Client.Entities;
-    using GoingOn;
     using MemoryStorage;
 
     [TestClass]

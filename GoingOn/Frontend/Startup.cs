@@ -32,23 +32,18 @@ namespace Frontend
     {
         public void Configuration(IAppBuilder app)
         {
-            AreaRegistration.RegisterAllAreas();
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             var configuration = new HttpConfiguration();
             WebApiConfig.Register(configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
             // Dependy injection configuration
-            var container = new UnityContainer();
+            /*var container = new UnityContainer();
             container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
             container.RegisterInstance<INewsStorage>(NewsMemoryStorage.GetInstance());
             container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
-            configuration.DependencyResolver = new UnityResolver(container);
+            configuration.DependencyResolver = new UnityResolver(container);*/
 
             app.UseWebApi(configuration);
         }
