@@ -8,18 +8,17 @@
 // </summary>
 // ****************************************************************************
 
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Frontend.Authentication;
-using Frontend.Entities;
-using Frontend.Validation;
-using GoingOn.Authentication;
-using GoingOn.Links;
-
 namespace Frontend.Controllers
 {
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using System.Web.Http;
+    using Frontend.Authentication;
+    using Frontend.Entities;
+    using Frontend.Links;
+    using Frontend.Validation;
+
     public class UserController : ApiController
     {
         private readonly IUserStorage storage;

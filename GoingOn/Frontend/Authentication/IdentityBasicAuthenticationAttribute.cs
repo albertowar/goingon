@@ -8,15 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-using System.Security.Principal;
-using System.Threading;
-using System.Threading.Tasks;
-using Frontend.Entities;
-using GoingOn.Authentication;
-using MemoryStorage;
-
 namespace Frontend.Authentication
 {
+    using System.Security.Principal;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Frontend.Entities;
+    using MemoryStorage;
+
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)

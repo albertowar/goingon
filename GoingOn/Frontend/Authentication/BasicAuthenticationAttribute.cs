@@ -8,18 +8,17 @@
 // </summary>
 // ****************************************************************************
 
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Http.Filters;
-using GoingOn.Authentication;
-
 namespace Frontend.Authentication
 {
+    using System;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Security.Principal;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Http.Filters;
+
     public abstract class BasicAuthenticationAttribute : Attribute, IAuthenticationFilter
     {
         public string Realm { get; set; }

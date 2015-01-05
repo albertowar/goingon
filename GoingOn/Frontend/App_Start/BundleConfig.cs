@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-using System.Web.Optimization;
-
 namespace Frontend
 {
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Web.Optimization;
+
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class BundleConfig
