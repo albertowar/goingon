@@ -8,11 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-using System;
-using Frontend.Entities;
-
 namespace Frontend.Validation
 {
+    using System;
+    using Frontend.Entities;
+
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
         public bool IsValidUser(User user)

@@ -8,9 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Authentication;
-
-namespace GoingOn.Authentication
+namespace Frontend.Authentication
 {
     using System;
     using System.Net.Http.Headers;
