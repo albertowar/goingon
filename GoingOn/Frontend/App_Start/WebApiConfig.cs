@@ -8,20 +8,18 @@
 // </summary>
 // ****************************************************************************
 
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Web.Http;
+using System.Web.Http.Dependencies;
+using Frontend.Validation;
+using MemoryStorage;
+using Microsoft.Practices.Unity;
+
 namespace Frontend
 {
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Http;
-    using System.Web.Http.Dependencies;
-
-    using Microsoft.Practices.Unity;
-    
-    using Frontend.Validation;
-    using MemoryStorage;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public static class WebApiConfig

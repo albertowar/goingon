@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Links
+namespace GoingOn.Links
 {
     using System;
 

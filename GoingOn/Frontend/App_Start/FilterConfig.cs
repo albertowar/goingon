@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
+using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
+using System.Web.Mvc;
+
 namespace Frontend
 {
-    using System.CodeDom.Compiler;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Mvc;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class FilterConfig
