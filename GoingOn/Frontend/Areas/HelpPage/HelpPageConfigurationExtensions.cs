@@ -1,23 +1,22 @@
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Web.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.Description;
+using GoingOn.Areas.HelpPage.ModelDescriptions;
+using GoingOn.Areas.HelpPage.Models;
+
 namespace GoingOn.Areas.HelpPage
 {
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Web.Http;
-    using System.Web.Http.Controllers;
-    using System.Web.Http.Description;
-    using Frontend.Areas.HelpPage;
-    using GoingOn.Areas.HelpPage.ModelDescriptions;
-    using GoingOn.Areas.HelpPage.Models;
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public static class HelpPageConfigurationExtensions

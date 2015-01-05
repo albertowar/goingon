@@ -8,15 +8,15 @@
 // </summary>
 // ****************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using GoingOn.Links;
+using Model.EntitiesBll;
+using Newtonsoft.Json;
+
 namespace Frontend.Entities
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using Frontend.Links;
-    using Model.EntitiesBll;
-    using Newtonsoft.Json;
-
     public class News
     {
         public string Title { get; set; }
