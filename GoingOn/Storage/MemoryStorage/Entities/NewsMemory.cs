@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace MemoryStorage.Entities
+namespace Storage.MemoryStorage.Entities
 {
     using System;
     using Model.EntitiesBll;

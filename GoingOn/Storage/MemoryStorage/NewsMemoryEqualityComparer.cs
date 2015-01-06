@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace MemoryStorage
+namespace Storage.MemoryStorage
 {
     using System;
     using System.Collections.Generic;
 
-    using MemoryStorage.Entities;
+    using Storage.MemoryStorage.Entities;
 
     public class NewsMemoryEqualityComparer : IEqualityComparer<NewsMemory>
     {

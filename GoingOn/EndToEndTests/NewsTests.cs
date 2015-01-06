@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend;
-
 namespace EndToEndTests
 {
     using System;
@@ -26,7 +24,8 @@ namespace EndToEndTests
 
     using Common.Tests;
     using Client.Entities;
-    using MemoryStorage;
+    using Frontend;
+    using Storage.MemoryStorage;
 
     [TestClass]
     public class NewsTests

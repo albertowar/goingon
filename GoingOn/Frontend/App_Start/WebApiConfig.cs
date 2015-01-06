@@ -10,6 +10,7 @@
 
 namespace Frontend
 {
+
     using System;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Frontend
     using Microsoft.Practices.Unity;
     
     using Frontend.Validation;
-    using MemoryStorage;
+    using Storage.MemoryStorage;
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]

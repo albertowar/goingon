@@ -8,24 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
 using Frontend;
-using Frontend.Validation;
-using GoingOn;
-using MemoryStorage;
 using Microsoft.Owin;
-using Microsoft.Practices.Unity;
-using Owin;
 
 [assembly: OwinStartup(typeof(Startup))]
 
 namespace Frontend
 {
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Web.Http;
+    using System.Web.Mvc;
+    using Owin;
+
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class Startup

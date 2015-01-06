@@ -8,14 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace MemoryStorage
+namespace Storage.MemoryStorage
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
-    using MemoryStorage.Entities;
     using Model.EntitiesBll;
+    using Storage.MemoryStorage.Entities;
 
     public class UserMemoryStorage : IUserStorage
     {

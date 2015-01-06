@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="UserMemory.cs" company="Universidad de Malaga">
+// <copyright file="UserDocumentDB.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,33 +8,37 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.MemoryStorage.Entities
+namespace Storage.DocumentDBRepository.Entities
 {
     using Model.EntitiesBll;
+    using Newtonsoft.Json;
 
-    public class UserMemory
+    public class UserDocumentDB
     {
+        [JsonProperty(PropertyName="nickname")]
         public string Nickname { get; private set; }
+
+        [JsonProperty(PropertyName = "password")]
         public string Password { get; private set; }
 
-        public UserMemory(string nickname)
+        public UserDocumentDB(string nickname)
         {
             this.Nickname = nickname;
             this.Password = string.Empty;
         }
 
-        public UserMemory(string nickname, string password)
+        public UserDocumentDB(string nickname, string password)
         {
             this.Nickname = nickname;
             this.Password = password;
         }
 
-        public static UserMemory FromUserBll(UserBll userBll)
+        public static UserDocumentDB FromUserBll(UserBll userBll)
         {
-            return new UserMemory(userBll.Nickname, userBll.Password);
+            return new UserDocumentDB(userBll.Nickname, userBll.Password);
         }
 
-        public static UserBll ToUserBll(UserMemory userMemory)
+        public static UserBll ToUserBll(UserDocumentDB userMemory)
         {
             return new UserBll
             {
@@ -45,7 +49,7 @@ namespace Storage.MemoryStorage.Entities
 
         public override bool Equals(object anotherUserObject)
         {
-            UserMemory anotherUser = anotherUserObject as UserMemory;
+            UserDocumentDB anotherUser = anotherUserObject as UserDocumentDB;
 
             return
                 anotherUser != null &&
@@ -54,12 +58,12 @@ namespace Storage.MemoryStorage.Entities
 
         public override int GetHashCode()
         {
-            return 
-                Nickname.GetHashCode() ^ 
+            return
+                Nickname.GetHashCode() ^
                 Password.GetHashCode();
         }
 
-        public void Merge(UserMemory userMemory)
+        public void Merge(UserDocumentDB userMemory)
         {
             if (this.Equals(userMemory))
             {

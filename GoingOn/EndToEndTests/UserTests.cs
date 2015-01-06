@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend;
-
 namespace EndToEndTests
 {
     using System;
@@ -22,8 +20,9 @@ namespace EndToEndTests
     using Newtonsoft.Json;
 
     using Client.Entities;
-    using MemoryStorage;
+    using Frontend;
     using Model.EntitiesBll;
+    using Storage.MemoryStorage;
 
     [TestClass]
     public class UserTests

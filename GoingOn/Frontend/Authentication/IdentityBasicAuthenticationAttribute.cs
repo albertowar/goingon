@@ -15,7 +15,7 @@ namespace Frontend.Authentication
     using System.Threading.Tasks;
 
     using Frontend.Entities;
-    using MemoryStorage;
+    using Storage.MemoryStorage;
 
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
