@@ -43,7 +43,7 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            storage.DeleteAllUser();
+            storage.DeleteStorage();
         }
 
         [TestMethod]

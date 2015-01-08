@@ -8,17 +8,17 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.Tests
+namespace Storage.Tests.MemoryStorageTests
 {
     using System;
-    
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
 
     using Common.Tests;
-    using MemoryStorage.Entities;
     using Model.EntitiesBll;
+    using Storage.MemoryStorage.Entities;
 
     [TestClass]
     public class NewsMemoryTests

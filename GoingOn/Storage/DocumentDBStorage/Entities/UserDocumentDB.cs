@@ -15,21 +15,23 @@ namespace Storage.DocumentDBRepository.Entities
 
     public class UserDocumentDB
     {
-        [JsonProperty(PropertyName="nickname")]
-        public string Nickname { get; private set; }
+        [JsonProperty(PropertyName="id")]
+        public string ID { get; private set; }
 
         [JsonProperty(PropertyName = "password")]
         public string Password { get; private set; }
 
-        public UserDocumentDB(string nickname)
+        [JsonConstructor]
+        public UserDocumentDB(string id)
         {
-            this.Nickname = nickname;
+            this.ID = id;
             this.Password = string.Empty;
         }
 
-        public UserDocumentDB(string nickname, string password)
+        [JsonConstructor]
+        public UserDocumentDB(string id, string password)
         {
-            this.Nickname = nickname;
+            this.ID = id;
             this.Password = password;
         }
 
@@ -42,7 +44,7 @@ namespace Storage.DocumentDBRepository.Entities
         {
             return new UserBll
             {
-                Nickname = userMemory.Nickname,
+                Nickname = userMemory.ID,
                 Password = userMemory.Password
             };
         }
@@ -53,13 +55,13 @@ namespace Storage.DocumentDBRepository.Entities
 
             return
                 anotherUser != null &&
-                string.Equals(this.Nickname, anotherUser.Nickname);
+                string.Equals(this.ID, anotherUser.ID);
         }
 
         public override int GetHashCode()
         {
             return
-                Nickname.GetHashCode() ^
+                ID.GetHashCode() ^
                 Password.GetHashCode();
         }
 

@@ -72,7 +72,7 @@ namespace Storage.MemoryStorage
             return Task.FromResult(0);
         }
 
-        public Task DeleteAllUser()
+        public Task DeleteStorage()
         {
             storage.Clear();
 

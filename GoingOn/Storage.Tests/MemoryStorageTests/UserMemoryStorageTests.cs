@@ -8,13 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.Tests
+namespace Storage.Tests.MemoryStorageTests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Common.Tests;
-    using MemoryStorage;
     using Model.EntitiesBll;
+    using Storage.MemoryStorage;
 
     [TestClass]
     public class UserMemoryStorageTests
@@ -32,7 +32,7 @@ namespace Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            storage.DeleteAllUser();
+            storage.DeleteStorage();
         }
 
         [TestMethod]
@@ -165,7 +165,7 @@ namespace Storage.Tests
         {
             this.AddUsers();
 
-            storage.DeleteAllUser();
+            storage.DeleteStorage();
 
             for (int i = 0; i < 10; ++i)
             {

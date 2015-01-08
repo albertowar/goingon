@@ -19,5 +19,5 @@ public interface IUserStorage
     Task<bool> ContainsUser(UserBll userBll);
     Task UpdateUser(UserBll userBll);
     Task DeleteUser(UserBll userBll);
-    Task DeleteAllUser();
+    Task DeleteStorage();
 }

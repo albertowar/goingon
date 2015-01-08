@@ -42,9 +42,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocumentDBRepository\Entities\NewsDocumentDB.cs" />
-    <Compile Include="DocumentDBRepository\Entities\UserDocumentDB.cs" />
-    <Compile Include="DocumentDBRepository\UserDocumentDBStorage.cs" />
+    <Compile Include="DocumentDBStorage\Entities\NewsDocumentDB.cs" />
+    <Compile Include="DocumentDBStorage\Entities\UserDocumentDB.cs" />
+    <Compile Include="DocumentDBStorage\UserDocumentDBStorage.cs" />
     <Compile Include="INewsStorage.cs" />
     <Compile Include="IUserStorage.cs" />
     <Compile Include="MemoryStorage\Entities\NewsMemory.cs" />

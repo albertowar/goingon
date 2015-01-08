@@ -54,7 +54,7 @@ namespace EndToEndTests
         {
             webService.Dispose();
             newsStorage.DeleteAllNews();
-            userStorage.DeleteAllUser();
+            userStorage.DeleteStorage();
         }
 
         [TestMethod]
