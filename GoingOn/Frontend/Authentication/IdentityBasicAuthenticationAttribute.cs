@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Storage;
+
 namespace Frontend.Authentication
 {
     using System.Security.Principal;

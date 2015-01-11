@@ -8,16 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-using System.Threading.Tasks;
-
-using Model.EntitiesBll;
-
-public interface IUserStorage
+namespace Storage
 {
-    Task AddUser(UserBll userBll);
-    Task<UserBll> GetUser(string nickname);
-    Task<bool> ContainsUser(UserBll userBll);
-    Task UpdateUser(UserBll userBll);
-    Task DeleteUser(UserBll userBll);
-    Task DeleteStorage();
+    using System.Threading.Tasks;
+
+    using Model.EntitiesBll;
+
+    public interface IUserStorage
+    {
+        Task AddUser(UserBll userBll);
+        Task<UserBll> GetUser(string nickname);
+        Task<bool> ContainsUser(UserBll userBll);
+        Task UpdateUser(UserBll userBll);
+        Task DeleteUser(UserBll userBll);
+        Task DeleteAllUsers();
+    }
 }

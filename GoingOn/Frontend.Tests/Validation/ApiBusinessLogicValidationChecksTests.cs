@@ -10,6 +10,7 @@
 
 using Frontend.Entities;
 using Frontend.Validation;
+using Storage;
 
 namespace GoingOn.Tests.Validation
 {

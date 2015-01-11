@@ -10,11 +10,14 @@
 
 using System;
 
-[Serializable]
-public class StorageException : Exception
+namespace Storage
 {
-    public StorageException(string message)
-        : base(message)
+    [Serializable]
+    public class StorageException : Exception
     {
+        public StorageException(string message)
+            : base(message)
+        {
+        }
     }
 }

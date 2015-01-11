@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Storage;
+
 namespace Frontend.Controllers
 {
     using System.Net;

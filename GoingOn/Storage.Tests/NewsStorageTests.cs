@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.Tests.MemoryStorageTests
+namespace Storage.Tests
 {
     using System;
 
@@ -19,9 +19,10 @@ namespace Storage.Tests.MemoryStorageTests
     using Storage.MemoryStorage;
 
     [TestClass]
-    public class NewsMemoryStorageTests
+    public class NewsStorageTests
     {
         private static readonly Guid newsGuid = Guid.NewGuid();
+
         private static readonly NewsBll News = new NewsBll
         {
             Id = newsGuid,
@@ -125,7 +126,7 @@ namespace Storage.Tests.MemoryStorageTests
                 Author = "author",
                 Date = new DateTime(2014, 12, 24, 13, 0, 0),
                 Rating = 1
-            }; 
+            };
             NewsBll updatedContentNews = new NewsBll
             {
                 Id = guid2,
@@ -143,7 +144,8 @@ namespace Storage.Tests.MemoryStorageTests
                 Author = "author",
                 Date = new DateTime(2014, 12, 25, 13, 0, 0),
                 Rating = 1
-            }; ;
+            };
+            ;
 
             storage.UpdateNews(updatedTitleNews);
             storage.UpdateNews(updatedContentNews);
@@ -165,7 +167,7 @@ namespace Storage.Tests.MemoryStorageTests
                 Author = "author",
                 Date = new DateTime(2014, 12, 24, 13, 0, 0),
                 Rating = 1
-            }; 
+            };
             NewsBll newsDifferentYear = new NewsBll
             {
                 Id = newsGuid,
@@ -193,7 +195,7 @@ namespace Storage.Tests.MemoryStorageTests
                 Date = new DateTime(2014, 12, 24, 14, 0, 0),
                 Rating = 1
             };
-            
+
             storage.AddNews(News);
 
             Assert.IsFalse(storage.ContainsNews(newsDifferentTitle).Result);

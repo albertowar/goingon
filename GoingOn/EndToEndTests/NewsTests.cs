@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Storage;
+
 namespace EndToEndTests
 {
     using System;
@@ -54,7 +56,7 @@ namespace EndToEndTests
         {
             webService.Dispose();
             newsStorage.DeleteAllNews();
-            userStorage.DeleteStorage();
+            userStorage.DeleteAllUsers();
         }
 
         [TestMethod]

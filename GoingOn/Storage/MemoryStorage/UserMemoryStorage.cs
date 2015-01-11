@@ -22,11 +22,17 @@ namespace Storage.MemoryStorage
         // Singleton pattern
         private static UserMemoryStorage instance;
 
-        private readonly List<UserMemory> storage;
+        private List<UserMemory> storage;
 
         private UserMemoryStorage()
         {
+        }
+
+        public Task CreateStorage()
+        {
             this.storage = new List<UserMemory>();
+
+            return Task.FromResult(0);
         }
 
         public Task AddUser(UserBll userBll)
@@ -72,7 +78,7 @@ namespace Storage.MemoryStorage
             return Task.FromResult(0);
         }
 
-        public Task DeleteStorage()
+        public Task DeleteAllUsers()
         {
             storage.Clear();
 

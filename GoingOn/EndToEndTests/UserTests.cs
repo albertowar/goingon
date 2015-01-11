@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Storage;
+
 namespace EndToEndTests
 {
     using System;
@@ -43,7 +45,7 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            storage.DeleteStorage();
+            storage.DeleteAllUsers();
         }
 
         [TestMethod]

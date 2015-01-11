@@ -20,17 +20,23 @@ namespace Common.Tests
     {
         public static void Throws<T>(Action func) where T : Exception
         {
-            var exceptionThrown = false;
+            var wasExceptionThrown = false;
+
             try
             {
                 func.Invoke();
             }
             catch (T)
             {
-                exceptionThrown = true;
+                wasExceptionThrown = true;
+            }
+            catch (AggregateException aggregateException)
+            {
+                var exception = aggregateException.InnerException;
+                wasExceptionThrown = exception.GetType() == typeof(T);
             }
 
-            if (!exceptionThrown)
+            if (!wasExceptionThrown)
             {
                 throw new AssertFailedException(
                     String.Format("An exception of type {0} was expected, but not thrown", typeof(T))
@@ -40,17 +46,25 @@ namespace Common.Tests
 
         public static void Throws<T>(Action func, string message) where T : Exception
         {
-            var exceptionThrown = false;
+            var wasExceptionThrown = false;
+
             try
             {
                 func.Invoke();
             }
             catch (T exception)
             {
-                exceptionThrown = string.Equals(message, exception.Message);
+                wasExceptionThrown = string.Equals(message, exception.Message);
+            }
+            catch (AggregateException aggregateException)
+            {
+                var exception = aggregateException.GetBaseException();
+                wasExceptionThrown = 
+                    exception.GetType() == typeof(T) &&
+                    string.Equals(message, exception.Message);
             }
 
-            if (!exceptionThrown)
+            if (!wasExceptionThrown)
             {
                 throw new AssertFailedException(
                     String.Format("An exception of type {0} was expected, but not thrown", typeof(T))
