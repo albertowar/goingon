@@ -8,16 +8,16 @@
 // </summary>
 // ****************************************************************************
 
-using Common.Tests;
-
-namespace Storage.Tests.TableStorageTests
+namespace Storage.Tests.MemoryStorageTests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using Common.Tests;
     using Model.EntitiesBll;
-    using Storage.TableStorage;
+    using Storage.MemoryStorage;
 
     [TestClass]
-    public class TableStorageTests
+    public class UserMemoryStorageTests
     {
         private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password" };
 
@@ -26,7 +26,7 @@ namespace Storage.Tests.TableStorageTests
         [TestInitialize]
         public void Initialize()
         {
-            storage = UserTableStorage.GetInstance();
+            storage = UserMemoryStorage.GetInstance();
         }
 
         [TestCleanup]
@@ -39,36 +39,31 @@ namespace Storage.Tests.TableStorageTests
         public void TestAddExistingUser()
         {
             storage.AddUser(User).Wait();
+            storage.AddUser(User).Wait();
 
-            AssertExtensions.Throws<Microsoft.WindowsAzure.Storage.StorageException>(() => storage.AddUser(User).Wait());
+            Assert.IsTrue(storage.ContainsUser(User).Result);
         }
 
         [TestMethod]
         public void TestGetNonExistingUser()
         {
-            AssertExtensions.Throws<Storage.StorageException>(() => storage.GetUser(User.Nickname).Wait());
+            Assert.IsNull(storage.GetUser(User.Nickname).Result);
         }
 
         [TestMethod]
         public void TestContainsNonExistingUser()
         {
-            AssertExtensions.Throws<Storage.StorageException>(() => storage.ContainsUser(User).Wait());
+            Assert.IsFalse(storage.ContainsUser(User).Result);
         }
 
         [TestMethod]
-        [Ignore]
         public void TestUpdateNonExistingUser()
         {
             UserBll updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
 
-            storage.UpdateUser(updatedUser);
+            storage.UpdateUser(updatedUser).Wait();
 
-            var getUserTask = storage.GetUser(User.Nickname);
-            getUserTask.Wait();
-
-            UserBll actualUser = getUserTask.Result;
-
-            Assert.IsNull(actualUser);
+            Assert.IsFalse(storage.ContainsUser(User).Result);
         }
 
         [TestMethod]
@@ -76,7 +71,7 @@ namespace Storage.Tests.TableStorageTests
         {
             storage.DeleteUser(User);
 
-            AssertExtensions.Throws<Storage.StorageException>(() => storage.ContainsUser(User).Wait());
+            Assert.IsFalse(storage.ContainsUser(User).Result);
         }
     }
 }

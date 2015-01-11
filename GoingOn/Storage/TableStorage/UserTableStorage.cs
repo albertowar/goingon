@@ -96,11 +96,6 @@ namespace Storage.TableStorage
 
                 var retrievedResult = table.Execute(retrieveOperation);
 
-                if (retrievedResult.Result == null)
-                {
-                    throw new Storage.StorageException("The user is not in the database");
-                }
-
                 return retrievedResult.Result != null;
             });
         }

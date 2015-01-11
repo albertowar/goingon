@@ -26,13 +26,7 @@ namespace Storage.MemoryStorage
 
         private UserMemoryStorage()
         {
-        }
-
-        public Task CreateStorage()
-        {
             this.storage = new List<UserMemory>();
-
-            return Task.FromResult(0);
         }
 
         public Task AddUser(UserBll userBll)

@@ -73,10 +73,7 @@ namespace Storage.Tests
 
             storage.UpdateUser(updatedUser).Wait();
 
-            var getUserTask = storage.GetUser(User.Nickname);
-            getUserTask.Wait();
-
-            UserBll actualUser = getUserTask.Result;
+            UserBll actualUser = storage.GetUser(User.Nickname).Result;
 
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);

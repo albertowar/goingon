@@ -52,6 +52,8 @@
     <Compile Include="MemoryStorage\NewsMemoryStorage.cs" />
     <Compile Include="MemoryStorage\UserMemoryStorage.cs" />
     <Compile Include="StorageException.cs" />
+    <Compile Include="TableStorage\Entities\NewsEntity.cs" />
+    <Compile Include="TableStorage\NewsTableStorage.cs" />
     <Compile Include="TableStorage\Entities\UserEntity.cs" />
     <Compile Include="TableStorage\UserTableStorage.cs" />
   </ItemGroup>
