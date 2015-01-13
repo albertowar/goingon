@@ -11,6 +11,7 @@
 using Frontend.Controllers;
 using Frontend.Entities;
 using Frontend.Validation;
+using Storage;
 
 namespace GoingOn.Tests.Controllers
 {

@@ -9,6 +9,7 @@
 // ****************************************************************************
 
 using Storage;
+using Storage.TableStorage;
 
 namespace Frontend
 {
@@ -33,7 +34,7 @@ namespace Frontend
         {
             // Dependy injection configuration
             var container = new UnityContainer();
-            container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
+            container.RegisterInstance<IUserStorage>(UserTableStorage.GetInstance());
             container.RegisterInstance<INewsStorage>(NewsMemoryStorage.GetInstance());
             container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());

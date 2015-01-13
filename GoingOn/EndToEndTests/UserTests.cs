@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Storage;
-
 namespace EndToEndTests
 {
     using System;
@@ -24,7 +22,8 @@ namespace EndToEndTests
     using Client.Entities;
     using Frontend;
     using Model.EntitiesBll;
-    using Storage.MemoryStorage;
+    using Storage;
+    using Storage.TableStorage;
 
     [TestClass]
     public class UserTests
@@ -38,14 +37,14 @@ namespace EndToEndTests
         public void TestInitialize()
         {
             webService = WebApp.Start<Startup>("http://*:80/");
-            storage = UserMemoryStorage.GetInstance();
+            storage = UserTableStorage.GetInstance();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
             webService.Dispose();
-            storage.DeleteAllUsers();
+            storage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]

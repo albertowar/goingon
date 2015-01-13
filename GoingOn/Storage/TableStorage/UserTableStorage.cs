@@ -31,7 +31,7 @@ namespace Storage.TableStorage
         private static UserTableStorage instance;
 
         // Retrieve the storage account from the connection string.
-        private readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
+        private static readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
 
         private UserTableStorage()
         {
@@ -116,7 +116,7 @@ namespace Storage.TableStorage
 
                 if (updateEntity != null)
                 {
-                    updateEntity.Password = userBll.Password;
+                    updateEntity.Merge(UserEntity.FromUserBll(userBll));
 
                     var insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
 

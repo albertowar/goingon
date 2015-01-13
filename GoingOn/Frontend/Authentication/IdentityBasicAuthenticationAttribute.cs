@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Storage;
-
 namespace Frontend.Authentication
 {
     using System.Security.Principal;
@@ -17,13 +15,14 @@ namespace Frontend.Authentication
     using System.Threading.Tasks;
 
     using Frontend.Entities;
-    using Storage.MemoryStorage;
+    using Storage;
+    using Storage.TableStorage;
 
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)
         {
-            IUserStorage storage = UserMemoryStorage.GetInstance();
+            IUserStorage storage = UserTableStorage.GetInstance();
 
             var containsUserTask = await storage.ContainsUser(User.ToUserBll(new User(nickname, password)));
 
