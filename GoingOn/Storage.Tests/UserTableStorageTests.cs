@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.Tests.TableStorageTests
+namespace Storage.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

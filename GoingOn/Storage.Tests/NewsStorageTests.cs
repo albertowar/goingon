@@ -66,10 +66,9 @@ namespace Storage.Tests
         }
 
         [TestMethod]
-        [Ignore]
         public void TestGetNewsEmptyStorage()
         {
-            Assert.IsNull(storage.GetNews(newsGuid).Result);
+            AssertExtensions.Throws<StorageException>(() => storage.GetNews(newsGuid).Wait());
         }
 
         [TestMethod]

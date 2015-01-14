@@ -75,7 +75,7 @@ namespace Storage.TableStorage
 
                 if (retrievedResult.Result == null)
                 {
-                    throw new Storage.StorageException("The user is not in the database");
+                    throw new Storage.StorageException("The news is not in the database");
                 }
 
                 return NewsEntity.ToNewsBll(retrievedResult.Result as NewsEntity);
