@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="City.cs" company="Universidad de Malaga">
+// <copyright file="CityList.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -10,7 +10,7 @@
 
 namespace Common
 {
-    public enum City
+    public enum CityList
     {
         Malaga = 0,
         Granada = 1,

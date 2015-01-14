@@ -11,37 +11,21 @@
 namespace Frontend.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using Frontend.Links;
     using Model.EntitiesBll;
-    using Newtonsoft.Json;
 
     public class News
     {
         public string Title { get; set; }
+
         public string Content { get; set; }
         
         public DateTime Date { get; set; }
 
-        [JsonIgnore]
-        public string Author { get; set; }
-
-        public IList<Link> Links { get; private set; }
-
-        public News(string title, string content)
+        public News(string title, string content, DateTime date)
         {
             this.Title = title;
             this.Content = content;
-            this.Links = new List<Link>();
-        }
-
-        private News(Guid id, string title, string content, DateTime date, string author, HttpRequestMessage request) : this(title, content)
-        {
-            this.Date = date;
-            this.Author = author;
-            Links.Add(new NewsLinkFactory(request).Self(id.ToString()));
-            Links.Add(new UserLinkFactory(request).Author(author));
+            this.Date = Date;
         }
 
         public static NewsBll ToNewsBll(News news, Guid id, string author, DateTime date)
@@ -80,11 +64,6 @@ namespace Frontend.Entities
                 Date = DateTime.UtcNow,
                 Rating = 0
             };;
-        }
-
-        public static News FromNewsBll(NewsBll newsBll, HttpRequestMessage request)
-        {
-            return new News(newsBll.Id, newsBll.Title, newsBll.Content, newsBll.Date, newsBll.Author, request); 
         }
     }
 }

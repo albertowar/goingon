@@ -11,9 +11,7 @@
 namespace Frontend.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.Net.Http;
-    using Frontend.Links;
     using Model.EntitiesBll;
 
     public class User
@@ -21,18 +19,11 @@ namespace Frontend.Entities
         public string Nickname { get; private set; }
         public string Password { get; private set; }
         //public City City { get; private set; }
-        public IList<Link> Links { get; private set; }
 
         public User(string nickname, string password)
         {
             Nickname = nickname;
             Password = password;
-            Links = new List<Link>();
-        }
-
-        private User(string nickname, string password, HttpRequestMessage request) : this(nickname, password)
-        {
-            Links.Add(new UserLinkFactory(request).Self(nickname));
         }
 
         public override bool Equals(Object userObject)
@@ -59,11 +50,6 @@ namespace Frontend.Entities
         public static User FromUserBll(UserBll user)
         {
             return new User(user.Nickname, user.Password);
-        }
-
-        public static User FromUserBll(UserBll user, HttpRequestMessage request)
-        {
-            return new User(user.Nickname, user.Password, request);
         }
     }
 }
