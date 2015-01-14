@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Storage.TableStorage;
-
 namespace Storage.Tests
 {
     using System;
@@ -18,7 +16,7 @@ namespace Storage.Tests
 
     using Common.Tests;
     using Model.EntitiesBll;
-    using Storage.MemoryStorage;
+    using Storage.TableStorage;
 
     [TestClass]
     public class NewsStorageTests

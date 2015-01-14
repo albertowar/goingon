@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Storage;
-
 namespace EndToEndTests
 {
     using System;
@@ -27,7 +25,8 @@ namespace EndToEndTests
     using Common.Tests;
     using Client.Entities;
     using Frontend;
-    using Storage.MemoryStorage;
+    using Storage;
+    using Storage.TableStorage;
 
     [TestClass]
     public class NewsTests
@@ -45,8 +44,8 @@ namespace EndToEndTests
         public void TestInitialize()
         {
             webService = WebApp.Start<Startup>("http://*:80/");
-            userStorage = UserMemoryStorage.GetInstance();
-            newsStorage = NewsMemoryStorage.GetInstance();
+            userStorage = UserTableStorage.GetInstance();
+            newsStorage = NewsTableStorage.GetInstance();
 
             UserTests.CreateUser(userClient);
         }
@@ -55,8 +54,8 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            newsStorage.DeleteAllNews();
-            userStorage.DeleteAllUsers();
+            newsStorage.DeleteAllNews().Wait();
+            userStorage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]
