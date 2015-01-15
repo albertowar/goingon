@@ -38,7 +38,7 @@ namespace GoingOn.Tests.Controllers
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
-        private static readonly User user = new User("nickname", "password");
+        private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
         [TestInitialize]
         public void Initizalize()
@@ -55,7 +55,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
             userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(user)));
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
+            var userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
 
             HttpResponseMessage response = userController.Get("nickname").Result;

@@ -39,7 +39,7 @@ namespace GoingOn.Tests.Controllers
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
-        private static readonly User user = new User("nickname", "password");
+        private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
         private static readonly News news = new News("title", "content");
 
         [TestInitialize]

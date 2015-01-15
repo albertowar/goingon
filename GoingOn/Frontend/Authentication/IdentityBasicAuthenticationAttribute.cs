@@ -24,7 +24,7 @@ namespace Frontend.Authentication
         {
             IUserStorage storage = UserTableStorage.GetInstance();
 
-            var containsUserTask = await storage.ContainsUser(User.ToUserBll(new User(nickname, password)));
+            var containsUserTask = await storage.ContainsUser(User.ToUserBll(new User { Nickname = nickname, Password = password }));
 
             if (containsUserTask)
             {

@@ -29,7 +29,7 @@ namespace GoingOn.Tests.Validation
         private Mock<INewsStorage> newsStorageMock;
         private ApiBusinessLogicValidationChecks businessValidation;
 
-        private static readonly User user = new User("nickname", "password");
+        private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
         private static readonly News news = new News("title", "content");
 

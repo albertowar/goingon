@@ -32,7 +32,7 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidUserSucceedsWithWellFormedUser()
         {
-            User user = new User("nickname", "password");
+            var user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
             Assert.IsTrue(inputValidation.IsValidUser(user));
         }
@@ -46,9 +46,9 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidUserFailsWithWrongNickname()
         {
-            User nullNickNameUser = new User(null, "password");
-            User emptyNickNameUser = new User(string.Empty, "password");
-            User whiteSpaceNickNameUser = new User(" \n\t", "password");
+            var nullNickNameUser = new User { Nickname = null, Password = "password", City = "Malaga" }; 
+            var emptyNickNameUser = new User { Nickname = string.Empty, Password = "password", City = "Malaga" }; 
+            var whiteSpaceNickNameUser = new User { Nickname = " \n\t", Password = "password", City = "Malaga" }; 
 
             Assert.IsFalse(inputValidation.IsValidUser(nullNickNameUser));
             Assert.IsFalse(inputValidation.IsValidUser(emptyNickNameUser));
@@ -58,9 +58,21 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidUserFailsWithWrongPassword()
         {
-            User nullPasswordUser = new User("username", null);
-            User emptyPasswordUser = new User("username", string.Empty);
-            User whiteSpacePasswordUser = new User("username", " \n\t");
+            var nullPasswordUser = new User { Nickname = "nickname", Password = null, City = "Malaga" };
+            var emptyPasswordUser = new User { Nickname = "nickname", Password = string.Empty, City = "Malaga" };
+            var whiteSpacePasswordUser = new User { Nickname = "nickname", Password = " \n\t", City = "Malaga" };
+
+            Assert.IsFalse(inputValidation.IsValidUser(nullPasswordUser));
+            Assert.IsFalse(inputValidation.IsValidUser(emptyPasswordUser));
+            Assert.IsFalse(inputValidation.IsValidUser(whiteSpacePasswordUser));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserFailsWithWrongCity()
+        {
+            var nullPasswordUser = new User { Nickname = "nickname", Password = "password", City = null };
+            var emptyPasswordUser = new User { Nickname = "nickname", Password = "password", City = string.Empty };
+            var whiteSpacePasswordUser = new User { Nickname = "nickname", Password = "password", City = " \n\t" };
 
             Assert.IsFalse(inputValidation.IsValidUser(nullPasswordUser));
             Assert.IsFalse(inputValidation.IsValidUser(emptyPasswordUser));
@@ -76,9 +88,9 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidNewsFailsWithWrongTitle()
         {
-            News nullTitleNews = new News(null, "content");
-            News emptyTitleNews = new News(string.Empty, "content");
-            News whiteSpaceTitleNews = new News(" \n\t", "content");
+            var nullTitleNews = new News(null, "content");
+            var emptyTitleNews = new News(string.Empty, "content");
+            var whiteSpaceTitleNews = new News(" \n\t", "content");
 
             Assert.IsFalse(inputValidation.IsValidNews(nullTitleNews));
             Assert.IsFalse(inputValidation.IsValidNews(emptyTitleNews));
@@ -88,9 +100,9 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidNewsFailsWithWrongContent()
         {
-            News nullContent = new News("title", null);
-            News emptyContentNews = new News("title", string.Empty);
-            News whiteSpaceContentNews = new News("title", " \n\t");
+            var nullContent = new News("title", null);
+            var emptyContentNews = new News("title", string.Empty);
+            var whiteSpaceContentNews = new News("title", " \n\t");
 
             Assert.IsFalse(inputValidation.IsValidNews(nullContent));
             Assert.IsFalse(inputValidation.IsValidNews(emptyContentNews));

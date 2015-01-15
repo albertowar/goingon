@@ -11,33 +11,16 @@
 namespace Frontend.Entities
 {
     using System;
+
     using Model.EntitiesBll;
 
     public class User
     {
-        public string Nickname { get; private set; }
+        public string Nickname { get; set; }
 
-        public string Password { get; private set; }
+        public string Password { get; set; }
 
-        public string City { get; private set; }
-
-        public User(string nickname)
-        {
-            Nickname = nickname;
-        }
-
-        public User(string nickname, string city)
-        {
-            Nickname = nickname;
-            City = city;
-        }
-
-        public User(string nickname, string password, string city)
-        {
-            Nickname = nickname;
-            Password = password;
-            City = city;
-        }
+        public string City { get; set; }
 
         public override bool Equals(Object userObject)
         {
@@ -68,7 +51,12 @@ namespace Frontend.Entities
 
         public static User FromUserBll(UserBll user)
         {
-            return new User(user.Nickname, user.Password, user.City);
+            return new User
+            {
+                Nickname = user.Nickname,
+                Password = user.Password,
+                City = user.City
+            };
         }
     }
 }

@@ -18,14 +18,16 @@ namespace Client.Entities
 
         public string Password { get; set; }
 
+        public string City { get; set; }
+
         public static UserClient FromUserREST(UserREST userREST)
         {
-            return new UserClient { Nickname = userREST.User.Nickname, Password = userREST.User.Password };
+            return new UserClient { Nickname = userREST.User.Nickname, Password = userREST.User.Password, City = userREST.User.City};
         }
 
         public static User ToUserClientUser(UserClient userClient)
         {
-            return new User(userClient.Nickname, userClient.Password);
+            return new User { Nickname = userClient.Nickname, Password = userClient.Password, City = userClient.City };
         }
     }
 }

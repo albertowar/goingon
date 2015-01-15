@@ -24,7 +24,7 @@ namespace Frontend.Validation
 
         public bool IsValidGetUser(IUserStorage storage, string nickname)
         {
-            return this.IsUserStored(storage, new User(nickname));
+            return this.IsUserStored(storage, new User{ Nickname = nickname });
         }
 
         public bool IsValidUpdateUser(IUserStorage storage, User user)
@@ -40,7 +40,7 @@ namespace Frontend.Validation
         public bool IsValidDeleteUser(IUserStorage storage, string nickname)
         {
             return
-                this.IsUserStored(storage, new User(nickname));
+                this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
         public bool IsValidCreateNews(INewsStorage storage, News news, string author)

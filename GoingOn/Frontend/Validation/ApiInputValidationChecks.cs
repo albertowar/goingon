@@ -20,7 +20,8 @@ namespace Frontend.Validation
             return 
                 user != null &&
                 this.IsValidNickName(user.Nickname) &&
-                this.IsValidPassword(user.Password);
+                this.IsValidPassword(user.Password) &&
+                this.IsValidCity(user.City);
         }
 
         public bool IsValidNickName(string nickName)
@@ -31,6 +32,11 @@ namespace Frontend.Validation
         public bool IsValidPassword(string password)
         {
             return !string.IsNullOrWhiteSpace(password);
+        }
+
+        public bool IsValidCity(string city)
+        {
+            return !string.IsNullOrWhiteSpace(city);
         }
 
         public bool IsValidNews(News news)

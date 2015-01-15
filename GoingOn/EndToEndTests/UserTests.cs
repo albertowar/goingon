@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Entities;
-
 namespace EndToEndTests
 {
     using System;
@@ -23,6 +21,7 @@ namespace EndToEndTests
 
     using Client.Entities;
     using Frontend;
+    using Frontend.Entities;
     using Model.EntitiesBll;
     using Storage;
     using Storage.TableStorage;
@@ -33,7 +32,7 @@ namespace EndToEndTests
         private static IDisposable webService;
         private static IUserStorage storage;
 
-        private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234" };
+        private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga" };
 
         [TestInitialize]
         public void TestInitialize()
@@ -54,7 +53,7 @@ namespace EndToEndTests
         {
             UserTests.CreateUser(userClient);
 
-            Assert.IsTrue(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
+            Assert.IsTrue(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234", City = "Malaga" }).Result);
         }
 
         [TestMethod]
@@ -76,7 +75,7 @@ namespace EndToEndTests
         {
             UserTests.CreateUser(userClient);
 
-            UserClient updatedUser = new UserClient { Nickname = "Alberto", Password = "4567" };
+            UserClient updatedUser = new UserClient { Nickname = "Alberto", Password = "4567", City = "Malaga" };
 
             using (var client = new HttpClient())
             {

@@ -15,29 +15,16 @@ namespace Storage.TableStorage.Entities
 
     public class UserEntity : TableEntity
     {
-        public const string City = "World";
-
         public string Password { get; set; }
-
-        public UserEntity() { }
-
-        public UserEntity(string nickname)
-        {
-            this.PartitionKey = City;
-            this.RowKey = nickname;
-            this.Password = string.Empty;
-        }
-
-        public UserEntity(string nickname, string password)
-        {
-            this.PartitionKey = City;
-            this.RowKey = nickname;
-            this.Password = password;
-        }
 
         public static UserEntity FromUserBll(UserBll userBll)
         {
-            return new UserEntity(userBll.Nickname, userBll.Password);
+            return new UserEntity
+            {
+                PartitionKey = userBll.City,
+                RowKey = userBll.Nickname,
+                Password = userBll.Password
+            };
         }
 
         public static UserBll ToUserBll(UserEntity userEntity)
@@ -45,13 +32,14 @@ namespace Storage.TableStorage.Entities
             return new UserBll
             {
                 Nickname = userEntity.RowKey,
-                Password = userEntity.Password
+                Password = userEntity.Password,
+                City = userEntity.PartitionKey
             };
         }
 
         public override bool Equals(object anotherUserObject)
         {
-            UserEntity anotherUser = anotherUserObject as UserEntity;
+            var anotherUser = anotherUserObject as UserEntity;
 
             return
                 anotherUser != null &&

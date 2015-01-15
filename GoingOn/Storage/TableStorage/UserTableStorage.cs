@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using System.Linq;
+
 namespace Storage.TableStorage
 {
     using System.Configuration;
@@ -102,7 +104,14 @@ namespace Storage.TableStorage
                 }
                 else
                 {
-                    // TODO: find the user throughout the partitions
+                    // Finds the user throughout the partitions (used in most of the operations
+                    var query = new TableQuery<UserEntity>()
+                        .Where(TableQuery.GenerateFilterCondition(
+                            "RowKey",
+                            QueryComparisons.Equal, 
+                            userBll.Nickname));
+
+                    return table.ExecuteQuery(query).Any();
                 }
             });
         }
