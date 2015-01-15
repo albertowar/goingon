@@ -18,12 +18,12 @@ namespace Client.Entities
 
         public string Password { get; set; }
 
-        public static UserClient FromFrontendUser(User user)
+        public static UserClient FromUserREST(UserREST userREST)
         {
-            return new UserClient { Nickname = user.Nickname, Password = user.Password };
+            return new UserClient { Nickname = userREST.User.Nickname, Password = userREST.User.Password };
         }
 
-        public static User ToFrontendUser(UserClient userClient)
+        public static User ToUserClientUser(UserClient userClient)
         {
             return new User(userClient.Nickname, userClient.Password);
         }

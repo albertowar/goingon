@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Entities;
+
 namespace EndToEndTests
 {
     using System;
@@ -64,9 +66,9 @@ namespace EndToEndTests
 
             var content = response.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            UserClient actualUserClient = JsonConvert.DeserializeObject<UserClient>(jsonContent);
+            var actualUserREST = JsonConvert.DeserializeObject<UserREST>(jsonContent);
 
-            Assert.IsTrue(new UserClientEqualityComparer().Equals(userClient, actualUserClient));
+            Assert.IsTrue(new UserClientEqualityComparer().Equals(userClient, UserClient.FromUserREST(actualUserREST)));
         }
 
         [TestMethod]
@@ -89,9 +91,9 @@ namespace EndToEndTests
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            UserClient actualUserClient = JsonConvert.DeserializeObject<UserClient>(jsonContent);
+            var actualUserREST = JsonConvert.DeserializeObject<UserREST>(jsonContent);
 
-            Assert.IsTrue(new UserClientEqualityComparer().Equals(updatedUser, actualUserClient));
+            Assert.IsTrue(new UserClientEqualityComparer().Equals(updatedUser, UserClient.FromUserREST(actualUserREST)));
         }
 
         [TestMethod]

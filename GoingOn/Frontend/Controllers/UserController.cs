@@ -49,7 +49,7 @@ namespace Frontend.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
             }
                 
-            var user = Entities.UserREST.FromUserBll(await storage.GetUser(id), Request);
+            var user = UserREST.FromUserBll(await storage.GetUser(id), Request);
 
             var response = Request.CreateResponse(HttpStatusCode.OK, user);
 

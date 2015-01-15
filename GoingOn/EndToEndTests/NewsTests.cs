@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using Frontend.Entities;
+
 namespace EndToEndTests
 {
     using System;
@@ -83,9 +85,9 @@ namespace EndToEndTests
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            var actualNewsClient = JsonConvert.DeserializeObject<NewsClient>(jsonContent);
+            var actualNewsClient = JsonConvert.DeserializeObject<NewsREST>(jsonContent);
 
-            Assert.IsTrue(new NewsClientEqualityComparer().Equals(newsClient, actualNewsClient));
+            Assert.IsTrue(new NewsClientEqualityComparer().Equals(newsClient, NewsClient.FromNewsREST(actualNewsClient)));
         }
 
         [TestMethod]
@@ -104,9 +106,9 @@ namespace EndToEndTests
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            var actualNewsClient = JsonConvert.DeserializeObject<NewsClient>(jsonContent);
+            var actualNewsClient = JsonConvert.DeserializeObject<NewsREST>(jsonContent);
 
-            Assert.IsTrue(new NewsClientEqualityComparer().Equals(updatedNews, actualNewsClient));
+            Assert.IsTrue(new NewsClientEqualityComparer().Equals(updatedNews, NewsClient.FromNewsREST(actualNewsClient)));
         }
 
         [TestMethod]

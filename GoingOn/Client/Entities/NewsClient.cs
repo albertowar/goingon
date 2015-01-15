@@ -18,12 +18,12 @@ namespace Client.Entities
 
         public string Content { get; set; }
 
-        public static NewsClient FromFrontendNews(News news)
+        public static NewsClient FromNewsREST(NewsREST newsREST)
         {
-            return new NewsClient { Title = news.Title, Content = news.Content };
+            return new NewsClient { Title = newsREST.News.Title, Content = newsREST.News.Content };
         }
 
-        public static News ToFrontendNews(NewsClient newsClient)
+        public static News ToNewsClient(NewsClient newsClient)
         {
             return new News(newsClient.Title, newsClient.Content);
         }
