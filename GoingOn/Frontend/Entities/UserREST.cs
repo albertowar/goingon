@@ -34,7 +34,7 @@ namespace Frontend.Entities
 
         public static UserREST FromUserBll(UserBll user, HttpRequestMessage request)
         {
-            return new UserREST(new User(user.Nickname, user.Password), request);
+            return new UserREST(new User(user.Nickname, user.Password, user.City), request);
         }
     }
 }

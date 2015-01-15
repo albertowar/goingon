@@ -127,7 +127,7 @@ namespace Frontend.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
-            await storage.DeleteUser(Entities.User.ToUserBll(new User(id, string.Empty)));
+            await storage.DeleteUser(Entities.User.ToUserBll(new User(id)));
 
             return Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
         }

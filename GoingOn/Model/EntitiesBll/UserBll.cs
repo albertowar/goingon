@@ -13,6 +13,9 @@ namespace Model.EntitiesBll
     public class UserBll
     {
         public string Nickname { get; set; }
+
         public string Password { get; set; }
+
+        public string City { get; set; }
     }
 }

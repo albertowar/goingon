@@ -92,11 +92,18 @@ namespace Storage.TableStorage
 
                 var table = tableClient.GetTableReference(TableName);
 
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>("World", userBll.Nickname);
+                if (userBll.City != null)
+                {
+                    var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
 
-                var retrievedResult = table.Execute(retrieveOperation);
+                    var retrievedResult = table.Execute(retrieveOperation);
 
-                return retrievedResult.Result != null;
+                    return retrievedResult.Result != null;
+                }
+                else
+                {
+                    // TODO: find the user throughout the partitions
+                }
             });
         }
 

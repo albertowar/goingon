@@ -182,7 +182,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Entities\City.cs" />
     <Compile Include="Entities\News.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Links\Link.cs" />
