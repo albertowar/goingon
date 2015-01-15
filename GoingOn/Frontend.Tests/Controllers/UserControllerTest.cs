@@ -62,10 +62,10 @@ namespace GoingOn.Tests.Controllers
 
             var content = response.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            User actualUser = JsonConvert.DeserializeObject<User>(jsonContent);
+            var actualUser = JsonConvert.DeserializeObject<UserREST>(jsonContent);
             
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(user, actualUser));
+            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(user, actualUser.User));
             Assert.IsTrue(actualUser.Links.Any());
             Assert.AreEqual("self", actualUser.Links.First().Rel);
             Assert.AreEqual(new Uri("http://test.com/api/user/nickname"), actualUser.Links.First().Href);

@@ -8,10 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Entities;
-
 namespace Client.Entities
 {
+    using Frontend.Entities;
+
     public class UserClient
     {
         public string Nickname { get; set; }

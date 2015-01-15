@@ -48,7 +48,7 @@ namespace Frontend.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            var news = News.FromNewsBll(await this.storage.GetNews(Guid.Parse(id)), Request);
+            var news = NewsREST.FromNewsBll(await this.storage.GetNews(Guid.Parse(id)), Request);
 
             var response = Request.CreateResponse(HttpStatusCode.OK, news);
 

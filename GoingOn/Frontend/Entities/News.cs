@@ -11,6 +11,7 @@
 namespace Frontend.Entities
 {
     using System;
+
     using Model.EntitiesBll;
 
     public class News
@@ -18,14 +19,11 @@ namespace Frontend.Entities
         public string Title { get; set; }
 
         public string Content { get; set; }
-        
-        public DateTime Date { get; set; }
 
-        public News(string title, string content, DateTime date)
+        public News(string title, string content)
         {
             this.Title = title;
             this.Content = content;
-            this.Date = Date;
         }
 
         public static NewsBll ToNewsBll(News news, Guid id, string author, DateTime date)

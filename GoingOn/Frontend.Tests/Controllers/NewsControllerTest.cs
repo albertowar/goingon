@@ -66,10 +66,10 @@ namespace GoingOn.Tests.Controllers
 
             var content = response.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
-            var actualNews = JsonConvert.DeserializeObject<News>(jsonContent);
+            var actualNews = JsonConvert.DeserializeObject<NewsREST>(jsonContent);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            Assert.IsTrue(new NewsCompleteEqualityComparer().Equals(news, actualNews));
+            Assert.IsTrue(new NewsCompleteEqualityComparer().Equals(news, actualNews.News));
             Assert.IsTrue(actualNews.Links.Any(link => string.Equals("self", link.Rel)));
             Assert.AreEqual(new Uri("http://test.com/api/news/" + guid), actualNews.Links.First(link => string.Equals("self", link.Rel)).Href);
             Assert.IsTrue(actualNews.Links.Any(link => string.Equals("author", link.Rel)));

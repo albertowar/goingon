@@ -23,17 +23,20 @@ namespace Frontend.Entities
 
         public string Author { get; private set; }
 
+        public DateTime Date { get; set; }
+
         public IList<Link> Links { get; private set; }
 
-        public NewsREST(News news, string author)
+        public NewsREST(News news, string author, DateTime date)
         {
             this.News = news;
             this.Author = author;
+            this.Date = date;
             this.Links = new List<Link>();
         }
 
-        private NewsREST(News news, string author, Guid id, HttpRequestMessage request)
-            : this(news, author)
+        private NewsREST(News news, string author, Guid id, DateTime date, HttpRequestMessage request)
+            : this(news, author, date)
         {
             this.News = news;
             this.Author = author;
@@ -43,7 +46,7 @@ namespace Frontend.Entities
 
         public static NewsREST FromNewsBll(NewsBll newsBll, HttpRequestMessage request)
         {
-            return new NewsREST(new News(newsBll.Title, newsBll.Content, newsBll.Date), newsBll.Author, newsBll.Id, request);
+            return new NewsREST(new News(newsBll.Title, newsBll.Content), newsBll.Author, newsBll.Id, newsBll.Date, request);
         }
     }
 }
