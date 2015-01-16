@@ -10,6 +10,8 @@
 
 namespace Model.EntitiesBll
 {
+    using System;
+
     public class UserBll
     {
         public string Nickname { get; set; }
@@ -17,5 +19,13 @@ namespace Model.EntitiesBll
         public string Password { get; set; }
 
         public string City { get; set; }
+
+        public string Name { get; set; }
+
+        public string Email { get; set; }
+
+        public DateTime? BirthDate { get; set; }
+
+        public DateTime RegistrationDate { get; set; }
     }
 }

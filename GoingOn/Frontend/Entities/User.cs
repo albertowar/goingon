@@ -22,13 +22,19 @@ namespace Frontend.Entities
 
         public string City { get; set; }
 
+        public string Name { get; set; }
+
+        public string Email { get; set; }
+
+        public DateTime? BirthDate { get; set; }
+
         public override bool Equals(Object userObject)
         {
             var user = userObject as User;
 
             return 
                 user != null && 
-                this.Nickname == user.Nickname;
+                string.Equals(this.Nickname, user.Nickname, StringComparison.Ordinal);
         }
 
         public override int GetHashCode()

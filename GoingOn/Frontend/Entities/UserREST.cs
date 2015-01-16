@@ -10,6 +10,7 @@
 
 namespace Frontend.Entities
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
 
@@ -19,22 +20,37 @@ namespace Frontend.Entities
     public class UserREST
     {
         public User User { get; private set; }
+
+        public DateTime RegistrationDate { get; private set; }
+
         public IList<Link> Links { get; private set; }
 
-        public UserREST(User user)
+        public UserREST(User user, DateTime registrationDate)
         {
             this.User = user;
+            this.RegistrationDate = registrationDate;
             Links = new List<Link>();
         }
 
-        private UserREST(User user, HttpRequestMessage request) : this(user)
+        private UserREST(User user, DateTime registrationDate, HttpRequestMessage request) : this(user, registrationDate)
         {
             Links.Add(new UserLinkFactory(request).Self(user.Nickname));
         }
 
         public static UserREST FromUserBll(UserBll user, HttpRequestMessage request)
         {
-            return new UserREST(new User{ Nickname = user.Nickname, Password = user.Password, City = user.City }, request);
+            return new UserREST(
+                new User
+                {
+                    Nickname = user.Nickname, 
+                    Password = user.Password, 
+                    City = user.City, 
+                    Name = user.Name,
+                    Email = user.Email,
+                    BirthDate = user.BirthDate
+                }, 
+                user.RegistrationDate,
+                request);
         }
     }
 }
