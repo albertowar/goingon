@@ -19,7 +19,7 @@ namespace Storage.Tests
     [TestClass]
     public class UserTableStorageTests
     {
-        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password" };
+        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga" };
 
         private IUserStorage storage;
 
@@ -32,7 +32,7 @@ namespace Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            storage.DeleteAllUsers().Wait();
+            storage.DeleteAllUsers("Malaga").Wait();
         }
 
         [TestMethod]

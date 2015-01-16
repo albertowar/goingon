@@ -164,7 +164,7 @@ namespace Storage.TableStorage
             });
         }
 
-        public async Task DeleteAllUsers()
+        public async Task DeleteAllUsers(string city)
         {
             await Task.Run(() =>
             {
@@ -172,7 +172,7 @@ namespace Storage.TableStorage
 
                 var table = tableClient.GetTableReference(TableName);
 
-                var query = new TableQuery<UserEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "World"));
+                var query = new TableQuery<UserEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, city));
 
                 foreach (var entity in table.ExecuteQuery(query))
                 {

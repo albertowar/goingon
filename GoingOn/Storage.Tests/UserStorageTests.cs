@@ -10,6 +10,8 @@
 
 namespace Storage.Tests
 {
+    using System;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Common.Tests;
@@ -19,7 +21,7 @@ namespace Storage.Tests
     [TestClass]
     public class UserStorageTests
     {
-        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password" };
+        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today};
 
         private IUserStorage storage;
 
@@ -32,7 +34,7 @@ namespace Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            storage.DeleteAllUsers().Wait();
+            storage.DeleteAllUsers("Malaga").Wait();
         }
 
         [TestMethod]
@@ -95,7 +97,7 @@ namespace Storage.Tests
         {
             this.AddUsers();
 
-            storage.DeleteAllUsers().Wait();
+            storage.DeleteAllUsers("Malaga").Wait();
 
             for (int i = 0; i < 10; ++i)
             {

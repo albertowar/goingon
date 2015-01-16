@@ -21,6 +21,6 @@ namespace Storage
         Task<bool> ContainsUser(UserBll userBll);
         Task UpdateUser(UserBll userBll);
         Task DeleteUser(UserBll userBll);
-        Task DeleteAllUsers();
+        Task DeleteAllUsers(string city);
     }
 }

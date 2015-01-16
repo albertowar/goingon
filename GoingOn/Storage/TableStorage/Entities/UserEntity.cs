@@ -36,7 +36,6 @@ namespace Storage.TableStorage.Entities
                 Password = userBll.Password,
                 Name = userBll.Name,
                 Email = userBll.Email,
-                BirthDate = userBll.BirthDate,
                 RegistrationDate = userBll.RegistrationDate
             };
         }
