@@ -21,6 +21,7 @@ namespace Storage.Tests
     [TestClass]
     public class UserStorageTests
     {
+        // RegistrationDate has to be initializated otherwise it will get the min value that crashes on TableStorage
         private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
 
         private IUserStorage storage;
@@ -34,7 +35,7 @@ namespace Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            storage.DeleteAllUsers("Malaga").Wait();
+            storage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]
@@ -54,6 +55,18 @@ namespace Storage.Tests
             storage.AddUser(User).Wait();
 
             AssertExtensions.Throws<StorageException>(() => storage.AddUser(User).Wait());
+        }
+
+        [TestMethod]
+        public void TestAddSameUserDifferentCity()
+        {
+            var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
+
+            storage.AddUser(user).Wait();
+
+            var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
+
+            AssertExtensions.Throws<StorageException>(() => storage.AddUser(differentCityUser).Wait());
         }
 
         [TestMethod]
@@ -87,6 +100,19 @@ namespace Storage.Tests
         }
 
         [TestMethod]
+        public void TestContainsUserIgnoresCity()
+        {
+            var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
+
+            storage.AddUser(user).Wait();
+
+            var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
+
+            Assert.IsTrue(storage.ContainsUser(user).Result);
+            Assert.IsTrue(storage.ContainsUser(differentCityUser).Result);
+        }
+
+        [TestMethod]
         public void TestUpdateUser()
         {
             storage.AddUser(User).Wait();
@@ -107,9 +133,7 @@ namespace Storage.Tests
         {
             var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
 
-            storage.UpdateUser(updatedUser).Wait();
-
-            Assert.IsFalse(storage.ContainsUser(updatedUser).Result);
+            AssertExtensions.Throws<StorageException>(() => storage.UpdateUser(updatedUser).Wait());
         }
 
         [TestMethod]
@@ -135,7 +159,7 @@ namespace Storage.Tests
         {
             this.AddUsers();
 
-            storage.DeleteAllUsers("Malaga").Wait();
+            storage.DeleteAllUsers().Wait();
 
             for (int i = 0; i < 10; ++i)
             {

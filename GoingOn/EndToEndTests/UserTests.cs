@@ -45,7 +45,7 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            storage.DeleteAllUsers("Malaga").Wait();
+            storage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]

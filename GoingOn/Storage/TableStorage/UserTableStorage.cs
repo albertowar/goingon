@@ -8,7 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,6 +26,12 @@ namespace Storage.TableStorage
 
     public class UserTableStorage : IUserStorage
     {
+        /**
+         * Most of the operations (if not all) are not using the PartitionKey to query the database.
+         * Since the nickname is unique per user throughout the system, we need query using this value instead.
+         * However, I will keep the PartitionKey as it is cause it might be used in future queries.
+         **/
+
         // Configuration info
         private static readonly string TableName = ConfigurationManager.AppSettings["UserTableName"];
         private static readonly string StorageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
@@ -53,31 +58,34 @@ namespace Storage.TableStorage
 
         public async Task AddUser(UserBll userBll)
         {
+            // It needs to perform 2 queries, otherwise it would allow to have
+            // two users with the same name in different cities
+
             await Task.Run(() =>
             {
-                try
+                var table = GetStorageTable();
+
+                if (this.ContainsUser(userBll).Result)
                 {
-                    var table = GetStorageTable();
-
-                    var user = UserEntity.FromUserBll(userBll);
-
-                    var insertOperation = TableOperation.Insert(user);
-
-                    table.Execute(insertOperation);
+                    throw new Storage.StorageException("The user is already in the database");
                 }
-                catch (StorageException)
-                {
-                    throw new Storage.StorageException("The user cannot be added to the database");
-                }
+
+                var user = UserEntity.FromUserBll(userBll);
+
+                var insertOperation = TableOperation.Insert(user);
+
+                table.Execute(insertOperation);
             });
         }
 
         public async Task<UserBll> GetUser(string nickname)
         {
+            // Not using Contains so it does not perform two queries
+
             return await Task.Run(() =>
             {
                 var table = GetStorageTable();
-
+                
                 var retrievedUser = UserTableStorage.FindUserByNickname(table, nickname).FirstOrDefault();
 
                 if (retrievedUser == null)
@@ -95,18 +103,7 @@ namespace Storage.TableStorage
             {
                 var table = GetStorageTable();
 
-                if (userBll.City != null)
-                {
-                    var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
-
-                    var retrievedResult = table.Execute(retrieveOperation);
-
-                    return retrievedResult.Result != null;
-                }
-                else
-                {
-                    return UserTableStorage.FindUserByNickname(table, userBll.Nickname).Any();
-                }
+                return UserTableStorage.FindUserByNickname(table, userBll.Nickname).Any();
             });
         }
 
@@ -116,20 +113,18 @@ namespace Storage.TableStorage
             {
                 var table = GetStorageTable();
 
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
+                var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
 
-                var retrievedResult = table.Execute(retrieveOperation);
-
-                var updateEntity = retrievedResult.Result as UserEntity;
-
-                if (updateEntity != null)
+                if (retrievedUser == null)
                 {
-                    updateEntity.Merge(UserEntity.FromUserBll(userBll));
-
-                    var insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
-
-                    table.Execute(insertOrReplaceOperation);
+                    throw new Storage.StorageException("The user is not in the database");
                 }
+
+                retrievedUser.Merge(UserEntity.FromUserBll(userBll));
+
+                var insertOrReplaceOperation = TableOperation.InsertOrReplace(retrievedUser);
+
+                table.Execute(insertOrReplaceOperation);
             });
         }
 
@@ -139,28 +134,26 @@ namespace Storage.TableStorage
             {
                 var table = GetStorageTable();
 
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
+                var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
 
-                var retrievedResult = table.Execute(retrieveOperation);
-
-                var deleteEntity = retrievedResult.Result as UserEntity;
-
-                if (deleteEntity != null)
+                if (retrievedUser == null)
                 {
-                    var deleteOperation = TableOperation.Delete(deleteEntity);
-
-                    table.Execute(deleteOperation);
+                    throw new Storage.StorageException("The user is not in the database");
                 }
+
+                var deleteOperation = TableOperation.Delete(retrievedUser);
+
+                table.Execute(deleteOperation);
             });
         }
 
-        public async Task DeleteAllUsers(string city)
+        public async Task DeleteAllUsers()
         {
             await Task.Run(() =>
             {
                 var table = GetStorageTable();
 
-                var query = new TableQuery<UserEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, city));
+                var query = new TableQuery<UserEntity>();
 
                 foreach (var entity in table.ExecuteQuery(query))
                 {

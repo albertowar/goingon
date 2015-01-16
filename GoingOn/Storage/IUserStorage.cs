@@ -16,35 +16,42 @@ namespace Storage
 
     public interface IUserStorage
     {
-        /**
-         * Adds a new user to the database.
-         * If the user already exists in the database throws an exception.
-         * */
+        /// <summary>
+        /// Adds the user.
+        /// </summary>
+        /// <param name="userBll">The user BLL.</param>
+        /// <exception cref="StorageException">If the user is already in the database.</exception>
         Task AddUser(UserBll userBll);
 
-        /**
-         * 
-         * */
+        /// <summary>
+        /// Gets the user.
+        /// </summary>
+        /// <param name="nickname">The nickname.</param>
+        /// /// <exception cref="StorageException">If the user is not in the database.</exception>
         Task<UserBll> GetUser(string nickname);
 
-        /**
-         * 
-         * */
+        /// <summary>
+        /// Determines whether the specified user BLL contains user.
+        /// </summary>
+        /// <param name="userBll">The user BLL.</param>
         Task<bool> ContainsUser(UserBll userBll);
 
-        /**
-         * 
-         * */
+        /// <summary>
+        /// Updates the user.
+        /// </summary>
+        /// <param name="userBll">The user BLL.</param>
         Task UpdateUser(UserBll userBll);
 
-        /**
-         * 
-         * */
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        /// <param name="userBll">The user BLL.</param>
         Task DeleteUser(UserBll userBll);
 
-        /**
-         * 
-         * */
-        Task DeleteAllUsers(string city);
+        /// <summary>
+        /// Deletes all users.
+        /// </summary>
+        /// <param name="city">The city.</param>
+        Task DeleteAllUsers();
     }
 }
