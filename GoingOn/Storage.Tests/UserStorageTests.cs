@@ -21,7 +21,7 @@ namespace Storage.Tests
     [TestClass]
     public class UserStorageTests
     {
-        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today};
+        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
 
         private IUserStorage storage;
 
@@ -49,6 +49,14 @@ namespace Storage.Tests
         }
 
         [TestMethod]
+        public void TestAddExistingUser()
+        {
+            storage.AddUser(User).Wait();
+
+            AssertExtensions.Throws<StorageException>(() => storage.AddUser(User).Wait());
+        }
+
+        [TestMethod]
         public void TestGetUser()
         {
             storage.AddUser(User).Wait();
@@ -56,6 +64,12 @@ namespace Storage.Tests
             var actualUser = storage.GetUser(User.Nickname).Result;
 
             Assert.IsTrue(new UserBllEqualityComparer().Equals(User, actualUser));
+        }
+
+        [TestMethod]
+        public void TestGetNonExistingUser()
+        {
+            AssertExtensions.Throws<StorageException>(() => storage.GetUser(User.Nickname).Wait());
         }
 
         [TestMethod]
@@ -67,19 +81,35 @@ namespace Storage.Tests
         }
 
         [TestMethod]
+        public void TestContainsNonExistingUser()
+        {
+            Assert.IsFalse(storage.ContainsUser(User).Result);
+        }
+
+        [TestMethod]
         public void TestUpdateUser()
         {
             storage.AddUser(User).Wait();
 
-            UserBll updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
+            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password", City = "Malaga", RegistrationDate = DateTime.Today };
 
             storage.UpdateUser(updatedUser).Wait();
 
-            UserBll actualUser = storage.GetUser(User.Nickname).Result;
+            var actualUser = storage.GetUser(User.Nickname).Result;
 
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
             Assert.AreEqual(updatedUser.Password, actualUser.Password);
+        }
+
+        [TestMethod]
+        public void TestUpdateNonExistingUser()
+        {
+            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
+
+            storage.UpdateUser(updatedUser).Wait();
+
+            Assert.IsFalse(storage.ContainsUser(updatedUser).Result);
         }
 
         [TestMethod]
@@ -88,6 +118,14 @@ namespace Storage.Tests
             storage.AddUser(User).Wait();
 
             storage.DeleteUser(User).Wait();
+
+            Assert.IsFalse(storage.ContainsUser(User).Result);
+        }
+
+        [TestMethod]
+        public void TestDeleteNonExistingUser()
+        {
+            storage.DeleteUser(User);
 
             Assert.IsFalse(storage.ContainsUser(User).Result);
         }
@@ -111,7 +149,7 @@ namespace Storage.Tests
         {
             for (int i = 0; i < 10; ++i)
             {
-                var user = new UserBll { Nickname = "nickname" + i, Password = "password" + i };
+                var user = new UserBll { Nickname = "nickname" + i, Password = "password" + i, City = "Malaga", RegistrationDate = DateTime.Today };
                 storage.AddUser(user).Wait();
             }
         }

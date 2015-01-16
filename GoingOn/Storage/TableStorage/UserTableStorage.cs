@@ -8,6 +8,8 @@
 // </summary>
 // ****************************************************************************
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Storage.TableStorage
@@ -33,7 +35,7 @@ namespace Storage.TableStorage
         private static UserTableStorage instance;
 
         // Retrieve the storage account from the connection string.
-        private static readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
+        private static readonly CloudStorageAccount StorageAccount = CloudStorageAccount.Parse(StorageConnectionString);
 
         private UserTableStorage()
         {
@@ -53,15 +55,20 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                try
+                {
+                    var table = GetStorageTable();
 
-                var table = tableClient.GetTableReference(TableName);
+                    var user = UserEntity.FromUserBll(userBll);
 
-                var user = UserEntity.FromUserBll(userBll);
+                    var insertOperation = TableOperation.Insert(user);
 
-                var insertOperation = TableOperation.Insert(user);
-
-                table.Execute(insertOperation);
+                    table.Execute(insertOperation);
+                }
+                catch (StorageException)
+                {
+                    throw new Storage.StorageException("The user cannot be added to the database");
+                }
             });
         }
 
@@ -69,20 +76,16 @@ namespace Storage.TableStorage
         {
             return await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var table = GetStorageTable();
 
-                var table = tableClient.GetTableReference(TableName);
+                var retrievedUser = UserTableStorage.FindUserByNickname(table, nickname).FirstOrDefault();
 
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>("World", nickname);
-
-                var retrievedResult = table.Execute(retrieveOperation);
-
-                if (retrievedResult.Result == null)
+                if (retrievedUser == null)
                 {
                     throw new Storage.StorageException("The user is not in the database");
                 }
 
-                return UserEntity.ToUserBll(retrievedResult.Result as UserEntity);
+                return UserEntity.ToUserBll(retrievedUser);
             });
         }
 
@@ -90,9 +93,7 @@ namespace Storage.TableStorage
         {
             return await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
+                var table = GetStorageTable();
 
                 if (userBll.City != null)
                 {
@@ -104,14 +105,7 @@ namespace Storage.TableStorage
                 }
                 else
                 {
-                    // Finds the user throughout the partitions (used in most of the operations
-                    var query = new TableQuery<UserEntity>()
-                        .Where(TableQuery.GenerateFilterCondition(
-                            "RowKey",
-                            QueryComparisons.Equal, 
-                            userBll.Nickname));
-
-                    return table.ExecuteQuery(query).Any();
+                    return UserTableStorage.FindUserByNickname(table, userBll.Nickname).Any();
                 }
             });
         }
@@ -120,11 +114,9 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var table = GetStorageTable();
 
-                var table = tableClient.GetTableReference(TableName);
-
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>("World", userBll.Nickname);
+                var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
 
                 var retrievedResult = table.Execute(retrieveOperation);
 
@@ -145,11 +137,9 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var table = GetStorageTable();
 
-                var table = tableClient.GetTableReference(TableName);
-
-                var retrieveOperation = TableOperation.Retrieve<UserEntity>("World", userBll.Nickname);
+                var retrieveOperation = TableOperation.Retrieve<UserEntity>(userBll.City, userBll.Nickname);
 
                 var retrievedResult = table.Execute(retrieveOperation);
 
@@ -168,9 +158,7 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
+                var table = GetStorageTable();
 
                 var query = new TableQuery<UserEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, city));
 
@@ -181,5 +169,27 @@ namespace Storage.TableStorage
                 }
             });
         }
+
+        #region Helper methods
+
+        private CloudTable GetStorageTable()
+        {
+            var tableClient = StorageAccount.CreateCloudTableClient();
+
+            return tableClient.GetTableReference(TableName);
+        }
+
+        private static IEnumerable<UserEntity> FindUserByNickname(CloudTable table, string nickname)
+        {
+            var query = new TableQuery<UserEntity>()
+                .Where(TableQuery.GenerateFilterCondition(
+                    "RowKey",
+                    QueryComparisons.Equal,
+                    nickname));
+
+            return table.ExecuteQuery(query);
+        }
+
+        #endregion
     }
 }

@@ -16,11 +16,35 @@ namespace Storage
 
     public interface IUserStorage
     {
+        /**
+         * Adds a new user to the database.
+         * If the user already exists in the database throws an exception.
+         * */
         Task AddUser(UserBll userBll);
+
+        /**
+         * 
+         * */
         Task<UserBll> GetUser(string nickname);
+
+        /**
+         * 
+         * */
         Task<bool> ContainsUser(UserBll userBll);
+
+        /**
+         * 
+         * */
         Task UpdateUser(UserBll userBll);
+
+        /**
+         * 
+         * */
         Task DeleteUser(UserBll userBll);
+
+        /**
+         * 
+         * */
         Task DeleteAllUsers(string city);
     }
 }

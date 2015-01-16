@@ -17,14 +17,29 @@ namespace Storage.TableStorage.Entities
 
     public class UserEntity : TableEntity
     {
+        /**
+         * The password of the user. Mandatory.
+         */
         public string Password { get; set; }
 
+        /**
+         * The real name of the user. Optional.
+         */
         public string Name { get; set; }
 
+        /**
+         * The e-mail address of the user. Optional.
+         */
         public string Email { get; set; }
 
+        /**
+         * The birth date of the user. Optional.
+         */
         public DateTime? BirthDate { get; set; }
 
+        /**
+         * The registration date of the user. Mandatory.
+         */
         public DateTime RegistrationDate { get; set; }
 
         public static UserEntity FromUserBll(UserBll userBll)

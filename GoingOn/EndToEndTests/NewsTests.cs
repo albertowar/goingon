@@ -39,7 +39,7 @@ namespace EndToEndTests
 
         private HttpServer server;
 
-        private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234" };
+        private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga"};
         private static readonly NewsClient newsClient = new NewsClient { Title = "title", Content = "content" };
 
         [TestInitialize]
@@ -57,7 +57,7 @@ namespace EndToEndTests
         {
             webService.Dispose();
             newsStorage.DeleteAllNews().Wait();
-            userStorage.DeleteAllUsers().Wait();
+            userStorage.DeleteAllUsers("Malaga").Wait();
         }
 
         [TestMethod]

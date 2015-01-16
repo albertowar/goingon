@@ -85,7 +85,6 @@
   <ItemGroup>
     <Compile Include="NewsStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserTableStorageTests.cs" />
     <Compile Include="UserStorageTests.cs" />
   </ItemGroup>
   <ItemGroup>
