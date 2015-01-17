@@ -98,8 +98,8 @@ namespace EndToEndTests
         [TestMethod]
         public void TestUpdateUnauthorizedUser()
         {
-            var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
-            UserClient updatedUser = new UserClient { Nickname = "NotAlberto", Password = "4567" };
+            var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234", City = "Malaga" };
+            UserClient updatedUser = new UserClient { Nickname = "NotAlberto", Password = "4567", City = "Malaga" };
 
             UserTests.CreateUser(userClient);
             UserTests.CreateUser(otherUser);

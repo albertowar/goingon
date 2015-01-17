@@ -42,7 +42,10 @@ namespace Frontend.Entities
             return 
                 Nickname.GetHashCode() ^ 
                 Password.GetHashCode() ^
-                City.GetHashCode();
+                City.GetHashCode() ^
+                Name.GetHashCode() ^
+                Email.GetHashCode() ^
+                BirthDate.GetHashCode();
         }
 
         public static UserBll ToUserBll(User user)
@@ -51,17 +54,10 @@ namespace Frontend.Entities
             {
                 Nickname = user.Nickname,
                 Password = user.Password,
-                City = user.City
-            };
-        }
-
-        public static User FromUserBll(UserBll user)
-        {
-            return new User
-            {
-                Nickname = user.Nickname,
-                Password = user.Password,
-                City = user.City
+                City = user.City,
+                Name = user.Name,
+                Email = user.Email,
+                BirthDate = user.BirthDate
             };
         }
     }

@@ -10,6 +10,7 @@
 
 namespace Frontend.Controllers
 {
+    using System;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -69,7 +70,12 @@ namespace Frontend.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
 
-            await storage.AddUser(Entities.User.ToUserBll(user));
+            // TODO: validate input of the other parameters
+
+            var userToAdd = Entities.User.ToUserBll(user);
+            userToAdd.RegistrationDate = DateTime.Now;
+
+            await storage.AddUser(userToAdd);
 
             var response = Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
             response.Headers.Location = new UserLinkFactory(Request).Self(user.Nickname).Href;
@@ -102,7 +108,10 @@ namespace Frontend.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
-            await storage.UpdateUser(Entities.User.ToUserBll(user));
+            var userToUpdate = Entities.User.ToUserBll(user);
+            userToUpdate.RegistrationDate = DateTime.Now;
+
+            await storage.UpdateUser(userToUpdate);
 
             return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
         }
