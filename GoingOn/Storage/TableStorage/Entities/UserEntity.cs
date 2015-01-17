@@ -13,6 +13,7 @@ namespace Storage.TableStorage.Entities
     using System;
 
     using Microsoft.WindowsAzure.Storage.Table;
+
     using Model.EntitiesBll;
 
     public class UserEntity : TableEntity
@@ -51,7 +52,8 @@ namespace Storage.TableStorage.Entities
                 Password = userBll.Password,
                 Name = userBll.Name,
                 Email = userBll.Email,
-                RegistrationDate = userBll.RegistrationDate
+                RegistrationDate = userBll.RegistrationDate,
+                BirthDate = userBll.BirthDate
             };
         }
 
@@ -75,7 +77,6 @@ namespace Storage.TableStorage.Entities
 
             return
                 anotherUser != null &&
-                string.Equals(this.PartitionKey, anotherUser.PartitionKey) &&
                 string.Equals(this.RowKey, anotherUser.RowKey);
         }
 

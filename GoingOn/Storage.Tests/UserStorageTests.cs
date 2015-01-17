@@ -22,7 +22,7 @@ namespace Storage.Tests
     public class UserStorageTests
     {
         // RegistrationDate has to be initializated otherwise it will get the min value that crashes on TableStorage
-        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
+        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", BirthDate = new DateTime(2014, 12, 4), RegistrationDate = new DateTime(2014, 12, 4) };
 
         private IUserStorage storage;
 
@@ -117,7 +117,7 @@ namespace Storage.Tests
         {
             storage.AddUser(User).Wait();
 
-            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password", City = "Malaga", RegistrationDate = DateTime.Today };
+            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password", City = "Dublin", BirthDate = new DateTime(2015, 12, 4) };
 
             storage.UpdateUser(updatedUser).Wait();
 
@@ -126,6 +126,8 @@ namespace Storage.Tests
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
             Assert.AreEqual(updatedUser.Password, actualUser.Password);
+            Assert.AreEqual(updatedUser.City, actualUser.City);
+            Assert.AreEqual(updatedUser.BirthDate, actualUser.BirthDate);
         }
 
         [TestMethod]
@@ -149,9 +151,21 @@ namespace Storage.Tests
         [TestMethod]
         public void TestDeleteNonExistingUser()
         {
-            storage.DeleteUser(User);
+            AssertExtensions.Throws<StorageException>(() => storage.DeleteUser(User).Wait());
+        }
 
-            Assert.IsFalse(storage.ContainsUser(User).Result);
+        [TestMethod]
+        public void TestDeleteUserDifferentCities()
+        {
+            var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
+
+            storage.AddUser(user).Wait();
+
+            var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
+
+            storage.DeleteUser(differentCityUser).Wait();
+
+            Assert.IsFalse(storage.ContainsUser(user).Result);
         }
 
         [TestMethod]
