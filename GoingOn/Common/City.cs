@@ -17,7 +17,7 @@ namespace Common
         Sevilla = 2,
         Cadiz = 3,
         Almeria = 4,
-        Cordova = 5,
+        Cordoba = 5,
         Huelva = 6
     }
 }

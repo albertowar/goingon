@@ -28,7 +28,7 @@ namespace Frontend.Validation
 
         bool IsValidEmail(string email);
 
-        bool IsValidBirthDate(DateTime? birthDate);
+        bool IsValidBirthDate(DateTime birthDate);
 
         bool IsValidNews(News news);
 

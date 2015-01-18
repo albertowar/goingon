@@ -33,7 +33,7 @@ namespace Frontend
             var container = new UnityContainer();
             container.RegisterInstance<IUserStorage>(UserTableStorage.GetInstance());
             container.RegisterInstance<INewsStorage>(NewsTableStorage.GetInstance());
-            container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
+            container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks(new ApiInputValidationChecks()));
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
             configuration.DependencyResolver = new UnityResolver(container);
 

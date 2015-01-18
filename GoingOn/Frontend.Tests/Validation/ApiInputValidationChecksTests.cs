@@ -23,20 +23,26 @@ namespace GoingOn.Tests.Validation
     public class ApiInputValidationChecksTests
     {
         private ApiInputValidationChecks inputValidation;
+        private Mock<IApiInputValidationChecks> mockInputValidation;
 
         [TestInitialize]
         public void Initialize()
         {
-            inputValidation = new ApiInputValidationChecks();
+            mockInputValidation = new Mock<IApiInputValidationChecks>();
+            inputValidation = new ApiInputValidationChecks(mockInputValidation.Object);
         }
-
-        // TODO: separate concerns
-        // Test public methods and then test behaviour of IsValidUser with the results of them
 
         [TestMethod]
         public void TestIsValidUserSucceedsWithWellFormedUser()
         {
-            var user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+            User user = new User();
+
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
 
             Assert.IsTrue(inputValidation.IsValidUser(user));
         }
@@ -48,79 +54,97 @@ namespace GoingOn.Tests.Validation
         }
 
         [TestMethod]
-        public void TestIsValidUserFailsWithWrongNickname()
+        public void TestIsValidNickname()
         {
-            var nullNickNameUser = new User { Nickname = null, Password = "password", City = "Malaga" }; 
-            var emptyNickNameUser = new User { Nickname = string.Empty, Password = "password", City = "Malaga" }; 
-            var whiteSpaceNickNameUser = new User { Nickname = " \n\t", Password = "password", City = "Malaga" }; 
-
-            Assert.IsFalse(inputValidation.IsValidUser(nullNickNameUser));
-            Assert.IsFalse(inputValidation.IsValidUser(emptyNickNameUser));
-            Assert.IsFalse(inputValidation.IsValidUser(whiteSpaceNickNameUser));
+            Assert.IsTrue(inputValidation.IsValidNickName("nickname"));
+            Assert.IsFalse(inputValidation.IsValidNickName(null));
+            Assert.IsFalse(inputValidation.IsValidNickName(string.Empty));
+            Assert.IsFalse(inputValidation.IsValidNickName(" \n\t"));   
         }
 
         [TestMethod]
-        public void TestIsValidUserFailsWithWrongPassword()
+        public void TestIsValidUserFailsWithIfWhenIsValidNicknameFails()
         {
-            var nullPasswordUser = new User { Nickname = "nickname", Password = null, City = "Malaga" };
-            var emptyPasswordUser = new User { Nickname = "nickname", Password = string.Empty, City = "Malaga" };
-            var whiteSpacePasswordUser = new User { Nickname = "nickname", Password = " \n\t", City = "Malaga" };
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(false);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
 
-            Assert.IsFalse(inputValidation.IsValidUser(nullPasswordUser));
-            Assert.IsFalse(inputValidation.IsValidUser(emptyPasswordUser));
-            Assert.IsFalse(inputValidation.IsValidUser(whiteSpacePasswordUser));
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
         }
 
         [TestMethod]
-        public void TestIsValidUserSucceedsWithGoodCity()
+        public void TestIsValidPassword()
         {
-            var user1 = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
-            var user2 = new User { Nickname = "nickname", Password = "password", City = "Granada" };
-            var user3 = new User { Nickname = "nickname", Password = "password", City = "Sevilla" };
-            var user4 = new User { Nickname = "nickname", Password = "password", City = "Cadiz" };
-            var user5 = new User { Nickname = "nickname", Password = "password", City = "Almeria" };
-            var user6 = new User { Nickname = "nickname", Password = "password", City = "Cordova" };
-            var user7 = new User { Nickname = "nickname", Password = "password", City = "Huelva" };
-
-            Assert.IsTrue(inputValidation.IsValidUser(user1));
-            Assert.IsTrue(inputValidation.IsValidUser(user2));
-            Assert.IsTrue(inputValidation.IsValidUser(user3));
-            Assert.IsTrue(inputValidation.IsValidUser(user4));
-            Assert.IsTrue(inputValidation.IsValidUser(user5));
-            Assert.IsTrue(inputValidation.IsValidUser(user6));
-            Assert.IsTrue(inputValidation.IsValidUser(user7));
+            Assert.IsTrue(inputValidation.IsValidPassword("password"));
+            Assert.IsFalse(inputValidation.IsValidPassword(null));
+            Assert.IsFalse(inputValidation.IsValidPassword(string.Empty));
+            Assert.IsFalse(inputValidation.IsValidPassword(" \n\t"));   
         }
 
         [TestMethod]
-        public void TestIsValidUserFailsWithWrongCity()
+        public void TestIsValidUserFailsWithIfWhenIsValidPasswordFails()
         {
-            var nullPasswordUser = new User { Nickname = "nickname", Password = "password", City = null };
-            var emptyPasswordUser = new User { Nickname = "nickname", Password = "password", City = string.Empty };
-            var whiteSpacePasswordUser = new User { Nickname = "nickname", Password = "password", City = " \n\t" };
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(false);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
 
-            Assert.IsFalse(inputValidation.IsValidUser(nullPasswordUser));
-            Assert.IsFalse(inputValidation.IsValidUser(emptyPasswordUser));
-            Assert.IsFalse(inputValidation.IsValidUser(whiteSpacePasswordUser));
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
         }
 
         [TestMethod]
-        public void TestIsValidUserSucceedsWithGoodName()
+        public void TestIsValidCity()
         {
-            var nullNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
-            var randomNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = "Alberto" };
-
-            Assert.IsTrue(inputValidation.IsValidUser(nullNameUser));
-            Assert.IsTrue(inputValidation.IsValidUser(randomNameUser));
+            Assert.IsTrue(inputValidation.IsValidCity("Malaga"));
+            Assert.IsTrue(inputValidation.IsValidCity("Granada"));
+            Assert.IsTrue(inputValidation.IsValidCity("Sevilla"));
+            Assert.IsTrue(inputValidation.IsValidCity("Cadiz"));
+            Assert.IsTrue(inputValidation.IsValidCity("Almeria"));
+            Assert.IsTrue(inputValidation.IsValidCity("Cordoba"));
+            Assert.IsTrue(inputValidation.IsValidCity("Huelva"));
+            Assert.IsFalse(inputValidation.IsValidCity(null));
+            Assert.IsFalse(inputValidation.IsValidCity(string.Empty));
+            Assert.IsFalse(inputValidation.IsValidCity(" \n\t"));
         }
 
         [TestMethod]
-        public void TestIsValidUserFailsWithWrongName()
+        public void TestIsValidUserFailsWithIfWhenIsValidCityFails()
         {
-            var emptyNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = string.Empty };
-            var whiteSpaceNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = " \n\t" };
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(false);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
 
-            Assert.IsFalse(inputValidation.IsValidUser(emptyNameUser));
-            Assert.IsFalse(inputValidation.IsValidUser(whiteSpaceNameUser));
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
+        }
+
+        [TestMethod]
+        public void TestIsValidName()
+        {
+            Assert.IsTrue(inputValidation.IsValidName(null));
+            Assert.IsTrue(inputValidation.IsValidName("Alberto"));
+            Assert.IsFalse(inputValidation.IsValidName(string.Empty));
+            Assert.IsFalse(inputValidation.IsValidName(" \n\t"));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserFailsWithIfWhenIsValidNameFails()
+        {
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(false);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
+
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
         }
 
         [TestMethod]
@@ -131,16 +155,35 @@ namespace GoingOn.Tests.Validation
         }
 
         [TestMethod]
-        public void TestIsValidUserFailsWithWrongEmail()
+        public void TestIsValidUserFailsWithIfWhenIsValidEmailFails()
         {
-            // TODO: add setups
-            Assert.IsFalse(inputValidation.IsValidUser(It.IsAny<User>()));
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(false);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
+
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
         }
 
         [TestMethod]
         public void TestIsValidUserSucceedsWithAnyBirthDate()
         {
             Assert.IsTrue(inputValidation.IsValidBirthDate(It.IsAny<DateTime>()));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserFailsWithIfWhenIsValidBirthDateFails()
+        {
+            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(false);
+
+            Assert.IsFalse(this.inputValidation.IsValidUser(It.IsAny<User>()));
         }
 
         [TestMethod]

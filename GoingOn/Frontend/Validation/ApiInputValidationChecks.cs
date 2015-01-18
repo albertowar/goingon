@@ -21,16 +21,27 @@ namespace Frontend.Validation
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
+        private readonly IApiInputValidationChecks inputValidation;
+
+        public ApiInputValidationChecks()
+        {
+        }
+
+        public ApiInputValidationChecks(IApiInputValidationChecks inputValidation)
+        {
+            this.inputValidation = inputValidation;
+        }
+
         public bool IsValidUser(User user)
         {
             return 
                 user != null &&
-                this.IsValidNickName(user.Nickname) &&
-                this.IsValidPassword(user.Password) &&
-                this.IsValidCity(user.City) &&
-                this.IsValidName(user.Name) &&
-                this.IsValidEmail(user.Email) &&
-                this.IsValidBirthDate(user.BirthDate);
+                this.inputValidation.IsValidNickName(user.Nickname) &&
+                this.inputValidation.IsValidPassword(user.Password) &&
+                this.inputValidation.IsValidCity(user.City) &&
+                this.inputValidation.IsValidName(user.Name) &&
+                this.inputValidation.IsValidEmail(user.Email) &&
+                ((user.BirthDate == null) || this.inputValidation.IsValidBirthDate((DateTime)user.BirthDate));
         }
 
         public bool IsValidNickName(string nickName)
@@ -98,7 +109,7 @@ namespace Frontend.Validation
             }
         }
 
-        public bool IsValidBirthDate(DateTime? birthDate)
+        public bool IsValidBirthDate(DateTime birthDate)
         {
             return true;
         }
