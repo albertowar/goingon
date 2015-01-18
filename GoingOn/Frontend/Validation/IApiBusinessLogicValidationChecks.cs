@@ -8,11 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-using Storage;
-
 namespace Frontend.Validation
 {
     using Frontend.Entities;
+    using Storage;
 
     public interface IApiBusinessLogicValidationChecks
     {

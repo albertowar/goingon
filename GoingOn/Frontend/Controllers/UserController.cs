@@ -109,7 +109,6 @@ namespace Frontend.Controllers
             }
 
             var userToUpdate = Entities.User.ToUserBll(user);
-            userToUpdate.RegistrationDate = DateTime.Now;
 
             await storage.UpdateUser(userToUpdate);
 

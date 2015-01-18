@@ -11,6 +11,12 @@
 namespace Frontend.Validation
 {
     using System;
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+
+    using Microsoft.Ajax.Utilities;
+
+    using Common;
     using Frontend.Entities;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
@@ -21,7 +27,10 @@ namespace Frontend.Validation
                 user != null &&
                 this.IsValidNickName(user.Nickname) &&
                 this.IsValidPassword(user.Password) &&
-                this.IsValidCity(user.City);
+                this.IsValidCity(user.City) &&
+                this.IsValidName(user.Name) &&
+                this.IsValidEmail(user.Email) &&
+                this.IsValidBirthDate(user.BirthDate);
         }
 
         public bool IsValidNickName(string nickName)
@@ -34,9 +43,64 @@ namespace Frontend.Validation
             return !string.IsNullOrWhiteSpace(password);
         }
 
-        public bool IsValidCity(string city)
+        public bool IsValidCity(string cityString)
         {
-            return !string.IsNullOrWhiteSpace(city);
+            if (!string.IsNullOrWhiteSpace(cityString))
+            {
+                City city;
+                
+                return Enum.TryParse(cityString, out city);
+            }
+
+            return false;
+        }
+
+        public bool IsValidName(string name)
+        {
+            return name == null || !name.IsNullOrWhiteSpace();
+        }
+
+        /// <summary>
+        /// Validates an e-mail address according to the example in MSDN
+        /// </summary>
+        /// <see cref="http://msdn.microsoft.com/en-us/library/01escwtf(v=vs.110).aspx"/>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return true;
+            }
+
+            // Use IdnMapping class to convert Unicode domain names. 
+            try
+            {
+                email = Regex.Replace(email, @"(@)(.+)$", this.DomainMapper,
+                                        RegexOptions.None, TimeSpan.FromMilliseconds(200));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+
+            // Return true if strIn is in valid e-mail format. 
+            try
+            {
+                return Regex.IsMatch(email,
+                        @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+                        RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsValidBirthDate(DateTime? birthDate)
+        {
+            return true;
         }
 
         public bool IsValidNews(News news)
@@ -62,5 +126,27 @@ namespace Frontend.Validation
         {
             return !string.IsNullOrWhiteSpace(content);
         }
+
+        #region Helper methods
+
+        private string DomainMapper(Match match)
+        {
+            // IdnMapping class with default property values.
+            IdnMapping idn = new IdnMapping();
+
+            string domainName = match.Groups[2].Value;
+
+            try
+            {
+                domainName = idn.GetAscii(domainName);
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            return match.Groups[1].Value + domainName;
+        }
+
+        #endregion
     }
 }

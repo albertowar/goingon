@@ -219,6 +219,10 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{73d68ff8-7f66-426f-8320-89bc224d3b09}</Project>
       <Name>Model</Name>

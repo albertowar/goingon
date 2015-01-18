@@ -10,6 +10,8 @@
 
 namespace Frontend.Validation
 {
+    using System;
+
     using Frontend.Entities;
 
     public interface IApiInputValidationChecks
@@ -19,6 +21,14 @@ namespace Frontend.Validation
         bool IsValidNickName(string nickName);
 
         bool IsValidPassword(string password);
+
+        bool IsValidCity(string city);
+
+        bool IsValidName(string name);
+
+        bool IsValidEmail(string email);
+
+        bool IsValidBirthDate(DateTime? birthDate);
 
         bool IsValidNews(News news);
 

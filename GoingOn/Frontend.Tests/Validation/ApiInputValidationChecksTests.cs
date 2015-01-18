@@ -8,15 +8,16 @@
 // </summary>
 // ****************************************************************************
 
-using System;
-using Frontend.Entities;
-using Frontend.Validation;
-using Model.EntitiesBll;
-using Moq;
-
 namespace GoingOn.Tests.Validation
 {
+    using System;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using Moq;
+
+    using Frontend.Entities;
+    using Frontend.Validation;
 
     [TestClass]
     public class ApiInputValidationChecksTests
@@ -28,6 +29,9 @@ namespace GoingOn.Tests.Validation
         {
             inputValidation = new ApiInputValidationChecks();
         }
+
+        // TODO: separate concerns
+        // Test public methods and then test behaviour of IsValidUser with the results of them
 
         [TestMethod]
         public void TestIsValidUserSucceedsWithWellFormedUser()
@@ -68,6 +72,26 @@ namespace GoingOn.Tests.Validation
         }
 
         [TestMethod]
+        public void TestIsValidUserSucceedsWithGoodCity()
+        {
+            var user1 = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+            var user2 = new User { Nickname = "nickname", Password = "password", City = "Granada" };
+            var user3 = new User { Nickname = "nickname", Password = "password", City = "Sevilla" };
+            var user4 = new User { Nickname = "nickname", Password = "password", City = "Cadiz" };
+            var user5 = new User { Nickname = "nickname", Password = "password", City = "Almeria" };
+            var user6 = new User { Nickname = "nickname", Password = "password", City = "Cordova" };
+            var user7 = new User { Nickname = "nickname", Password = "password", City = "Huelva" };
+
+            Assert.IsTrue(inputValidation.IsValidUser(user1));
+            Assert.IsTrue(inputValidation.IsValidUser(user2));
+            Assert.IsTrue(inputValidation.IsValidUser(user3));
+            Assert.IsTrue(inputValidation.IsValidUser(user4));
+            Assert.IsTrue(inputValidation.IsValidUser(user5));
+            Assert.IsTrue(inputValidation.IsValidUser(user6));
+            Assert.IsTrue(inputValidation.IsValidUser(user7));
+        }
+
+        [TestMethod]
         public void TestIsValidUserFailsWithWrongCity()
         {
             var nullPasswordUser = new User { Nickname = "nickname", Password = "password", City = null };
@@ -77,6 +101,46 @@ namespace GoingOn.Tests.Validation
             Assert.IsFalse(inputValidation.IsValidUser(nullPasswordUser));
             Assert.IsFalse(inputValidation.IsValidUser(emptyPasswordUser));
             Assert.IsFalse(inputValidation.IsValidUser(whiteSpacePasswordUser));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserSucceedsWithGoodName()
+        {
+            var nullNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+            var randomNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = "Alberto" };
+
+            Assert.IsTrue(inputValidation.IsValidUser(nullNameUser));
+            Assert.IsTrue(inputValidation.IsValidUser(randomNameUser));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserFailsWithWrongName()
+        {
+            var emptyNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = string.Empty };
+            var whiteSpaceNameUser = new User { Nickname = "nickname", Password = "password", City = "Malaga", Name = " \n\t" };
+
+            Assert.IsFalse(inputValidation.IsValidUser(emptyNameUser));
+            Assert.IsFalse(inputValidation.IsValidUser(whiteSpaceNameUser));
+        }
+
+        [TestMethod]
+        public void TestIsValidEmail()
+        {
+            Assert.IsTrue(inputValidation.IsValidEmail("alberto@gmail.com"));
+            Assert.IsFalse(inputValidation.IsValidEmail("something else"));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserFailsWithWrongEmail()
+        {
+            // TODO: add setups
+            Assert.IsFalse(inputValidation.IsValidUser(It.IsAny<User>()));
+        }
+
+        [TestMethod]
+        public void TestIsValidUserSucceedsWithAnyBirthDate()
+        {
+            Assert.IsTrue(inputValidation.IsValidBirthDate(It.IsAny<DateTime>()));
         }
 
         [TestMethod]

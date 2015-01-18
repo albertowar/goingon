@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-using Storage;
-
 namespace Frontend.Validation
 {
     using System;
+
     using Frontend.Entities;
+    using Storage;
 
     public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
@@ -24,7 +24,7 @@ namespace Frontend.Validation
 
         public bool IsValidGetUser(IUserStorage storage, string nickname)
         {
-            return this.IsUserStored(storage, new User{ Nickname = nickname });
+            return this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
         public bool IsValidUpdateUser(IUserStorage storage, User user)
