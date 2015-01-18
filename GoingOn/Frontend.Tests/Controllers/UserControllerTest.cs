@@ -8,11 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Controllers;
-using Frontend.Entities;
-using Frontend.Validation;
-using Storage;
-
 namespace GoingOn.Tests.Controllers
 {
     using System;
@@ -29,7 +24,11 @@ namespace GoingOn.Tests.Controllers
     using WebApiContrib.Testing;
 
     using Common.Tests;
+    using Frontend.Controllers;
+    using Frontend.Entities;
+    using Frontend.Validation;
     using Model.EntitiesBll;
+    using Storage;
 
     [TestClass]
     public class UserControllerTest
@@ -38,7 +37,7 @@ namespace GoingOn.Tests.Controllers
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
-        private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+        private static readonly User User = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
         [TestInitialize]
         public void Initizalize()
@@ -53,7 +52,7 @@ namespace GoingOn.Tests.Controllers
         {
             inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
-            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(user)));
+            userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(User)));
 
             var userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
@@ -65,7 +64,7 @@ namespace GoingOn.Tests.Controllers
             var actualUser = JsonConvert.DeserializeObject<UserREST>(jsonContent);
             
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(user, actualUser.User));
+            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(User, actualUser.User));
             Assert.IsTrue(actualUser.Links.Any());
             Assert.AreEqual("self", actualUser.Links.First().Rel);
             Assert.AreEqual(new Uri("http://test.com/api/user/nickname"), actualUser.Links.First().Href);
@@ -78,12 +77,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
             userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-
-            HttpResponseMessage response = userController.Get("username").Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -93,12 +87,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsValidGetUser(userStorageMock.Object, It.IsAny<string>())).Returns(false);
             userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-
-            HttpResponseMessage response = userController.Get("nickname").Result;
-
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -110,7 +99,7 @@ namespace GoingOn.Tests.Controllers
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
 
-            HttpResponseMessage response = userController.Post(user).Result;
+            HttpResponseMessage response = userController.Post(User).Result;
 
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.AreEqual(new Uri("http://test.com/api/user/nickname"), response.Headers.Location);
@@ -123,13 +112,7 @@ namespace GoingOn.Tests.Controllers
             inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(false);
             businessValidation.Setup(validation => validation.IsValidCreateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-
-            HttpResponseMessage response = userController.Post(user).Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            userStorageMock.Verify(storage => storage.AddUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPostFails(url: "http://test.com/api/user/", user: User, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -138,13 +121,7 @@ namespace GoingOn.Tests.Controllers
             inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidCreateUser(userStorageMock.Object, It.IsAny<User>())).Returns(false);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-
-            HttpResponseMessage response = userController.Post(user).Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            userStorageMock.Verify(storage => storage.AddUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPostFails(url: "http://test.com/api/user/", user: User, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -157,9 +134,9 @@ namespace GoingOn.Tests.Controllers
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
             userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
+            userController.User = new GenericPrincipal(new GenericIdentity(User.Nickname), null);
 
-            HttpResponseMessage response = userController.Patch("username", user).Result;
+            HttpResponseMessage response = userController.Patch("username", User).Result;
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
             userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Once());
@@ -173,14 +150,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidUpdateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
-
-            HttpResponseMessage response = userController.Patch("username", user).Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPatchFails(nickname: "username", url: "http://test.com/api/user/nickname", user: User, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -191,14 +161,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidUpdateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
-
-            HttpResponseMessage response = userController.Patch("username", user).Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPatchFails(nickname: "nickname", url: "http://test.com/api/user/nickname", user: User, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -209,14 +172,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidUpdateUser(userStorageMock.Object, It.IsAny<User>())).Returns(false);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
-
-            HttpResponseMessage response = userController.Patch("username", user).Result;
-
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPatchFails(nickname: "nickname", url: "http://test.com/api/user/nickname", user: User, resultCode: HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -227,14 +183,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
             businessValidation.Setup(validation => validation.IsValidUpdateUser(userStorageMock.Object, It.IsAny<User>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
-
-            HttpResponseMessage response = userController.Patch("username", user).Result;
-
-            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-            userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertPatchFails(nickname: "username", url: "http://test.com/api/user/nickname", user: User, resultCode: HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
@@ -245,10 +194,10 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsValidDeleteUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
 
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + user.Nickname, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
+            userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + User.Nickname, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.User = new GenericPrincipal(new GenericIdentity(User.Nickname), null); 
 
-            HttpResponseMessage response = userController.Delete(user.Nickname).Result;
+            HttpResponseMessage response = userController.Delete(User.Nickname).Result;
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
             userStorageMock.Verify(storage => storage.DeleteUser(It.IsAny<UserBll>()), Times.Once());
@@ -261,14 +210,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidDeleteUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + user.Nickname, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
-
-            HttpResponseMessage response = userController.Delete(user.Nickname).Result;
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            userStorageMock.Verify(storage => storage.DeleteUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertDeleteFails(nickname: User.Nickname, url: "http://test.com/api/user/" + User.Nickname, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -278,14 +220,7 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
             businessValidation.Setup(validation => validation.IsValidDeleteUser(userStorageMock.Object, It.IsAny<string>())).Returns(true);
 
-            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + user.Nickname, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
-
-            HttpResponseMessage response = userController.Delete(user.Nickname).Result;
-
-            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-            userStorageMock.Verify(storage => storage.DeleteUser(It.IsAny<UserBll>()), Times.Never());
+            this.AssertDeleteFails(nickname: User.Nickname, url: "http://test.com/api/user/" + User.Nickname, resultCode: HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
@@ -295,14 +230,57 @@ namespace GoingOn.Tests.Controllers
             businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             businessValidation.Setup(validation => validation.IsValidDeleteUser(userStorageMock.Object, It.IsAny<string>())).Returns(false);
 
+            this.AssertDeleteFails(nickname: User.Nickname, url: "http://test.com/api/user/" + User.Nickname, resultCode: HttpStatusCode.NotFound);
+        }
+
+        #region Assert helper methods
+
+        private void AssertGetFails(string url, string nickname, HttpStatusCode resultCode)
+        {
             UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + user.Nickname, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
-            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null); 
+            userController.ConfigureForTesting(HttpMethod.Get, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
 
-            HttpResponseMessage response = userController.Delete(user.Nickname).Result;
+            HttpResponseMessage response = userController.Get(nickname).Result;
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.AreEqual(resultCode, response.StatusCode);
+            userStorageMock.Verify(storage => storage.GetUser(It.IsAny<string>()), Times.Never());
+        }
+
+        private void AssertPostFails(string url, User user, HttpStatusCode resultCode)
+        {
+            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
+            userController.ConfigureForTesting(HttpMethod.Post, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+
+            HttpResponseMessage response = userController.Post(user).Result;
+
+            Assert.AreEqual(resultCode, response.StatusCode);
+            userStorageMock.Verify(storage => storage.AddUser(It.IsAny<UserBll>()), Times.Never());
+        }
+
+        private void AssertPatchFails(string nickname, string url, User user, HttpStatusCode resultCode)
+        {
+            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
+            userController.ConfigureForTesting(new HttpMethod("PATCH"), url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
+
+            HttpResponseMessage response = userController.Patch(nickname, user).Result;
+
+            Assert.AreEqual(resultCode, response.StatusCode);
+            userStorageMock.Verify(storage => storage.UpdateUser(It.IsAny<UserBll>()), Times.Never());
+        }
+
+        private void AssertDeleteFails(string nickname, string url, HttpStatusCode resultCode)
+        {
+            UserController userController = new UserController(userStorageMock.Object, inputValidation.Object, businessValidation.Object);
+            userController.ConfigureForTesting(HttpMethod.Delete, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.User = new GenericPrincipal(new GenericIdentity(User.Nickname), null);
+
+            HttpResponseMessage response = userController.Delete(nickname).Result;
+
+            Assert.AreEqual(resultCode, response.StatusCode);
             userStorageMock.Verify(storage => storage.DeleteUser(It.IsAny<UserBll>()), Times.Never());
         }
+
+        #endregion
     }
 }
