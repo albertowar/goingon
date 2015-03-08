@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="PersistenceException.cs" company="Universidad de Malaga">
+// <copyright file="FrontendException.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,15 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage
+namespace Frontend.Common
 {
     using System;
 
-    [Serializable]
-    public class StorageException : Exception
+    public class InputValidationException : Exception
     {
-        public StorageException(string message)
-            : base(message)
+        public InputValidationException(string message) : base(message)
         {
         }
     }

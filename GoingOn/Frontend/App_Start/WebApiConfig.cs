@@ -40,6 +40,7 @@ namespace Frontend
             // Web API routes
             configuration.MapHttpAttributeRoutes();
 
+            // TODO: comment out when everything is up and running
             configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

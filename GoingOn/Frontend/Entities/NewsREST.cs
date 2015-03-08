@@ -46,7 +46,7 @@ namespace Frontend.Entities
 
         public static NewsREST FromNewsBll(NewsBll newsBll, HttpRequestMessage request)
         {
-            return new NewsREST(new News(newsBll.Title, newsBll.Content), newsBll.Author, newsBll.Id, newsBll.Date, request);
+            return new NewsREST(new News { Title = newsBll.Title, Content = newsBll.Content, City = newsBll.City }, newsBll.Author, newsBll.Id, (DateTime)newsBll.Date, request);
         }
     }
 }

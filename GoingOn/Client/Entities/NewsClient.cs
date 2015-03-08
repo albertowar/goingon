@@ -8,15 +8,26 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Entities;
-
 namespace Client.Entities
 {
+    using Frontend.Entities;
+
     public class NewsClient
     {
+        /*
+         * The title of the news. Mandatory.
+         */
         public string Title { get; set; }
 
+        /*
+         * The content of the news. Mandatory.
+         */
         public string Content { get; set; }
+
+        /*
+         * The city of the news. Mandatory.
+         */
+        public string City { get; set; }
 
         public static NewsClient FromNewsREST(NewsREST newsREST)
         {
@@ -25,7 +36,7 @@ namespace Client.Entities
 
         public static News ToNewsClient(NewsClient newsClient)
         {
-            return new News(newsClient.Title, newsClient.Content);
+            return new News { Title = newsClient.Title, Content = newsClient.Content, City = newsClient.City };
         }
     }
 }

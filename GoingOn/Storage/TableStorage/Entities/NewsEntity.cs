@@ -18,49 +18,45 @@ namespace Storage.TableStorage.Entities
 
     public class NewsEntity : TableEntity
     {
-        // Constants
-        public const string City = "World";
-
+        /*
+         * The title of the news. Mandatory.
+         */
         public string Title { get; set; }
+
+        /*
+         * The content of the news. Mandatory.
+         */
         public string Content { get; set; }
+
+        /*
+         * The author of the news. Mandatory.
+         */
         public string Author { get; set; }
-        public DateTime Date { get; set; }
-        public int Rating { get; set; }
-
-        public NewsEntity() { }
-
-        public NewsEntity(Guid id)
-        {
-            this.PartitionKey = City;
-            this.RowKey = id.ToString();
-        }
-
-        public NewsEntity(Guid id, string title, string content, string author, DateTime date, int rating)
-        {
-            this.PartitionKey = City;
-            this.RowKey = id.ToString();
-            this.Title = title;
-            this.Content = content;
-            this.Author = author;
-            this.Date = date;
-            this.Rating = rating;
-        }
 
         public static NewsEntity FromNewsBll(NewsBll newsBll)
         {
-            return new NewsEntity(newsBll.Id, newsBll.Title, newsBll.Content, newsBll.Author, newsBll.Date, newsBll.Rating);
+            return new NewsEntity
+            {
+                PartitionKey = NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date.Value),
+                RowKey = newsBll.Id.ToString(),
+                Title = newsBll.Title,
+                Content = newsBll.Content,
+                Author = newsBll.Author
+            };
         }
 
         public static NewsBll ToNewsBll(NewsEntity newsEntity)
         {
+            var pairCityDate = NewsEntity.ExtractFromPartitionKey(newsEntity.PartitionKey);
+
             return new NewsBll
             {
                 Id = Guid.Parse(newsEntity.RowKey),
+                City = pairCityDate.Item1,
                 Title = newsEntity.Title,
                 Content = newsEntity.Content,
                 Author = newsEntity.Author,
-                Date = newsEntity.Date,
-                Rating = newsEntity.Rating
+                Date = pairCityDate.Item2
             };
         }
 
@@ -69,14 +65,16 @@ namespace Storage.TableStorage.Entities
             NewsEntity anotherNews = anotherNewsObject as NewsEntity;
 
             return
-                anotherNews != null &&
-                this.RowKey.Equals(anotherNews.RowKey);
+                anotherNews != null 
+                && string.Equals(this.PartitionKey, anotherNews.PartitionKey)
+                && this.RowKey.Equals(anotherNews.RowKey);
         }
 
         public override int GetHashCode()
         {
             return
-                this.RowKey.GetHashCode();
+                this.PartitionKey.GetHashCode() 
+                ^ this.RowKey.GetHashCode();
         }
 
         public void Merge(NewsEntity newsMemory)
@@ -92,9 +90,19 @@ namespace Storage.TableStorage.Entities
                 {
                     this.Content = newsMemory.Content;
                 }
-
-                this.Date = newsMemory.Date;
             }
+        }
+
+        public static string BuildPartitionkey(string city, DateTime date)
+        {
+            return string.Format("{0};{1}", city, date);
+        }
+
+        public static Tuple<string, DateTime> ExtractFromPartitionKey(string partitionKey)
+        {
+            var values = partitionKey.Split(';');
+
+            return new Tuple<string, DateTime>(values[0], DateTime.Parse(values[1]));
         }
     }
 }

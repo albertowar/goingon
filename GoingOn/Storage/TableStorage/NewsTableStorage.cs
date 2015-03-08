@@ -14,8 +14,11 @@ namespace Storage.TableStorage
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Microsoft.WindowsAzure.Storage.Table.Queryable;
+
     using Model.EntitiesBll;
     using Storage.TableStorage.Entities;
 
@@ -37,90 +40,82 @@ namespace Storage.TableStorage
 
         public static NewsTableStorage GetInstance()
         {
-            if (NewsTableStorage.instance == null)
-            {
-                NewsTableStorage.instance = new NewsTableStorage();
-            }
-
-            return NewsTableStorage.instance;
+            return NewsTableStorage.instance ?? (NewsTableStorage.instance = new NewsTableStorage());
         }
 
         public async Task AddNews(NewsBll newsBll)
         {
-            await Task.Run(() =>
+            var tableClient = this.storageAccount.CreateCloudTableClient();
+
+            var table = tableClient.GetTableReference(TableName);
+
+            await table.ExecuteAsync(TableOperation.InsertOrReplace(NewsEntity.FromNewsBll(newsBll)));
+        }
+
+        public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
+        {
+            var tableClient = this.storageAccount.CreateCloudTableClient();
+
+            var table = tableClient.GetTableReference(TableName);
+
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, NewsEntity.BuildPartitionkey(city, date));
+            var rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
+
+            var filter = TableQuery.CombineFilters(
+                partitionKeyFilter,
+                TableOperators.And,
+                rowKeyFilter);
+
+            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
+
+            var retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            var element = retrievedNews.FirstOrDefault();
+
+            if (element == null)
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                throw new Storage.StorageException("The news is not in the database");
+            }
+
+            return NewsEntity.ToNewsBll(element);
+        }
+
+        public Task<bool> ContainsNews(string city, Guid id)
+        {
+            return Task.Run(() =>{
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 
-                var news = NewsEntity.FromNewsBll(newsBll);
+                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == id.ToString()).AsTableQuery();
 
-                var insertOperation = TableOperation.Insert(news);
+                var retrievedResult = query.Execute();
 
-                table.Execute(insertOperation);
+                return retrievedResult.Any();
             });
         }
 
-        public async Task<NewsBll> GetNews(Guid id)
+        public Task<bool> ContainsNews(string city, Guid id, string author)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 
-                var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", id.ToString());
+                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == id.ToString() && news.Author == author).AsTableQuery();
 
-                var retrievedResult = table.Execute(retrieveOperation);
+                var retrievedResult = query.Execute();
 
-                if (retrievedResult.Result == null)
-                {
-                    throw new Storage.StorageException("The news is not in the database");
-                }
-
-                return NewsEntity.ToNewsBll(retrievedResult.Result as NewsEntity);
+                return retrievedResult.Any();
             });
         }
 
-        public async Task<bool> ContainsNews(Guid id)
+        public Task<bool> ContainsNews(string city, NewsBll newsBll)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
-
-                var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", id.ToString());
-
-                var retrievedResult = table.Execute(retrieveOperation);
-
-                return retrievedResult.Result != null;
-            });
-        }
-
-        public async Task<bool> ContainsNews(Guid id, string author)
-        {
-            return await Task.Run(() =>
-            {
-                var tableClient = storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
-
-                var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", id.ToString());
-
-                var retrievedResult = table.Execute(retrieveOperation);
-
-                return
-                    retrievedResult.Result != null &&
-                    string.Equals((retrievedResult.Result as NewsEntity).Author, author, StringComparison.Ordinal);
-            });
-        }
-
-        public async Task<bool> ContainsNews(NewsBll newsBll)
-        {
-            return await Task.Run(() =>
-            {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 
@@ -144,15 +139,18 @@ namespace Storage.TableStorage
             });
         }
 
-        public async Task UpdateNews(NewsBll newsBll)
+        public Task UpdateNews(NewsBll newsBll)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 
+                //TODO: remove the WORLD
                 var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", newsBll.Id.ToString());
+
+                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == newsBll.ToString()).AsTableQuery();
 
                 var retrievedResult = table.Execute(retrieveOperation);
 
@@ -169,14 +167,15 @@ namespace Storage.TableStorage
             });
         }
 
-        public async Task DeleteNews(Guid id)
+        public Task DeleteNews(string city, Guid id)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 
+                //TODO: remove the WORLD
                 var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", id.ToString());
 
                 var retrievedResult = table.Execute(retrieveOperation);
@@ -192,11 +191,11 @@ namespace Storage.TableStorage
             });
         }
 
-        public async Task DeleteAllNews()
+        public Task DeleteAllNews()
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
-                var tableClient = storageAccount.CreateCloudTableClient();
+                var tableClient = this.storageAccount.CreateCloudTableClient();
 
                 var table = tableClient.GetTableReference(TableName);
 

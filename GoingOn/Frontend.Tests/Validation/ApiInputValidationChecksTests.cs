@@ -195,9 +195,9 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidNewsFailsWithWrongTitle()
         {
-            var nullTitleNews = new News(null, "content");
-            var emptyTitleNews = new News(string.Empty, "content");
-            var whiteSpaceTitleNews = new News(" \n\t", "content");
+            var nullTitleNews = new News { Title = null, Content = "content" };
+            var emptyTitleNews = new News { Title = string.Empty, Content = "content" };
+            var whiteSpaceTitleNews = new News { Title = " \n\t", Content = "content" };
 
             Assert.IsFalse(inputValidation.IsValidNews(nullTitleNews));
             Assert.IsFalse(inputValidation.IsValidNews(emptyTitleNews));
@@ -207,9 +207,9 @@ namespace GoingOn.Tests.Validation
         [TestMethod]
         public void TestIsValidNewsFailsWithWrongContent()
         {
-            var nullContent = new News("title", null);
-            var emptyContentNews = new News("title", string.Empty);
-            var whiteSpaceContentNews = new News("title", " \n\t");
+            var nullContent = new News { Title = "title", Content = null };
+            var emptyContentNews = new News { Title = "title", Content = string.Empty };
+            var whiteSpaceContentNews = new News { Title = "title", Content = " \n\t" };
 
             Assert.IsFalse(inputValidation.IsValidNews(nullContent));
             Assert.IsFalse(inputValidation.IsValidNews(emptyContentNews));

@@ -16,29 +16,33 @@ namespace Frontend.Entities
 
     public class News
     {
+        /// <summary>
+        /// The title of the news. Mandatory.
+        /// </summary>
         public string Title { get; set; }
 
+        /// <summary>
+        /// The content of the news. Mandatory.
+        /// </summary>
         public string Content { get; set; }
 
-        public News(string title, string content)
-        {
-            this.Title = title;
-            this.Content = content;
-        }
+        /// <summary>
+        /// The city of the news. Mandatory.
+        /// </summary>
+        public string City { get; set; }
 
-        public static NewsBll ToNewsBll(News news, Guid id, string author, DateTime date)
-        {
-            return new NewsBll
-            {
-                Id = id,
-                Title = news.Title,
-                Content = news.Content,
-                Author = author,
-                Date = date,
-                Rating = 0
-            };;
-        }
+        /// <summary>
+        /// The date of the news. Mandatory.
+        /// </summary>
+        public DateTime Date { get; set; }
 
+        /// <summary>
+        /// Used to update news.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="news"></param>
+        /// <param name="author"></param>
+        /// <returns></returns>
         public static NewsBll ToNewsBll(Guid id, News news, string author)
         {
             return new NewsBll
@@ -47,11 +51,17 @@ namespace Frontend.Entities
                 Title = news.Title,
                 Content = news.Content,
                 Author = author,
-                Date = DateTime.UtcNow,
-                Rating = 0
-            };;
+                City = news.City,
+                Date = news.Date
+            };
         }
 
+        /// <summary>
+        /// Used to check whether the news exists already.
+        /// </summary>
+        /// <param name="news"></param>
+        /// <param name="author"></param>
+        /// <returns></returns>
         public static NewsBll ToNewsBll(News news, string author)
         {
             return new NewsBll
@@ -59,9 +69,9 @@ namespace Frontend.Entities
                 Title = news.Title,
                 Content = news.Content,
                 Author = author,
-                Date = DateTime.UtcNow,
-                Rating = 0
-            };;
+                City = news.City,
+                Date = news.Date
+            };
         }
     }
 }

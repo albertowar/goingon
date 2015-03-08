@@ -20,8 +20,6 @@ namespace Frontend
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            var configuration = new HttpConfiguration();
-
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(

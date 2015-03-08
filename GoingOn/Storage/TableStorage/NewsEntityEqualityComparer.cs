@@ -25,10 +25,12 @@ namespace Storage.TableStorage
             return
                 string.Equals(news1.Title, news2.Title, StringComparison.Ordinal) &&
                 string.Equals(news1.Author, news2.Author, StringComparison.Ordinal) &&
-                date1.Year.Equals(date2.Year) &&
-                date1.Month.Equals(date2.Month) &&
-                date1.Day.Equals(date2.Day) &&
-                date1.Hour.Equals(date2.Hour);
+                (!date1.HasValue || 
+                !date2.HasValue ||
+                date1.Value.Year.Equals(date2.Value.Year) &&
+                date1.Value.Month.Equals(date2.Value.Month) &&
+                date1.Value.Day.Equals(date2.Value.Day) &&
+                date1.Value.Hour.Equals(date2.Value.Hour));
         }
 
         public int GetHashCode(NewsEntity obj)

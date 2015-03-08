@@ -53,7 +53,7 @@ namespace Frontend.Validation
             return storage.ContainsNews(Guid.Parse(id)).Result;
         }
 
-        public bool IsValidUpdateNews(INewsStorage storage, string id, string author)
+        public bool IsValidUpdateNews(INewsStorage storage, string city, DateTime date, string id, string author)
         {
             return storage.ContainsNews(Guid.Parse(id), author).Result;
         }

@@ -27,10 +27,10 @@ namespace Storage.Tests
         {
             Id = newsGuid,
             Title = "title",
+            City = "Malaga",
             Content = "content",
             Author = "author",
-            Date = new DateTime(2014, 12, 24, 13, 0, 0),
-            Rating = 1
+            Date = new DateTime(2014, 12, 24, 13, 0, 0)
         };
 
         private INewsStorage storage;
@@ -92,8 +92,7 @@ namespace Storage.Tests
                 Title = "title 1",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll oldNews2 = new NewsBll
             {
@@ -101,8 +100,7 @@ namespace Storage.Tests
                 Title = "title 2",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll oldNews3 = new NewsBll
             {
@@ -110,8 +108,7 @@ namespace Storage.Tests
                 Title = "title 3",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
 
             storage.AddNews(oldNews1).Wait();
@@ -124,8 +121,7 @@ namespace Storage.Tests
                 Title = "title 1",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll updatedContentNews = new NewsBll
             {
@@ -133,8 +129,7 @@ namespace Storage.Tests
                 Title = "title 2",
                 Content = "updated content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll updatedDateNews = new NewsBll
             {
@@ -142,8 +137,7 @@ namespace Storage.Tests
                 Title = "title 3",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 25, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 25, 13, 0, 0)
             };
             ;
 
@@ -165,8 +159,7 @@ namespace Storage.Tests
                 Title = "different title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll newsDifferentYear = new NewsBll
             {
@@ -174,8 +167,7 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2015, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2015, 12, 24, 13, 0, 0)
             };
             NewsBll newsDifferentMonth = new NewsBll
             {
@@ -183,8 +175,7 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 11, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 11, 24, 13, 0, 0)
             };
             NewsBll newsDifferentHour = new NewsBll
             {
@@ -192,8 +183,7 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 14, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 14, 0, 0)
             };
 
             storage.AddNews(News).Wait();
@@ -227,8 +217,7 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
             NewsBll news2 = new NewsBll
             {
@@ -236,8 +225,7 @@ namespace Storage.Tests
                 Title = "other title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0),
-                Rating = 1
+                Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
 
             storage.AddNews(news1).Wait();

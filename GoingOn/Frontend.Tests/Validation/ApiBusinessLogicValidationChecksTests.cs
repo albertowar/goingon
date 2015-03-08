@@ -31,7 +31,7 @@ namespace GoingOn.Tests.Validation
 
         private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
-        private static readonly News news = new News("title", "content");
+        private static readonly News news = new News { Title = "title", Content = "content" };
 
         [TestInitialize]
         public void Initialize()

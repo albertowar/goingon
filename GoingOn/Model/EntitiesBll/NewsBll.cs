@@ -14,11 +14,34 @@ namespace Model.EntitiesBll
 
     public class NewsBll
     {
+        /*
+         * Id. Mandatory and unique.
+         */
         public Guid Id { get; set; } 
+
+        /*
+         * The title of the news. Mandatory.
+         */
         public string Title { get; set; }
+
+        /*
+         * The content of the news. Mandatory.
+         */
         public string Content { get; set; }
+
+        /*
+         * The city of the news. Mandatory.
+         */
+        public string City { get; set; }
+
+        /*
+         * The author of the news. Mandatory.
+         */
         public string Author { get; set; }
+
+        /*
+         * The creation date of the news. Mandatory.
+         */
         public DateTime Date { get; set; }
-        public int Rating { get; set; }
     }
 }
