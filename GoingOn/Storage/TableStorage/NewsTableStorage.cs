@@ -80,7 +80,7 @@ namespace Storage.TableStorage
             return NewsEntity.ToNewsBll(element);
         }
 
-        public Task<bool> ContainsNews(string city, Guid id)
+        public Task<bool> Exists(string city, DateTime date, Guid id)
         {
             return Task.Run(() =>{
                 var tableClient = this.storageAccount.CreateCloudTableClient();
@@ -95,7 +95,7 @@ namespace Storage.TableStorage
             });
         }
 
-        public Task<bool> ContainsNews(string city, Guid id, string author)
+        public Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
         {
             return Task.Run(() =>
             {
@@ -111,7 +111,7 @@ namespace Storage.TableStorage
             });
         }
 
-        public Task<bool> ContainsNews(string city, NewsBll newsBll)
+        public Task<bool> ContainsNews(NewsBll newsBll)
         {
             return Task.Run(() =>
             {
@@ -167,7 +167,7 @@ namespace Storage.TableStorage
             });
         }
 
-        public Task DeleteNews(string city, Guid id)
+        public Task DeleteNews(string city, DateTime date, Guid id)
         {
             return Task.Run(() =>
             {
@@ -186,24 +186,6 @@ namespace Storage.TableStorage
                 {
                     var deleteOperation = TableOperation.Delete(deleteEntity);
 
-                    table.Execute(deleteOperation);
-                }
-            });
-        }
-
-        public Task DeleteAllNews()
-        {
-            return Task.Run(() =>
-            {
-                var tableClient = this.storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
-
-                var query = new TableQuery<UserEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "World"));
-
-                foreach (var entity in table.ExecuteQuery(query))
-                {
-                    var deleteOperation = TableOperation.Delete(entity);
                     table.Execute(deleteOperation);
                 }
             });

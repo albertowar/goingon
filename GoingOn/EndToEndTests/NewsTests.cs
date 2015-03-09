@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Entities;
-
 namespace EndToEndTests
 {
     using System;
@@ -27,6 +25,7 @@ namespace EndToEndTests
     using Common.Tests;
     using Client.Entities;
     using Frontend;
+    using Frontend.Entities;
     using Storage;
     using Storage.TableStorage;
 
@@ -37,10 +36,11 @@ namespace EndToEndTests
         private static IUserStorage userStorage;
         private static INewsStorage newsStorage;
 
-        private HttpServer server;
-
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga"};
         private static readonly NewsClient newsClient = new NewsClient { Title = "title", Content = "content" };
+
+        private static readonly string city = "Malaga";
+        private static readonly DateTime date = DateTime.Parse("2015-05-11");
 
         [TestInitialize]
         public void TestInitialize()
@@ -56,7 +56,8 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            newsStorage.DeleteAllNews().Wait();
+            // TODO: code it out
+            //newsStorage.DeleteAllNews().Wait();
             userStorage.DeleteAllUsers().Wait();
         }
 
@@ -70,7 +71,7 @@ namespace EndToEndTests
             var newsUri = response.Headers.Location;
             var newsId = newsUri.AbsolutePath.Split('/').Last();
 
-            Assert.IsTrue(newsStorage.ContainsNews(Guid.Parse(newsId)).Result);
+            Assert.IsTrue(newsStorage.Exists(city, date, Guid.Parse(newsId)).Result);
         }
 
         [TestMethod]
@@ -144,7 +145,7 @@ namespace EndToEndTests
 
             NewsTests.DeleteNews(userClient, guid);
 
-            Assert.IsFalse(newsStorage.ContainsNews(Guid.Parse(guid)).Result);
+            Assert.IsFalse(newsStorage.Exists(city, date, Guid.Parse(guid)).Result);
         }
 
         [TestMethod]
@@ -160,7 +161,7 @@ namespace EndToEndTests
 
             NewsTests.DeleteNews(anotherUser, guid);
 
-            Assert.IsTrue(newsStorage.ContainsNews(Guid.Parse(guid)).Result);
+            Assert.IsTrue(newsStorage.Exists(city, date, Guid.Parse(guid)).Result);
         }
 
         #region Helper methods

@@ -27,16 +27,6 @@ namespace Frontend.Entities
         public string Content { get; set; }
 
         /// <summary>
-        /// The city of the news. Mandatory.
-        /// </summary>
-        public string City { get; set; }
-
-        /// <summary>
-        /// The date of the news. Mandatory.
-        /// </summary>
-        public DateTime Date { get; set; }
-
-        /// <summary>
         /// Used to update news.
         /// </summary>
         /// <param name="id"></param>
@@ -50,9 +40,7 @@ namespace Frontend.Entities
                 Id = id,
                 Title = news.Title,
                 Content = news.Content,
-                Author = author,
-                City = news.City,
-                Date = news.Date
+                Author = author
             };
         }
 
@@ -68,9 +56,7 @@ namespace Frontend.Entities
             {
                 Title = news.Title,
                 Content = news.Content,
-                Author = author,
-                City = news.City,
-                Date = news.Date
+                Author = author
             };
         }
     }

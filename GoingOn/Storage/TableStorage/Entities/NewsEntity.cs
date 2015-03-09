@@ -37,7 +37,7 @@ namespace Storage.TableStorage.Entities
         {
             return new NewsEntity
             {
-                PartitionKey = NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date.Value),
+                PartitionKey = NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date),
                 RowKey = newsBll.Id.ToString(),
                 Title = newsBll.Title,
                 Content = newsBll.Content,

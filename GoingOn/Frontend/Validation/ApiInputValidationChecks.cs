@@ -16,8 +16,8 @@ namespace Frontend.Validation
 
     using Microsoft.Ajax.Utilities;
 
-    using Common;
     using Frontend.Entities;
+    using global::Common;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
@@ -126,6 +126,13 @@ namespace Frontend.Validation
         {
             Guid guid;
             return Guid.TryParse(id, out guid);
+        }
+
+        public bool IsValidNewsDate(string dateString)
+        {
+            DateTime date;
+
+            return DateTime.TryParseExact(dateString, "yyyy-mm-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
         }
 
         public bool IsValidTitle(string title)

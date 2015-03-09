@@ -35,15 +35,13 @@ namespace Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
-        public async Task<HttpResponseMessage> Get(string city, DateTime date, string id)
+        public async Task<HttpResponseMessage> Get(string city, string date, string id)
         {
             try
             {
-                this.ValidateGetOperation(city, id);
+                await this.ValidateGetOperation(city, date, id);
 
-                // Normalize
-
-                var news = NewsREST.FromNewsBll(await this.storage.GetNews(city, date, Guid.Parse(id)), this.Request);
+                var news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(id)), this.Request);
 
                 var response = this.Request.CreateResponse(HttpStatusCode.OK, news);
 
@@ -59,13 +57,13 @@ namespace Frontend.Controllers
             }
         }
 
-        public async Task<HttpResponseMessage> Post(string city, DateTime date, [FromBody]News news)
+        public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
             try
             {
                 var nickname = this.User.Identity.Name;
 
-                this.ValidatePostOperation(news, nickname);
+                this.ValidatePostOperation(city, date, news, nickname);
 
                 Guid newsId = Guid.NewGuid();
 
@@ -86,11 +84,11 @@ namespace Frontend.Controllers
             }
         }
 
-        public async Task<HttpResponseMessage> Patch(string city, DateTime date, string id, [FromBody]News news)
+        public async Task<HttpResponseMessage> Patch(string city, string date, string id, [FromBody]News news)
         {
             try
             {
-                this.ValidatePatchOperation(id, news);
+                await this.ValidatePatchOperation(city, date, id, news);
 
                 await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(id), news, this.User.Identity.Name));
 
@@ -108,13 +106,13 @@ namespace Frontend.Controllers
             }
         }
 
-        public async Task<HttpResponseMessage> Delete(string city, DateTime date, string id)
+        public async Task<HttpResponseMessage> Delete(string city, string date, string id)
         {
             try
             {
-                this.ValidateDeleteOperation(id);
+                await this.ValidateDeleteOperation(city, date, id);
 
-                await this.storage.DeleteNews(city, date, Guid.Parse(id));
+                await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(id));
 
                 return this.Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
             }
@@ -130,11 +128,16 @@ namespace Frontend.Controllers
 
         #region Validation code
 
-        public void ValidateGetOperation(string city, string id)
+        public async Task ValidateGetOperation(string city, string date, string id)
         {
             if (!this.inputValidation.IsValidCity(city))
             {
                 throw new InputValidationException("The city format is incorrect");
+            }
+
+            if (!this.inputValidation.IsValidNewsDate(date))
+            {
+                throw new InputValidationException("The date format is incorrect");
             }
 
             if (!this.inputValidation.IsValidNewsId(id))
@@ -142,14 +145,24 @@ namespace Frontend.Controllers
                 throw new InputValidationException("The news id format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidGetNews(this.storage, id))
+            if (!await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id)))
             {
                 throw new BusinessValidationException("The news is not in the database");
             }
         }
 
-        public void ValidatePostOperation(News news, string nickname)
+        public void ValidatePostOperation(string city, string date, News news, string nickname)
         {
+            if (!this.inputValidation.IsValidCity(city))
+            {
+                throw new InputValidationException("The city format is incorrect");
+            }
+
+            if (!this.inputValidation.IsValidNewsDate(date))
+            {
+                throw new InputValidationException("The date format is incorrect");
+            }
+
             if (!this.inputValidation.IsValidNews(news))
             {
                 throw new InputValidationException("The news format is incorrect");
@@ -161,8 +174,18 @@ namespace Frontend.Controllers
             }
         }
 
-        public void ValidatePatchOperation(string id, News news)
+        public async Task ValidatePatchOperation(string city, string date, string id, News news)
         {
+            if (!this.inputValidation.IsValidCity(city))
+            {
+                throw new InputValidationException("The city format is incorrect");
+            }
+
+            if (!this.inputValidation.IsValidNewsDate(date))
+            {
+                throw new InputValidationException("The date format is incorrect");
+            }
+
             if (!this.inputValidation.IsValidNewsId(id))
             {
                 throw new InputValidationException("The news id format is incorrect");
@@ -173,20 +196,30 @@ namespace Frontend.Controllers
                 throw new InputValidationException("The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidUpdateNews(this.storage, id, this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidUpdateNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException("The news does not exist");
             }
         }
 
-        public void ValidateDeleteOperation(string id)
+        public async Task ValidateDeleteOperation(string city, string date, string id)
         {
+            if (!this.inputValidation.IsValidCity(city))
+            {
+                throw new InputValidationException("The city format is incorrect");
+            }
+
+            if (!this.inputValidation.IsValidNewsDate(date))
+            {
+                throw new InputValidationException("The date format is incorrect");
+            }
+
             if (!this.inputValidation.IsValidNewsId(id))
             {
                 throw new InputValidationException("The news id format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidDeleteNews(this.storage, id, this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidDeleteNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException("The news does not exist");
             }

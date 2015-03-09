@@ -10,6 +10,9 @@
 
 namespace Frontend.Validation
 {
+    using System;
+    using System.Threading.Tasks;
+
     using Frontend.Entities;
     using Storage;
 
@@ -27,10 +30,10 @@ namespace Frontend.Validation
 
         bool IsValidCreateNews(INewsStorage storage, News news, string author);
 
-        bool IsValidGetNews(INewsStorage storage, string id);
+        Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id);
 
-        bool IsValidUpdateNews(INewsStorage storage, string id, string author);
+        Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
 
-        bool IsValidDeleteNews(INewsStorage storage, string id, string author);
+        Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
     }
 }

@@ -33,5 +33,7 @@ namespace Frontend.Validation
         bool IsValidNews(News news);
 
         bool IsValidNewsId(string id);
+
+        bool IsValidNewsDate(string date);
     }
 }

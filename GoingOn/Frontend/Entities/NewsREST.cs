@@ -21,9 +21,11 @@ namespace Frontend.Entities
     {
         public News News { get; private set; }
 
-        public string Author { get; private set; }
+        public string City { get; set; }
 
         public DateTime Date { get; set; }
+
+        public string Author { get; private set; }
 
         public IList<Link> Links { get; private set; }
 
@@ -35,18 +37,20 @@ namespace Frontend.Entities
             this.Links = new List<Link>();
         }
 
-        private NewsREST(News news, string author, Guid id, DateTime date, HttpRequestMessage request)
+        private NewsREST(News news, string city, DateTime date, string author, Guid id, HttpRequestMessage request)
             : this(news, author, date)
         {
             this.News = news;
+            this.City = city;
+            this.Date = date;
             this.Author = author;
-            Links.Add(new NewsLinkFactory(request).Self(id.ToString()));
-            Links.Add(new UserLinkFactory(request).Author(author));
+            this.Links.Add(new NewsLinkFactory(request).Self(id.ToString()));
+            this.Links.Add(new UserLinkFactory(request).Author(author));
         }
 
         public static NewsREST FromNewsBll(NewsBll newsBll, HttpRequestMessage request)
         {
-            return new NewsREST(new News { Title = newsBll.Title, Content = newsBll.Content, City = newsBll.City }, newsBll.Author, newsBll.Id, (DateTime)newsBll.Date, request);
+            return new NewsREST(new News { Title = newsBll.Title, Content = newsBll.Content }, newsBll.City, newsBll.Date, newsBll.Author, newsBll.Id, request);
         }
     }
 }

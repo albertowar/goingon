@@ -11,11 +11,11 @@
 namespace Frontend.Validation
 {
     using System;
-
+    using System.Threading.Tasks;
     using Frontend.Entities;
     using Storage;
 
-    public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
+    public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
     {
         public bool IsValidCreateUser(IUserStorage storage, User user)
         {
@@ -48,19 +48,19 @@ namespace Frontend.Validation
             return !this.IsNewsStored(storage, news, author);
         }
 
-        public bool IsValidGetNews(INewsStorage storage, string id)
+        public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)
         {
-            return storage.ContainsNews(Guid.Parse(id)).Result;
+            return await storage.Exists(city, date, id);
         }
 
-        public bool IsValidUpdateNews(INewsStorage storage, string city, DateTime date, string id, string author)
+        public async Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
         {
-            return storage.ContainsNews(Guid.Parse(id), author).Result;
+            return await storage.IsAuthorOf(city, date, id, author);
         }
 
-        public bool IsValidDeleteNews(INewsStorage storage, string id, string author)
+        public async Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
         {
-            return storage.ContainsNews(Guid.Parse(id), author).Result;
+            return await storage.IsAuthorOf(city, date, id, author);
         }
 
         #region Helper methods

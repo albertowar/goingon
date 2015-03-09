@@ -33,10 +33,5 @@ namespace Client.Entities
         {
             return new NewsClient { Title = newsREST.News.Title, Content = newsREST.News.Content };
         }
-
-        public static News ToNewsClient(NewsClient newsClient)
-        {
-            return new News { Title = newsClient.Title, Content = newsClient.Content, City = newsClient.City };
-        }
     }
 }

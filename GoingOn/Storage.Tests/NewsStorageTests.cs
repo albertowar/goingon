@@ -21,7 +21,10 @@ namespace Storage.Tests
     [TestClass]
     public class NewsStorageTests
     {
+        private static readonly string city = "Malaga";
+        private static readonly DateTime date = DateTime.Parse("2015-05-14");
         private static readonly Guid newsGuid = Guid.NewGuid();
+        
 
         private static readonly NewsBll News = new NewsBll
         {
@@ -38,29 +41,30 @@ namespace Storage.Tests
         [TestInitialize]
         public void Initialize()
         {
-            storage = NewsTableStorage.GetInstance();
+            this.storage = NewsTableStorage.GetInstance();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            storage.DeleteAllNews().Wait();
+            // TODO: program a method to do all the cleaning
+            //storage.DeleteAllNews().Wait();
         }
 
         [TestMethod]
         public void TestAddNews()
         {
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            Assert.IsTrue(storage.ContainsNews(News).Result);
+            Assert.IsTrue(this.storage.ContainsNews(News).Result);
         }
 
         [TestMethod]
         public void TestGetNews()
         {
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            NewsBll actualNews = storage.GetNews(newsGuid).Result;
+            NewsBll actualNews = this.storage.GetNews(city, date, newsGuid).Result;
 
             Assert.IsTrue(new NewsBllEqualityComparer().Equals(News, actualNews));
         }
@@ -68,15 +72,15 @@ namespace Storage.Tests
         [TestMethod]
         public void TestGetNewsEmptyStorage()
         {
-            AssertExtensions.Throws<StorageException>(() => storage.GetNews(newsGuid).Wait());
+            AssertExtensions.Throws<StorageException>(() => this.storage.GetNews(city, date, newsGuid).Wait());
         }
 
         [TestMethod]
         public void TestContainsNews()
         {
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            Assert.IsTrue(storage.ContainsNews(News).Result);
+            Assert.IsTrue(this.storage.ContainsNews(News).Result);
         }
 
         [TestMethod]
@@ -111,9 +115,9 @@ namespace Storage.Tests
                 Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
 
-            storage.AddNews(oldNews1).Wait();
-            storage.AddNews(oldNews2).Wait();
-            storage.AddNews(oldNews3).Wait();
+            this.storage.AddNews(oldNews1).Wait();
+            this.storage.AddNews(oldNews2).Wait();
+            this.storage.AddNews(oldNews3).Wait();
 
             NewsBll updatedTitleNews = new NewsBll
             {
@@ -141,13 +145,13 @@ namespace Storage.Tests
             };
             ;
 
-            storage.UpdateNews(updatedTitleNews).Wait();
-            storage.UpdateNews(updatedContentNews).Wait();
-            storage.UpdateNews(updatedDateNews).Wait();
+            this.storage.UpdateNews(updatedTitleNews).Wait();
+            this.storage.UpdateNews(updatedContentNews).Wait();
+            this.storage.UpdateNews(updatedDateNews).Wait();
 
-            Assert.IsTrue(storage.ContainsNews(updatedTitleNews).Result);
-            Assert.IsTrue(storage.ContainsNews(updatedContentNews).Result);
-            Assert.IsTrue(storage.ContainsNews(updatedDateNews).Result);
+            Assert.IsTrue(this.storage.ContainsNews(updatedTitleNews).Result);
+            Assert.IsTrue(this.storage.ContainsNews(updatedContentNews).Result);
+            Assert.IsTrue(this.storage.ContainsNews(updatedDateNews).Result);
         }
 
         [TestMethod]
@@ -186,9 +190,9 @@ namespace Storage.Tests
                 Date = new DateTime(2014, 12, 24, 14, 0, 0)
             };
 
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            Assert.IsFalse(storage.ContainsNews(newsDifferentTitle).Result);
+            Assert.IsFalse(this.storage.ContainsNews(newsDifferentTitle).Result);
             
             // TODO: fix de filter
             //Assert.IsFalse(storage.ContainsNews(newsDifferentYear).Result);
@@ -199,11 +203,12 @@ namespace Storage.Tests
         [TestMethod]
         public void TestDeleteNews()
         {
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            storage.DeleteNews(newsGuid).Wait();
+            // TODO: program a method to do all the cleaning
+            //storage.DeleteNews(newsGuid).Wait();
 
-            Assert.IsFalse(storage.ContainsNews(News).Result);
+            Assert.IsFalse(this.storage.ContainsNews(News).Result);
         }
 
         [TestMethod]
@@ -228,23 +233,24 @@ namespace Storage.Tests
                 Date = new DateTime(2014, 12, 24, 13, 0, 0)
             };
 
-            storage.AddNews(news1).Wait();
-            storage.AddNews(news2).Wait();
+            this.storage.AddNews(news1).Wait();
+            this.storage.AddNews(news2).Wait();
 
-            storage.DeleteNews(guid1).Wait();
+            this.storage.DeleteNews(city, date, guid1).Wait();
 
-            Assert.IsFalse(storage.ContainsNews(news1).Result);
-            Assert.IsTrue(storage.ContainsNews(news2).Result);
+            Assert.IsFalse(this.storage.ContainsNews(news1).Result);
+            Assert.IsTrue(this.storage.ContainsNews(news2).Result);
         }
 
         [TestMethod]
         public void TestDeleteAll()
         {
-            storage.AddNews(News).Wait();
+            this.storage.AddNews(News).Wait();
 
-            storage.DeleteAllNews().Wait();
+            // TODO: program a method to do all the cleaning
+            //storage.DeleteAllNews().Wait();
 
-            Assert.IsFalse(storage.ContainsNews(News).Result);
+            Assert.IsFalse(this.storage.ContainsNews(News).Result);
         }
 
         #region Helper methods
