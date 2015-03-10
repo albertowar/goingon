@@ -78,5 +78,12 @@ namespace Storage
         /// <param name="id">The id of the news.</param>
         /// <returns></returns>
         Task DeleteNews(string city, DateTime date, Guid id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        Task DeleteAllNews(string city);
     }
 }

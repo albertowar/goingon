@@ -24,16 +24,15 @@ namespace Storage.Tests
         private static readonly string city = "Malaga";
         private static readonly DateTime date = DateTime.Parse("2015-05-14");
         private static readonly Guid newsGuid = Guid.NewGuid();
-        
 
         private static readonly NewsBll News = new NewsBll
         {
             Id = newsGuid,
             Title = "title",
-            City = "Malaga",
+            City = city,
             Content = "content",
             Author = "author",
-            Date = new DateTime(2014, 12, 24, 13, 0, 0)
+            Date = date
         };
 
         private INewsStorage storage;
@@ -47,8 +46,7 @@ namespace Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            // TODO: program a method to do all the cleaning
-            //storage.DeleteAllNews().Wait();
+            this.storage.DeleteAllNews(city).Wait();
         }
 
         [TestMethod]
@@ -96,7 +94,8 @@ namespace Storage.Tests
                 Title = "title 1",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll oldNews2 = new NewsBll
             {
@@ -104,7 +103,8 @@ namespace Storage.Tests
                 Title = "title 2",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll oldNews3 = new NewsBll
             {
@@ -112,7 +112,8 @@ namespace Storage.Tests
                 Title = "title 3",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
 
             this.storage.AddNews(oldNews1).Wait();
@@ -125,7 +126,8 @@ namespace Storage.Tests
                 Title = "title 1",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll updatedContentNews = new NewsBll
             {
@@ -133,7 +135,8 @@ namespace Storage.Tests
                 Title = "title 2",
                 Content = "updated content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll updatedDateNews = new NewsBll
             {
@@ -141,9 +144,9 @@ namespace Storage.Tests
                 Title = "title 3",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 25, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
-            ;
 
             this.storage.UpdateNews(updatedTitleNews).Wait();
             this.storage.UpdateNews(updatedContentNews).Wait();
@@ -171,7 +174,8 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2015, 12, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll newsDifferentMonth = new NewsBll
             {
@@ -179,7 +183,8 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 11, 24, 13, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
             NewsBll newsDifferentHour = new NewsBll
             {
@@ -187,17 +192,17 @@ namespace Storage.Tests
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 14, 0, 0)
+                Date = DateTime.Parse("2014-12-24"),
+                City = city
             };
 
             this.storage.AddNews(News).Wait();
 
             Assert.IsFalse(this.storage.ContainsNews(newsDifferentTitle).Result);
-            
-            // TODO: fix de filter
-            //Assert.IsFalse(storage.ContainsNews(newsDifferentYear).Result);
-            //Assert.IsFalse(storage.ContainsNews(newsDifferentMonth).Result);
-            //Assert.IsFalse(storage.ContainsNews(newsDifferentHour).Result);
+
+            Assert.IsFalse(this.storage.ContainsNews(newsDifferentYear).Result);
+            Assert.IsFalse(this.storage.ContainsNews(newsDifferentMonth).Result);
+            Assert.IsFalse(this.storage.ContainsNews(newsDifferentHour).Result);
         }
 
         [TestMethod]
@@ -205,8 +210,7 @@ namespace Storage.Tests
         {
             this.storage.AddNews(News).Wait();
 
-            // TODO: program a method to do all the cleaning
-            //storage.DeleteNews(newsGuid).Wait();
+            this.storage.DeleteNews(city, date, newsGuid).Wait();
 
             Assert.IsFalse(this.storage.ContainsNews(News).Result);
         }
@@ -214,23 +218,27 @@ namespace Storage.Tests
         [TestMethod]
         public void TestDeleteNewsDoesNotAffectOtherNews()
         {
-            Guid guid1 = Guid.NewGuid();
-            Guid guid2 = Guid.NewGuid();
-            NewsBll news1 = new NewsBll
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+
+            var news1 = new NewsBll
             {
                 Id = guid1,
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = date,
+                City = city
             };
-            NewsBll news2 = new NewsBll
+
+            var news2 = new NewsBll
             {
                 Id = guid2,
                 Title = "other title",
                 Content = "content",
                 Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Date = date,
+                City = city
             };
 
             this.storage.AddNews(news1).Wait();
@@ -247,14 +255,11 @@ namespace Storage.Tests
         {
             this.storage.AddNews(News).Wait();
 
-            // TODO: program a method to do all the cleaning
-            //storage.DeleteAllNews().Wait();
+            this.storage.DeleteAllNews(city).Wait();
 
             Assert.IsFalse(this.storage.ContainsNews(News).Result);
         }
 
-        #region Helper methods
-
-        #endregion
+        // TODO: add CT for IsAuthorOf
     }
 }

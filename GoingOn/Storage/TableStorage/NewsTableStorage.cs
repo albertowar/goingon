@@ -29,7 +29,7 @@ namespace Storage.TableStorage
         private static readonly string StorageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
 
         // Singleton pattern
-        private static NewsTableStorage  instance;
+        private static NewsTableStorage instance;
 
         // Retrieve the storage account from the connection string.
         private readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
@@ -58,7 +58,7 @@ namespace Storage.TableStorage
 
             var table = tableClient.GetTableReference(TableName);
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, NewsEntity.BuildPartitionkey(city, date));
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
             var rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
 
             var filter = TableQuery.CombineFilters(
@@ -80,115 +80,131 @@ namespace Storage.TableStorage
             return NewsEntity.ToNewsBll(element);
         }
 
-        public Task<bool> Exists(string city, DateTime date, Guid id)
+        public async Task<bool> Exists(string city, DateTime date, Guid id)
         {
-            return Task.Run(() =>{
-                var tableClient = this.storageAccount.CreateCloudTableClient();
+            var tableClient = this.storageAccount.CreateCloudTableClient();
 
-                var table = tableClient.GetTableReference(TableName);
+            var table = tableClient.GetTableReference(TableName);
 
-                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == id.ToString()).AsTableQuery();
+            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
 
-                var retrievedResult = query.Execute();
+            var retrievedResult = await table.ExecuteAsync(retrieveOperation);
 
-                return retrievedResult.Any();
-            });
+            return retrievedResult.Result != null;
         }
 
-        public Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
+        public async Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
         {
-            return Task.Run(() =>
-            {
-                var tableClient = this.storageAccount.CreateCloudTableClient();
+            var tableClient = this.storageAccount.CreateCloudTableClient();
 
-                var table = tableClient.GetTableReference(TableName);
+            var table = tableClient.GetTableReference(TableName);
 
-                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == id.ToString() && news.Author == author).AsTableQuery();
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
+            var rowKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
+            var authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, author);
 
-                var retrievedResult = query.Execute();
-
-                return retrievedResult.Any();
-            });
-        }
-
-        public Task<bool> ContainsNews(NewsBll newsBll)
-        {
-            return Task.Run(() =>
-            {
-                var tableClient = this.storageAccount.CreateCloudTableClient();
-
-                var table = tableClient.GetTableReference(TableName);
-
-                var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "World");
-                var titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
-                var authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsBll.Author);
-
-                // TODO: a proper date filter
-                //var dateFilter = TableQuery.GenerateFilterCondition("Date", QueryComparisons.Equal, new DateTime(newsBll.Date.Year, newsBll.Date.Month, newsBll.Date.Day, newsBll.Date.Hour, newsBll.Date.Minute, newsBll.Date.Second).ToString());
-                var filter = TableQuery.CombineFilters(
-                    partitionKeyFilter,
+            var filter = TableQuery.CombineFilters(
+                partitionKeyFilter,
+                TableOperators.And,
+                TableQuery.CombineFilters(
+                    rowKey,
                     TableOperators.And,
-                    TableQuery.CombineFilters(
-                        titleFilter,
-                        TableOperators.And,
-                        authorFilter));
+                    authorFilter));
 
-                var query = new TableQuery<UserEntity>().Where(filter);
+            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
 
-                return table.ExecuteQuery(query).Any();
-            });
+            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            return result.Any();
         }
 
-        public Task UpdateNews(NewsBll newsBll)
+        public async Task<bool> ContainsNews(NewsBll newsBll)
         {
-            return Task.Run(() =>
-            {
-                var tableClient = this.storageAccount.CreateCloudTableClient();
+            var tableClient = this.storageAccount.CreateCloudTableClient();
 
-                var table = tableClient.GetTableReference(TableName);
+            var table = tableClient.GetTableReference(TableName);
 
-                //TODO: remove the WORLD
-                var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", newsBll.Id.ToString());
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
+            var titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
+            var authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsBll.Author);
 
-                var query = table.CreateQuery<NewsEntity>().Where(news => news.RowKey == newsBll.ToString()).AsTableQuery();
+            var filter = TableQuery.CombineFilters(
+                partitionKeyFilter,
+                TableOperators.And,
+                TableQuery.CombineFilters(
+                    titleFilter,
+                    TableOperators.And,
+                    authorFilter));
 
-                var retrievedResult = table.Execute(retrieveOperation);
+            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
 
-                var updateEntity = retrievedResult.Result as NewsEntity;
+            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
-                if (updateEntity != null)
-                {
-                    updateEntity.Merge(NewsEntity.FromNewsBll(newsBll));
-
-                    var insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
-
-                    table.Execute(insertOrReplaceOperation);
-                }
-            });
+            return result.Any();
         }
 
-        public Task DeleteNews(string city, DateTime date, Guid id)
+        public async Task UpdateNews(NewsBll newsBll)
         {
-            return Task.Run(() =>
+            var tableClient = this.storageAccount.CreateCloudTableClient();
+
+            var table = tableClient.GetTableReference(TableName);
+
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
+
+            var newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+
+            var retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            var updateEntity = retrievedNews.FirstOrDefault();
+
+            if (updateEntity != null)
             {
-                var tableClient = this.storageAccount.CreateCloudTableClient();
+                updateEntity.Merge(NewsEntity.FromNewsBll(newsBll));
 
-                var table = tableClient.GetTableReference(TableName);
+                var insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
 
-                //TODO: remove the WORLD
-                var retrieveOperation = TableOperation.Retrieve<NewsEntity>("World", id.ToString());
+                await table.ExecuteAsync(insertOrReplaceOperation);
+            }
+        }
 
-                var retrievedResult = table.Execute(retrieveOperation);
+        public async Task DeleteNews(string city, DateTime date, Guid id)
+        {
+            var tableClient = this.storageAccount.CreateCloudTableClient();
 
-                var deleteEntity = retrievedResult.Result as NewsEntity;
+            var table = tableClient.GetTableReference(TableName);
 
-                if (deleteEntity != null)
-                {
-                    var deleteOperation = TableOperation.Delete(deleteEntity);
+            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city,date), id.ToString());
 
-                    table.Execute(deleteOperation);
-                }
-            });
+            var retrievedResult = await table.ExecuteAsync(retrieveOperation);
+
+            var deleteEntity = retrievedResult.Result as NewsEntity;
+
+            if (deleteEntity != null)
+            {
+                var deleteOperation = TableOperation.Delete(deleteEntity);
+
+                await table.ExecuteAsync(deleteOperation);
+            }
+        }
+
+        public async Task DeleteAllNews(string city)
+        {
+            var tableClient = this.storageAccount.CreateCloudTableClient();
+
+            var table = tableClient.GetTableReference(TableName);
+
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, city);
+
+            var newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+
+            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            foreach (var news in result)
+            {
+                var deleteOperation = TableOperation.Delete(news);
+
+                await table.ExecuteAsync(deleteOperation);
+            }
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Storage.TableStorage.Entities
 
         public static string BuildPartitionkey(string city, DateTime date)
         {
-            return string.Format("{0};{1}", city, date);
+            return string.Format("{0};{1}", city, date.ToString("yyyy-MM-dd"));
         }
 
         public static Tuple<string, DateTime> ExtractFromPartitionKey(string partitionKey)
