@@ -118,7 +118,7 @@ namespace Frontend.Validation
         {
             return
                 news != null &&
-                news.Title != null && IsValidTitle(news.Title) &&
+                news.Title != null && this.IsValidTitle(news.Title) &&
                 news.Content != null && this.IsValidContent(news.Content);
         }
 

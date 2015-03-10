@@ -55,7 +55,7 @@ namespace Frontend.Links
             return new Link
             {
                 Rel = Rels.Self,
-                Href = GetUri(
+                Href = this.GetUri(
                     new { controller = this.controllerName, id = id }, route)
             };
         }
@@ -65,7 +65,7 @@ namespace Frontend.Links
             return new Link
             {
                 Rel = Rels.Author,
-                Href = GetUri(
+                Href = this.GetUri(
                     new { controller = this.controllerName, id = id }, route)
             };
         }

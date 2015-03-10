@@ -43,9 +43,9 @@ namespace Frontend.Validation
                 this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
-        public bool IsValidCreateNews(INewsStorage storage, News news, string author)
+        public bool IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
         {
-            return !this.IsNewsStored(storage, news, author);
+            return !this.IsNewsStored(storage, news, city, author, date);
         }
 
         public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)
@@ -70,9 +70,9 @@ namespace Frontend.Validation
             return storage.ContainsUser(User.ToUserBll(user)).Result;
         }
 
-        private bool IsNewsStored(INewsStorage storage, News news, string author)
+        private bool IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
         {
-            return storage.ContainsNews(News.ToNewsBll(news, author)).Result;
+            return storage.ContainsNews(News.ToNewsBll(news, city, author, date)).Result;
         }
 
         #endregion

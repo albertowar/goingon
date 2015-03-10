@@ -36,41 +36,41 @@ namespace GoingOn.Tests.Validation
         [TestInitialize]
         public void Initialize()
         {
-            userStorageMock = new Mock<IUserStorage>();
-            newsStorageMock = new Mock<INewsStorage>();
-            businessValidation = new ApiBusinessLogicValidationChecks();
+            this.userStorageMock = new Mock<IUserStorage>();
+            this.newsStorageMock = new Mock<INewsStorage>();
+            this.businessValidation = new ApiBusinessLogicValidationChecks();
         }
 
         [TestMethod]
         public void TestIsValidCreateUserSucceedsIfStorageDoesNotContainsTheUser()
         {
-            userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(false));
+            this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(false));
 
-            Assert.IsTrue(businessValidation.IsValidCreateUser(userStorageMock.Object, user));
+            Assert.IsTrue(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user));
         }
 
         [TestMethod]
         public void TestIsValidCreateUserFailsIfStorageContainsTheUser()
         {
-            userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
+            this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
 
-            Assert.IsFalse(businessValidation.IsValidCreateUser(userStorageMock.Object, user));
+            Assert.IsFalse(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user));
         }
 
         [TestMethod]
         public void TestIsValidCreateNewsSucceedsIfStorageDoesNotContainsTheNews()
         {
-            newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(false));
+            this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(false));
 
-            Assert.IsTrue(businessValidation.IsValidCreateNews(newsStorageMock.Object, news, It.IsAny<string>()));
+            Assert.IsTrue(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()));
         }
 
         [TestMethod]
         public void TestIsValidCreateNewsFailsIfStorageContainsTheNews()
         {
-            newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(true));
+            this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(true));
 
-            Assert.IsFalse(businessValidation.IsValidCreateNews(newsStorageMock.Object, news, It.IsAny<string>()));
+            Assert.IsFalse(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()));
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Frontend.Controllers
 
                 Guid newsId = Guid.NewGuid();
 
-                await this.storage.AddNews(News.ToNewsBll(newsId, news, nickname));
+                await this.storage.AddNews(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date)));
 
                 var response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
                 response.Headers.Location = new NewsLinkFactory(this.Request).Self(newsId.ToString()).Href;
@@ -80,7 +80,7 @@ namespace Frontend.Controllers
             }
             catch (BusinessValidationException businessValidationException)
             {
-                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, businessValidationException.Message);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Frontend.Controllers
             {
                 await this.ValidatePatchOperation(city, date, id, news);
 
-                await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(id), news, this.User.Identity.Name));
+                await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(id), news, city, this.User.Identity.Name, DateTime.Parse(date)));
 
                 var response = this.Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
 
@@ -168,7 +168,7 @@ namespace Frontend.Controllers
                 throw new InputValidationException("The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidCreateNews(this.storage, news, nickname))
+            if (!this.businessValidation.IsValidCreateNews(this.storage, news, city, nickname, DateTime.Parse(date)))
             {
                 throw new BusinessValidationException("The news is already created");
             }

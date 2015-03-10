@@ -31,16 +31,20 @@ namespace Frontend.Entities
         /// </summary>
         /// <param name="id"></param>
         /// <param name="news"></param>
+        /// <param name="city"></param>
         /// <param name="author"></param>
+        /// <param name="date"></param>
         /// <returns></returns>
-        public static NewsBll ToNewsBll(Guid id, News news, string author)
+        public static NewsBll ToNewsBll(Guid id, News news, string city, string author, DateTime date)
         {
             return new NewsBll
             {
                 Id = id,
                 Title = news.Title,
                 Content = news.Content,
-                Author = author
+                City = city,
+                Author = author,
+                Date = date
             };
         }
 
@@ -48,15 +52,19 @@ namespace Frontend.Entities
         /// Used to check whether the news exists already.
         /// </summary>
         /// <param name="news"></param>
+        /// <param name="city"></param>
         /// <param name="author"></param>
+        /// <param name="date"></param>
         /// <returns></returns>
-        public static NewsBll ToNewsBll(News news, string author)
+        public static NewsBll ToNewsBll(News news, string city, string author, DateTime date)
         {
             return new NewsBll
             {
                 Title = news.Title,
                 Content = news.Content,
-                Author = author
+                City = city,
+                Author = author,
+                Date = date
             };
         }
     }

@@ -28,7 +28,7 @@ namespace Frontend.Validation
 
         bool IsValidDeleteUser(IUserStorage storage, string nickname);
 
-        bool IsValidCreateNews(INewsStorage storage, News news, string author);
+        bool IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date);
 
         Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id);
 
