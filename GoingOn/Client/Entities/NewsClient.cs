@@ -24,11 +24,6 @@ namespace Client.Entities
          */
         public string Content { get; set; }
 
-        /*
-         * The city of the news. Mandatory.
-         */
-        public string City { get; set; }
-
         public static NewsClient FromNewsREST(NewsREST newsREST)
         {
             return new NewsClient { Title = newsREST.News.Title, Content = newsREST.News.Content };

@@ -21,6 +21,9 @@ namespace Frontend
     using System.Web.Mvc;
     using Owin;
 
+    /// <summary>
+    /// OWIN startup class is just used for testing purposes
+    /// </summary>
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class Startup
@@ -31,14 +34,6 @@ namespace Frontend
             var configuration = new HttpConfiguration();
             WebApiConfig.Register(configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-
-            // Dependy injection configuration
-            /*var container = new UnityContainer();
-            container.RegisterInstance<IUserStorage>(UserMemoryStorage.GetInstance());
-            container.RegisterInstance<INewsStorage>(NewsMemoryStorage.GetInstance());
-            container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks());
-            container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
-            configuration.DependencyResolver = new UnityResolver(container);*/
 
             app.UseWebApi(configuration);
         }

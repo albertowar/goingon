@@ -15,14 +15,14 @@ namespace Frontend.Controllers
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
-
+    using Authentication;
     using Common;
     using Frontend.Entities;
     using Frontend.Links;
     using Frontend.Validation;
     using Storage;
 
-    public class NewsController : ApiController, INewsController
+    public class NewsController : ApiController
     {
         private readonly INewsStorage storage;
         private readonly IApiInputValidationChecks inputValidation;
@@ -35,6 +35,8 @@ namespace Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
+        [Route("api/city/{city}/date/{date}/news/{id}")]
+        [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string id)
         {
             try
@@ -57,6 +59,10 @@ namespace Frontend.Controllers
             }
         }
 
+        [IdentityBasicAuthentication]
+        [Authorize]
+        [Route("api/city/{city}/date/{date}")]
+        [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
             try
@@ -84,6 +90,10 @@ namespace Frontend.Controllers
             }
         }
 
+        [IdentityBasicAuthentication]
+        [Authorize]
+        [Route("api/city/{city}/date/{date}/news/{newsId}")]
+        [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string id, [FromBody]News news)
         {
             try
@@ -106,6 +116,10 @@ namespace Frontend.Controllers
             }
         }
 
+        [IdentityBasicAuthentication]
+        [Authorize]
+        [Route("api/city/{city}/date/{date}/news/{newsId}")]
+        [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string id)
         {
             try

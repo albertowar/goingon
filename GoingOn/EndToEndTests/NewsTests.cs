@@ -15,7 +15,6 @@ namespace EndToEndTests
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Web.Http;
 
     using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -39,8 +38,8 @@ namespace EndToEndTests
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga"};
         private static readonly NewsClient newsClient = new NewsClient { Title = "title", Content = "content" };
 
-        private static readonly string city = "Malaga";
-        private static readonly DateTime date = DateTime.Parse("2015-05-11");
+        private static readonly string City = "Malaga";
+        private static readonly DateTime Date = DateTime.Parse("2015-05-11");
 
         [TestInitialize]
         public void TestInitialize()
@@ -56,8 +55,8 @@ namespace EndToEndTests
         public void TestCleanup()
         {
             webService.Dispose();
-            // TODO: code it out
-            //newsStorage.DeleteAllNews().Wait();
+
+            newsStorage.DeleteAllNews(City).Wait();
             userStorage.DeleteAllUsers().Wait();
         }
 
@@ -71,7 +70,7 @@ namespace EndToEndTests
             var newsUri = response.Headers.Location;
             var newsId = newsUri.AbsolutePath.Split('/').Last();
 
-            Assert.IsTrue(newsStorage.Exists(city, date, Guid.Parse(newsId)).Result);
+            Assert.IsTrue(newsStorage.Exists(City, Date, Guid.Parse(newsId)).Result);
         }
 
         [TestMethod]
@@ -145,7 +144,7 @@ namespace EndToEndTests
 
             NewsTests.DeleteNews(userClient, guid);
 
-            Assert.IsFalse(newsStorage.Exists(city, date, Guid.Parse(guid)).Result);
+            Assert.IsFalse(newsStorage.Exists(City, Date, Guid.Parse(guid)).Result);
         }
 
         [TestMethod]
@@ -161,7 +160,7 @@ namespace EndToEndTests
 
             NewsTests.DeleteNews(anotherUser, guid);
 
-            Assert.IsTrue(newsStorage.Exists(city, date, Guid.Parse(guid)).Result);
+            Assert.IsTrue(newsStorage.Exists(City, Date, Guid.Parse(guid)).Result);
         }
 
         #region Helper methods
@@ -177,7 +176,9 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                return client.PostAsJsonAsync("api/news", news).Result;
+                string uri = string.Format("api/city/{0}/date/{1}", City, "2015-05-11");
+
+                return client.PostAsJsonAsync(uri, news).Result;
             }
         }
 
@@ -192,7 +193,9 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                return client.PatchAsJsonAsync("api/news/" + id, news).Result;
+                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", id);
+
+                return client.PatchAsJsonAsync(uri, news).Result;
             }
         }
 
@@ -202,7 +205,9 @@ namespace EndToEndTests
             {
                 client.BaseAddress = new Uri("http://localhost:80/");
 
-                return client.GetAsync(string.Format("api/news/{0}", guid)).Result;
+                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", guid);
+
+                return client.GetAsync(uri).Result;
             }
         }
 
@@ -215,7 +220,9 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                return client.DeleteAsync(string.Format("api/news/{0}", guid)).Result;
+                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", guid);
+
+                return client.DeleteAsync(uri).Result;
             }
         }
 
