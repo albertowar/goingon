@@ -8,12 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Storage.TableStorage
 {
+    using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.WindowsAzure.Storage;

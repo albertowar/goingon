@@ -35,15 +35,15 @@ namespace Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
-        [Route("api/city/{city}/date/{date}/news/{id}")]
+        [Route("api/city/{city}/date/{date}/news/{newsId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> Get(string city, string date, string id)
+        public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
             try
             {
-                await this.ValidateGetOperation(city, date, id);
+                await this.ValidateGetOperation(city, date, newsId);
 
-                var news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(id)), this.Request);
+                var news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(newsId)), this.Request);
 
                 var response = this.Request.CreateResponse(HttpStatusCode.OK, news);
 
@@ -94,13 +94,13 @@ namespace Frontend.Controllers
         [Authorize]
         [Route("api/city/{city}/date/{date}/news/{newsId}")]
         [HttpPatch]
-        public async Task<HttpResponseMessage> Patch(string city, string date, string id, [FromBody]News news)
+        public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]News news)
         {
             try
             {
-                await this.ValidatePatchOperation(city, date, id, news);
+                await this.ValidatePatchOperation(city, date, newsId, news);
 
-                await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(id), news, city, this.User.Identity.Name, DateTime.Parse(date)));
+                await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
 
                 var response = this.Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
 
@@ -120,13 +120,13 @@ namespace Frontend.Controllers
         [Authorize]
         [Route("api/city/{city}/date/{date}/news/{newsId}")]
         [HttpDelete]
-        public async Task<HttpResponseMessage> Delete(string city, string date, string id)
+        public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
             try
             {
-                await this.ValidateDeleteOperation(city, date, id);
+                await this.ValidateDeleteOperation(city, date, newsId);
 
-                await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(id));
+                await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
 
                 return this.Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
             }
@@ -156,7 +156,7 @@ namespace Frontend.Controllers
 
             if (!this.inputValidation.IsValidNewsId(id))
             {
-                throw new InputValidationException("The news id format is incorrect");
+                throw new InputValidationException("The news newsId format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id)))
@@ -202,7 +202,7 @@ namespace Frontend.Controllers
 
             if (!this.inputValidation.IsValidNewsId(id))
             {
-                throw new InputValidationException("The news id format is incorrect");
+                throw new InputValidationException("The news newsId format is incorrect");
             }
 
             if (!this.inputValidation.IsValidNews(news))
@@ -230,7 +230,7 @@ namespace Frontend.Controllers
 
             if (!this.inputValidation.IsValidNewsId(id))
             {
-                throw new InputValidationException("The news id format is incorrect");
+                throw new InputValidationException("The news newsId format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidDeleteNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))

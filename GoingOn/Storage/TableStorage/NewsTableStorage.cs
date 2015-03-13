@@ -17,7 +17,6 @@ namespace Storage.TableStorage
 
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Microsoft.WindowsAzure.Storage.Table.Queryable;
 
     using Model.EntitiesBll;
     using Storage.TableStorage.Entities;
@@ -149,13 +148,11 @@ namespace Storage.TableStorage
 
             var table = tableClient.GetTableReference(TableName);
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
+            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date), newsBll.Id.ToString());
 
-            var newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+            var retrievedNews = await table.ExecuteAsync(retrieveOperation);
 
-            var retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
-
-            var updateEntity = retrievedNews.FirstOrDefault();
+            var updateEntity = retrievedNews.Result as NewsEntity;
 
             if (updateEntity != null)
             {

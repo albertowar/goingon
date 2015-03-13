@@ -86,7 +86,6 @@ namespace Storage.Tests
         {
             Guid guid1 = Guid.NewGuid();
             Guid guid2 = Guid.NewGuid();
-            Guid guid3 = Guid.NewGuid();
 
             NewsBll oldNews1 = new NewsBll
             {
@@ -97,6 +96,7 @@ namespace Storage.Tests
                 Date = DateTime.Parse("2014-12-24"),
                 City = city
             };
+
             NewsBll oldNews2 = new NewsBll
             {
                 Id = guid2,
@@ -106,19 +106,9 @@ namespace Storage.Tests
                 Date = DateTime.Parse("2014-12-24"),
                 City = city
             };
-            NewsBll oldNews3 = new NewsBll
-            {
-                Id = guid3,
-                Title = "title 3",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
-            };
 
             this.storage.AddNews(oldNews1).Wait();
             this.storage.AddNews(oldNews2).Wait();
-            this.storage.AddNews(oldNews3).Wait();
 
             NewsBll updatedTitleNews = new NewsBll
             {
@@ -129,6 +119,7 @@ namespace Storage.Tests
                 Date = DateTime.Parse("2014-12-24"),
                 City = city
             };
+
             NewsBll updatedContentNews = new NewsBll
             {
                 Id = guid2,
@@ -138,23 +129,12 @@ namespace Storage.Tests
                 Date = DateTime.Parse("2014-12-24"),
                 City = city
             };
-            NewsBll updatedDateNews = new NewsBll
-            {
-                Id = guid3,
-                Title = "title 3",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
-            };
 
             this.storage.UpdateNews(updatedTitleNews).Wait();
             this.storage.UpdateNews(updatedContentNews).Wait();
-            this.storage.UpdateNews(updatedDateNews).Wait();
 
             Assert.IsTrue(this.storage.ContainsNews(updatedTitleNews).Result);
             Assert.IsTrue(this.storage.ContainsNews(updatedContentNews).Result);
-            Assert.IsTrue(this.storage.ContainsNews(updatedDateNews).Result);
         }
 
         [TestMethod]
