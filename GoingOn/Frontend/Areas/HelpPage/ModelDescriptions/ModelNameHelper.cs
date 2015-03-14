@@ -1,12 +1,12 @@
-using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-
-namespace GoingOn.Areas.HelpPage.ModelDescriptions
+namespace GoingOn.Frontend.Areas.HelpPage.ModelDescriptions
 {
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     internal static class ModelNameHelper

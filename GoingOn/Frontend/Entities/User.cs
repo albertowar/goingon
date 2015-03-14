@@ -8,11 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Entities
+namespace GoingOn.Frontend.Entities
 {
     using System;
-
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
 
     public class User
     {

@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend;
+using GoingOn.Frontend;
 using Microsoft.Owin;
 
 [assembly: OwinStartup(typeof(Startup))]
 
-namespace Frontend
+namespace GoingOn.Frontend
 {
     using System.CodeDom.Compiler;
     using System.Diagnostics.CodeAnalysis;

@@ -1,13 +1,13 @@
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Web.Http.Description;
-using GoingOn.Areas.HelpPage.ModelDescriptions;
-
-namespace GoingOn.Areas.HelpPage.Models
+namespace GoingOn.Frontend.Areas.HelpPage.Models
 {
+    using System.CodeDom.Compiler;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Net.Http.Headers;
+    using System.Web.Http.Description;
+    using GoingOn.Frontend.Areas.HelpPage.ModelDescriptions;
+
     /// <summary>
     /// The model that represents an API displayed on the help page.
     /// </summary>
@@ -20,10 +20,10 @@ namespace GoingOn.Areas.HelpPage.Models
         /// </summary>
         public HelpPageApiModel()
         {
-            UriParameters = new Collection<ParameterDescription>();
-            SampleRequests = new Dictionary<MediaTypeHeaderValue, object>();
-            SampleResponses = new Dictionary<MediaTypeHeaderValue, object>();
-            ErrorMessages = new Collection<string>();
+            this.UriParameters = new Collection<ParameterDescription>();
+            this.SampleRequests = new Dictionary<MediaTypeHeaderValue, object>();
+            this.SampleResponses = new Dictionary<MediaTypeHeaderValue, object>();
+            this.ErrorMessages = new Collection<string>();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace GoingOn.Areas.HelpPage.Models
         {
             get
             {
-                return GetParameterDescriptions(RequestModelDescription);
+                return GetParameterDescriptions(this.RequestModelDescription);
             }
         }
 
@@ -69,7 +69,7 @@ namespace GoingOn.Areas.HelpPage.Models
         {
             get
             {
-                return GetParameterDescriptions(ResourceDescription);
+                return GetParameterDescriptions(this.ResourceDescription);
             }
         }
 

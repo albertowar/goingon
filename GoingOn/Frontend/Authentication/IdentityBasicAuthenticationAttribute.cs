@@ -8,15 +8,16 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Authentication
+namespace GoingOn.Frontend.Authentication
 {
     using System.Security.Principal;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Frontend.Entities;
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage;
     using Storage;
-    using Storage.TableStorage;
 
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend
+namespace GoingOn.Frontend
 {
     using System;
     using System.CodeDom.Compiler;
@@ -20,8 +20,8 @@ namespace Frontend
     using Microsoft.Practices.Unity;
     
     using Frontend.Validation;
-    using Storage;
-    using Storage.TableStorage;
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage;
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
@@ -39,12 +39,6 @@ namespace Frontend
 
             // Web API routes
             configuration.MapHttpAttributeRoutes();
-
-            configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
         }
     }
 
@@ -68,7 +62,7 @@ namespace Frontend
         {
             try
             {
-                return container.Resolve(serviceType);
+                return this.container.Resolve(serviceType);
             }
             catch (ResolutionFailedException)
             {
@@ -80,7 +74,7 @@ namespace Frontend
         {
             try
             {
-                return container.ResolveAll(serviceType);
+                return this.container.ResolveAll(serviceType);
             }
             catch (ResolutionFailedException)
             {
@@ -90,7 +84,7 @@ namespace Frontend
 
         public IDependencyScope BeginScope()
         {
-            var child = container.CreateChildContainer();
+            var child = this.container.CreateChildContainer();
             return new UnityResolver(child);
         }
 

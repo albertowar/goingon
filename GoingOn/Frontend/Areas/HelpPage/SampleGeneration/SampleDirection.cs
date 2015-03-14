@@ -1,8 +1,7 @@
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-
-namespace GoingOn.Areas.HelpPage
+namespace GoingOn.Frontend.Areas.HelpPage.SampleGeneration
 {
+    using System.CodeDom.Compiler;
+
     /// <summary>
     /// Indicates whether the sample is used for request or response
     /// </summary>

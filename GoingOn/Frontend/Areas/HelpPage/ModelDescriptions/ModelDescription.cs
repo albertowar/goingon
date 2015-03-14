@@ -1,9 +1,9 @@
-using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-
-namespace GoingOn.Areas.HelpPage.ModelDescriptions
+namespace GoingOn.Frontend.Areas.HelpPage.ModelDescriptions
 {
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Describes a type model.
     /// </summary>

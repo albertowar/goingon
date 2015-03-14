@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="Link.cs" company="Universidad de Malaga">
+// <copyright file="UriBuilderTests.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,14 +8,9 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Frontend.Links
+namespace GoingOn.Common.Tests
 {
-    using System;
-
-    public class Link
+    public class UriBuilderTests
     {
-        public string Rel { get; set; }
-        public Uri Href { get; set; }
-        public string Action { get; set; }
     }
 }

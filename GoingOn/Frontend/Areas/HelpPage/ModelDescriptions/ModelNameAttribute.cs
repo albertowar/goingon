@@ -1,9 +1,9 @@
-using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-
-namespace GoingOn.Areas.HelpPage.ModelDescriptions
+namespace GoingOn.Frontend.Areas.HelpPage.ModelDescriptions
 {
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Use this attribute to change the name of the <see cref="ModelDescription"/> generated for a type.
     /// </summary>
@@ -14,7 +14,7 @@ namespace GoingOn.Areas.HelpPage.ModelDescriptions
     {
         public ModelNameAttribute(string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         public string Name { get; private set; }

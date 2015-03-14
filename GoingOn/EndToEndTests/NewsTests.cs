@@ -8,23 +8,21 @@
 // </summary>
 // ****************************************************************************
 
-namespace EndToEndTests
+namespace GoingOn.EndToEndTests
 {
     using System;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-
-    using Microsoft.Owin.Hosting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using Newtonsoft.Json;
-
-    using Common.Tests;
-    using Client.Entities;
     using Frontend;
     using Frontend.Entities;
+    using GoingOn.Client.Entities;
+    using GoingOn.Common;
+    using GoingOn.Common.Tests;
+    using Microsoft.Owin.Hosting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
     using Storage;
     using Storage.TableStorage;
 
@@ -176,9 +174,7 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                string uri = string.Format("api/city/{0}/date/{1}", City, "2015-05-11");
-
-                return client.PostAsJsonAsync(uri, news).Result;
+                return client.PostAsJsonAsync(GOUriBuilder.BuildDiaryEntryUri(City, "2015-05-11"), news).Result;
             }
         }
 
@@ -193,9 +189,7 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", id);
-
-                return client.PatchAsJsonAsync(uri, news).Result;
+                return client.PatchAsJsonAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", id), news).Result;
             }
         }
 
@@ -205,9 +199,7 @@ namespace EndToEndTests
             {
                 client.BaseAddress = new Uri("http://localhost:80/");
 
-                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", guid);
-
-                return client.GetAsync(uri).Result;
+                return client.GetAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", guid)).Result;
             }
         }
 
@@ -220,9 +212,7 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                string uri = string.Format("api/city/{0}/date/{1}/news/{2}", City, "2015-05-11", guid);
-
-                return client.DeleteAsync(uri).Result;
+                return client.DeleteAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", guid)).Result;
             }
         }
 

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend
+namespace GoingOn.Frontend
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Http;
@@ -26,8 +26,7 @@ namespace Frontend
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-                constraints: null
-            );
+                constraints: null);
         }
     }
 }

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Validation
+namespace GoingOn.Frontend.Validation
 {
     using System;
 

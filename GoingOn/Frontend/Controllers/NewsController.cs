@@ -8,19 +8,21 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Controllers
+namespace GoingOn.Frontend.Controllers
 {
     using System;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
+
     using Authentication;
-    using Common;
+    using Frontend.Common;
     using Frontend.Entities;
     using Frontend.Links;
     using Frontend.Validation;
-    using Storage;
+    using GoingOn.Common;
+    using GoingOn.Storage;
 
     public class NewsController : ApiController
     {
@@ -35,7 +37,7 @@ namespace Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
-        [Route("api/city/{city}/date/{date}/news/{newsId}")]
+        [Route(GOUriBuilder.GetNewsTemplate)]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
@@ -61,7 +63,7 @@ namespace Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        [Route("api/city/{city}/date/{date}")]
+        [Route(GOUriBuilder.PostNewsTemplate)]
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
@@ -92,7 +94,7 @@ namespace Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        [Route("api/city/{city}/date/{date}/news/{newsId}")]
+        [Route(GOUriBuilder.PatchNewsTemplate)]
         [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]News news)
         {
@@ -118,7 +120,7 @@ namespace Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        [Route("api/city/{city}/date/{date}/news/{newsId}")]
+        [Route(GOUriBuilder.DeleteNewsTemplate)]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {

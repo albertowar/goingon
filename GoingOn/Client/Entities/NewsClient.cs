@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Client.Entities
+namespace GoingOn.Client.Entities
 {
     using Frontend.Entities;
 

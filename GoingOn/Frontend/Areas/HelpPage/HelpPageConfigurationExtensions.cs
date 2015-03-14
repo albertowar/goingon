@@ -1,4 +1,4 @@
-namespace GoingOn.Areas.HelpPage
+namespace GoingOn.Frontend.Areas.HelpPage
 {
     using System;
     using System.CodeDom.Compiler;
@@ -14,9 +14,9 @@ namespace GoingOn.Areas.HelpPage
     using System.Web.Http;
     using System.Web.Http.Controllers;
     using System.Web.Http.Description;
-    using Frontend.Areas.HelpPage;
-    using GoingOn.Areas.HelpPage.ModelDescriptions;
-    using GoingOn.Areas.HelpPage.Models;
+    using GoingOn.Frontend.Areas.HelpPage.ModelDescriptions;
+    using GoingOn.Frontend.Areas.HelpPage.Models;
+    using GoingOn.Frontend.Areas.HelpPage.SampleGeneration;
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]

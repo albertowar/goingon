@@ -8,12 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.TableStorage.Entities
+namespace GoingOn.Storage.TableStorage.Entities
 {
     using System;
-
     using Microsoft.WindowsAzure.Storage.Table;
-
     using Model.EntitiesBll;
 
     public class UserEntity : TableEntity
@@ -83,13 +81,13 @@ namespace Storage.TableStorage.Entities
         public override int GetHashCode()
         {
             return
-                PartitionKey.GetHashCode() ^
-                RowKey.GetHashCode() ^ 
-                Password.GetHashCode() ^
-                Name.GetHashCode() ^
-                Email.GetHashCode() ^
-                BirthDate.GetHashCode() ^
-                RegistrationDate.GetHashCode();
+                this.PartitionKey.GetHashCode() ^
+                this.RowKey.GetHashCode() ^ 
+                this.Password.GetHashCode() ^
+                this.Name.GetHashCode() ^
+                this.Email.GetHashCode() ^
+                this.BirthDate.GetHashCode() ^
+                this.RegistrationDate.GetHashCode();
         }
 
         public void Merge(UserEntity userEntity)

@@ -1,17 +1,16 @@
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-
-namespace GoingOn.Areas.HelpPage.ModelDescriptions
+namespace GoingOn.Frontend.Areas.HelpPage.ModelDescriptions
 {
+    using System.CodeDom.Compiler;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
+
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class ParameterDescription
     {
         public ParameterDescription()
         {
-            Annotations = new Collection<ParameterAnnotation>();
+            this.Annotations = new Collection<ParameterAnnotation>();
         }
 
         public Collection<ParameterAnnotation> Annotations { get; private set; }

@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Frontend.Entities;
-
-namespace Common.Tests
+namespace GoingOn.Common.Tests
 {
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using Frontend.Entities;
+
     [ExcludeFromCodeCoverage]
     public class NewsCompleteEqualityComparer : IEqualityComparer<News>
     {

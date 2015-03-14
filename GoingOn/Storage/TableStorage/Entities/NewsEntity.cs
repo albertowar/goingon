@@ -8,12 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.TableStorage.Entities
+namespace GoingOn.Storage.TableStorage.Entities
 {
     using System;
-
     using Microsoft.WindowsAzure.Storage.Table;
-
     using Model.EntitiesBll;
 
     public class NewsEntity : TableEntity

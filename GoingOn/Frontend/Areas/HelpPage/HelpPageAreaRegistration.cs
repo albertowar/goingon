@@ -1,10 +1,11 @@
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-using System.Web.Http;
-using System.Web.Mvc;
-
-namespace GoingOn.Areas.HelpPage
+namespace GoingOn.Frontend.Areas.HelpPage
 {
+    using System.CodeDom.Compiler;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Web.Http;
+    using System.Web.Mvc;
+    using GoingOn.Frontend.Areas.HelpPage.App_Start;
+
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class HelpPageAreaRegistration : AreaRegistration

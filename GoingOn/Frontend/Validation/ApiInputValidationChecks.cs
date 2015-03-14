@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Validation
+namespace GoingOn.Frontend.Validation
 {
     using System;
     using System.Globalization;
@@ -17,7 +17,7 @@ namespace Frontend.Validation
     using Microsoft.Ajax.Utilities;
 
     using Frontend.Entities;
-    using global::Common;
+    using GoingOn.Common;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {

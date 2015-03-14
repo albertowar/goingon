@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Tests.Controllers
+namespace GoingOn.Frontend.Tests.Controllers
 {
     using System;
     using System.Linq;
@@ -23,10 +23,10 @@ namespace GoingOn.Tests.Controllers
     using Newtonsoft.Json;
     using WebApiContrib.Testing;
 
-    using Common.Tests;
     using Frontend.Controllers;
     using Frontend.Entities;
     using Frontend.Validation;
+    using GoingOn.Common.Tests;
     using Model.EntitiesBll;
     using Storage;
 

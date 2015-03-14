@@ -6,7 +6,7 @@
     <ProjectGuid>{465DE491-DF00-4D48-BDB7-E3053A84A1F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Storage.Tests</RootNamespace>
+    <RootNamespace>GoingOn.Storage.Tests</RootNamespace>
     <AssemblyName>Storage.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

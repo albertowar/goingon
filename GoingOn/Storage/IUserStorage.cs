@@ -8,10 +8,9 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage
+namespace GoingOn.Storage
 {
     using System.Threading.Tasks;
-
     using Model.EntitiesBll;
 
     public interface IUserStorage
@@ -20,14 +19,14 @@ namespace Storage
         /// Adds the user.
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
-        /// <exception cref="StorageException">If the user is already in the database.</exception>
+        /// <exception cref="Storage.StorageException">If the user is already in the database.</exception>
         Task AddUser(UserBll userBll);
 
         /// <summary>
         /// Gets the user.
         /// </summary>
         /// <param name="nickname">The nickname.</param>
-        /// /// <exception cref="StorageException">If the user is not in the database.</exception>
+        /// /// <exception cref="Storage.StorageException">If the user is not in the database.</exception>
         Task<UserBll> GetUser(string nickname);
 
         /// <summary>

@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace EndToEndTests
+namespace GoingOn.EndToEndTests
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Client.Entities;
+    using GoingOn.Client.Entities;
 
     [ExcludeFromCodeCoverage]
     public class NewsClientEqualityComparer : IEqualityComparer<NewsClient>

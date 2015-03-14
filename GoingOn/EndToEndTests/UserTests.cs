@@ -8,21 +8,20 @@
 // </summary>
 // ****************************************************************************
 
-namespace EndToEndTests
+namespace GoingOn.EndToEndTests
 {
     using System;
-    using System.Net.Http.Headers;
     using System.Net.Http;
     using System.Net.Http.Formatting;
-
-    using Microsoft.Owin.Hosting;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Newtonsoft.Json;
-
-    using Client.Entities;
+    using System.Net.Http.Headers;
     using Frontend;
     using Frontend.Entities;
+    using GoingOn.Client.Entities;
+    using GoingOn.Common;
+    using Microsoft.Owin.Hosting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Model.EntitiesBll;
+    using Newtonsoft.Json;
     using Storage;
     using Storage.TableStorage;
 
@@ -53,7 +52,7 @@ namespace EndToEndTests
         {
             UserTests.CreateUser(userClient);
 
-            Assert.IsTrue(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234", City = "Malaga" }).Result);
+            Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234", City = "Malaga" }).Result);
         }
 
         [TestMethod]
@@ -83,7 +82,7 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
                 
-                client.PatchAsync("api/user/Alberto", updatedUser, new JsonMediaTypeFormatter()).Wait();
+                client.PatchAsync(GOUriBuilder.BuildUserUri("Alberto"), updatedUser, new JsonMediaTypeFormatter()).Wait();
             }
 
             var getResponse = UserTests.GetUser("Alberto");
@@ -110,7 +109,7 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                client.PatchAsync("api/user/" + otherUser.Nickname, updatedUser, new JsonMediaTypeFormatter()).Wait();
+                client.PatchAsync(GOUriBuilder.BuildUserUri(otherUser.Nickname), updatedUser, new JsonMediaTypeFormatter()).Wait();
             }
 
             Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "NotAlberto", Password = "1234" }).Result);
@@ -126,7 +125,7 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                client.DeleteAsync("api/user/Alberto").Wait();
+                client.DeleteAsync(GOUriBuilder.BuildUserUri("Alberto")).Wait();
 
                 Assert.IsFalse(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
             }
@@ -145,7 +144,7 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                client.DeleteAsync("api/user/" + otherUser.Nickname).Wait();
+                client.DeleteAsync(GOUriBuilder.BuildUserUri(otherUser.Nickname)).Wait();
 
                 Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234" }).Result);
             }
@@ -161,7 +160,7 @@ namespace EndToEndTests
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                return client.PostAsJsonAsync("api/user", user).Result;
+                return client.PostAsJsonAsync(GOUriBuilder.PostUserTemplate, user).Result;
             }
         }
 
@@ -172,7 +171,7 @@ namespace EndToEndTests
                 client.BaseAddress = new Uri("http://localhost:80/");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
 
-                return client.GetAsync(string.Format("api/user/{0}", nickname)).Result;
+                return client.GetAsync(GOUriBuilder.BuildUserUri(nickname)).Result;
             }
         }
 

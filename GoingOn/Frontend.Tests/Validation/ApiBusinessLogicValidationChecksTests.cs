@@ -8,15 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Entities;
-using Frontend.Validation;
-using Storage;
-
-namespace GoingOn.Tests.Validation
+namespace GoingOn.Frontend.Tests.Validation
 {
     using System;
     using System.Threading.Tasks;
-
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Validation;
+    using GoingOn.Storage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;

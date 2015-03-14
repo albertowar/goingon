@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <ProjectGuid>{90E34909-07F8-4EAC-BF0E-285474BFD909}</ProjectGuid>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Storage</RootNamespace>
+    <RootNamespace>GoingOn.Storage</RootNamespace>
     <AssemblyName>Storage</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

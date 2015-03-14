@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Controllers
+namespace GoingOn.Frontend.Controllers
 {
     using System.Web.Mvc;
 
@@ -16,9 +16,9 @@ namespace Frontend.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            this.ViewBag.Title = "Home Page";
 
-            return View();
+            return this.View();
         }
     }
 }

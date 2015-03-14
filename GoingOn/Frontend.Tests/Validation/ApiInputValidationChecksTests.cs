@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Tests.Validation
+namespace GoingOn.Frontend.Tests.Validation
 {
     using System;
 

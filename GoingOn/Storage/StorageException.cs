@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage
+namespace GoingOn.Storage
 {
     using System;
 

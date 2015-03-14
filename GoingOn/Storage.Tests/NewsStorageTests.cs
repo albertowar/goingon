@@ -8,15 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.Tests
+using NewsTableStorage = GoingOn.Storage.TableStorage.NewsTableStorage;
+
+namespace GoingOn.Storage.Tests
 {
     using System;
-
+    using GoingOn.Common.Tests;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using Common.Tests;
     using Model.EntitiesBll;
-    using Storage.TableStorage;
 
     [TestClass]
     public class NewsStorageTests

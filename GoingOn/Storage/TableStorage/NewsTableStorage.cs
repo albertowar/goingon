@@ -8,18 +8,18 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.TableStorage
+namespace GoingOn.Storage.TableStorage
 {
     using System;
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage.Entities;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-
     using Model.EntitiesBll;
-    using Storage.TableStorage.Entities;
+    using StorageException = GoingOn.Storage.StorageException;
 
     public class NewsTableStorage : INewsStorage
     {
@@ -73,7 +73,7 @@ namespace Storage.TableStorage
 
             if (element == null)
             {
-                throw new Storage.StorageException("The news is not in the database");
+                throw new StorageException("The news is not in the database");
             }
 
             return NewsEntity.ToNewsBll(element);

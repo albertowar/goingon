@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Tests.Controllers
+namespace GoingOn.Frontend.Tests.Controllers
 {
     using System;
     using System.Linq;
@@ -17,16 +17,13 @@ namespace GoingOn.Tests.Controllers
     using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Web.Http.Routing;
-
+    using GoingOn.Common.Tests;
+    using GoingOn.Frontend.Controllers;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Validation;
+    using GoingOn.Model.EntitiesBll;
+    using GoingOn.Storage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using Common.Tests;
-    using Frontend.Controllers;
-    using Frontend.Entities;
-    using Frontend.Validation;
-    using Model.EntitiesBll;
-    using Storage;
-
     using Moq;
     using Newtonsoft.Json;
     using WebApiContrib.Testing;

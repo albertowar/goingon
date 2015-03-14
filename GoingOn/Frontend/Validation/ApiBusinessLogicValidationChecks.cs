@@ -8,11 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Validation
+namespace GoingOn.Frontend.Validation
 {
     using System;
     using System.Threading.Tasks;
     using Frontend.Entities;
+    using GoingOn.Storage;
     using Storage;
 
     public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Common
+namespace GoingOn.Frontend.Common
 {
     using System;
 

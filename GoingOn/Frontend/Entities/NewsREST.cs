@@ -8,14 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Entities
+namespace GoingOn.Frontend.Entities
 {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
 
     using Frontend.Links;
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
 
     public class NewsREST
     {

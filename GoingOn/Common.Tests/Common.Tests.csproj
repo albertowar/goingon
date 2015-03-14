@@ -7,7 +7,7 @@
     <ProjectGuid>{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common.Tests</RootNamespace>
+    <RootNamespace>GoingOn.Common.Tests</RootNamespace>
     <AssemblyName>Common.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -39,6 +39,7 @@
     <Compile Include="AuthorizationHelper.cs" />
     <Compile Include="NewsBllEqualityComparer.cs" />
     <Compile Include="NewsCompleteEqualityComparer.cs" />
+    <Compile Include="UriBuilderTests.cs" />
     <Compile Include="UserBllEqualityComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCompleteEqualityComparer.cs" />

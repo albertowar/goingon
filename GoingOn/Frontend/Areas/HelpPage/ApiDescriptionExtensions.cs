@@ -1,4 +1,4 @@
-namespace Frontend.Areas.HelpPage
+namespace GoingOn.Frontend.Areas.HelpPage
 {
     using System;
     using System.CodeDom.Compiler;

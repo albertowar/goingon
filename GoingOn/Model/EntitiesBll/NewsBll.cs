@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Model.EntitiesBll
+namespace GoingOn.Model.EntitiesBll
 {
     using System;
 

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Common.Tests
+namespace GoingOn.Common.Tests
 {
     using System;
     using System.Text;

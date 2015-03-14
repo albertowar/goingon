@@ -6,7 +6,7 @@
     <ProjectGuid>{8FB8CB68-1F3D-46CF-986E-6918AE75D6A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EndToEndTests</RootNamespace>
+    <RootNamespace>GoingOn.EndToEndTests</RootNamespace>
     <AssemblyName>EndToEndTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

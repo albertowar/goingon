@@ -8,11 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage
+namespace GoingOn.Storage
 {
     using System;
     using System.Threading.Tasks;
-
     using Model.EntitiesBll;
 
     public interface INewsStorage

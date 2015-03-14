@@ -8,11 +8,10 @@
 // </summary>
 // ****************************************************************************
 
-using Frontend.Controllers;
-
-namespace GoingOn.Tests.Controllers
+namespace GoingOn.Frontend.Tests.Controllers
 {
     using System.Web.Mvc;
+    using GoingOn.Frontend.Controllers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

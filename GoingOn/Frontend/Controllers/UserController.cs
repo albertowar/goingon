@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Frontend.Controllers
+namespace GoingOn.Frontend.Controllers
 {
     using System;
     using System.Net;
@@ -20,7 +20,8 @@ namespace Frontend.Controllers
     using Frontend.Entities;
     using Frontend.Links;
     using Frontend.Validation;
-    using Storage;
+    using GoingOn.Common;
+    using GoingOn.Storage;
 
     public class UserController : ApiController
     {
@@ -37,107 +38,109 @@ namespace Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        // GET api/user/{id}
-        public async Task<HttpResponseMessage> Get(string id)
+        [HttpGet]
+        [Route(GOUriBuilder.GetUserTemplate)]
+        public async Task<HttpResponseMessage> Get(string userId)
         {
-            if (!this.inputValidation.IsValidNickName(id))
+            if (!this.inputValidation.IsValidNickName(userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidGetUser(storage, id))
+            if (!this.businessValidation.IsValidGetUser(this.storage, userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
+                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
             }
                 
-            var user = UserREST.FromUserBll(await storage.GetUser(id), Request);
+            var user = UserREST.FromUserBll(await this.storage.GetUser(userId), this.Request);
 
-            var response = Request.CreateResponse(HttpStatusCode.OK, user);
+            var response = this.Request.CreateResponse(HttpStatusCode.OK, user);
 
             return response;
         }
 
-        // POST api/user
+        [HttpPost]
+        [Route(GOUriBuilder.PostUserTemplate)]
         public async Task<HttpResponseMessage> Post([FromBody]User user)
         {
             if (!this.inputValidation.IsValidUser(user))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidCreateUser(storage, user))
+            if (!this.businessValidation.IsValidCreateUser(this.storage, user))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
-
-            // TODO: validate input of the other parameters
 
             var userToAdd = Entities.User.ToUserBll(user);
             userToAdd.RegistrationDate = DateTime.Now;
 
-            await storage.AddUser(userToAdd);
+            await this.storage.AddUser(userToAdd);
 
-            var response = Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
-            response.Headers.Location = new UserLinkFactory(Request).Self(user.Nickname).Href;
+            var response = this.Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
+            response.Headers.Location = new UserLinkFactory(this.Request).Self(user.Nickname).Href;
 
             return response;
         }
 
         [IdentityBasicAuthentication]
         [Authorize]
-        // PATCH api/user/{id}
-        public async Task<HttpResponseMessage> Patch(string id, [FromBody]User user)
+        [HttpPatch]
+        [Route(GOUriBuilder.PatchUserTemplate)]
+        public async Task<HttpResponseMessage> Patch(string userId, [FromBody]User user)
         {
-            if (!this.inputValidation.IsValidNickName(id))
+            if (!this.inputValidation.IsValidNickName(userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!this.inputValidation.IsValidUser(user))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsAuthorizedUser(User.Identity.Name, id))
+            if (!this.businessValidation.IsAuthorizedUser(this.User.Identity.Name, userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
+                return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
-            if (!this.businessValidation.IsValidUpdateUser(storage, user))
+            if (!this.businessValidation.IsValidUpdateUser(this.storage, user))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
+                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
             var userToUpdate = Entities.User.ToUserBll(user);
 
-            await storage.UpdateUser(userToUpdate);
+            await this.storage.UpdateUser(userToUpdate);
 
-            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
+            return this.Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
         }
 
         [IdentityBasicAuthentication]
         [Authorize]
-        // DELETE api/user/{id}
-        public async Task<HttpResponseMessage> Delete(string id)
+        [HttpDelete]
+        [Route(GOUriBuilder.DeleteUserTemplate)]
+        public async Task<HttpResponseMessage> Delete(string userId)
         {
-            if (!this.inputValidation.IsValidNickName(id))
+            if (!this.inputValidation.IsValidNickName(userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsAuthorizedUser(User.Identity.Name, id))
+            if (!this.businessValidation.IsAuthorizedUser(this.User.Identity.Name, userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
+                return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
-            if (!this.businessValidation.IsValidDeleteUser(storage, id))
+            if (!this.businessValidation.IsValidDeleteUser(this.storage, userId))
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
+                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
 
-            await storage.DeleteUser(Entities.User.ToUserBll(new User { Nickname = id }));
+            await this.storage.DeleteUser(Entities.User.ToUserBll(new User { Nickname = userId }));
 
-            return Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
+            return this.Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
         }
     }
 }

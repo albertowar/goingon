@@ -16,7 +16,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using GoingOn;
 
-namespace Frontend
+namespace GoingOn.Frontend
 {
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]

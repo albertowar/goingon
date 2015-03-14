@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace Common
+namespace GoingOn.Common
 {
     public enum City
     {

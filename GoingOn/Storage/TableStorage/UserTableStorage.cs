@@ -8,20 +8,20 @@
 // </summary>
 // ****************************************************************************
 
-namespace Storage.TableStorage
+namespace GoingOn.Storage.TableStorage
 {
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage.Entities;
+
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-
     using Model.EntitiesBll;
-    using Storage.TableStorage.Entities;
-
-    using TableStorageException = Microsoft.WindowsAzure.Storage.StorageException;
+    using StorageException = GoingOn.Storage.StorageException;
 
     public class UserTableStorage : IUserStorage
     {
@@ -62,11 +62,11 @@ namespace Storage.TableStorage
 
             await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
 
                 if (this.ContainsUser(userBll).Result)
                 {
-                    throw new Storage.StorageException("The user is already in the database");
+                    throw new StorageException("The user is already in the database");
                 }
 
                 var user = UserEntity.FromUserBll(userBll);
@@ -83,13 +83,13 @@ namespace Storage.TableStorage
 
             return await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
                 
                 var retrievedUser = UserTableStorage.FindUserByNickname(table, nickname).FirstOrDefault();
 
                 if (retrievedUser == null)
                 {
-                    throw new Storage.StorageException("The user is not in the database");
+                    throw new StorageException("The user is not in the database");
                 }
 
                 return UserEntity.ToUserBll(retrievedUser);
@@ -100,7 +100,7 @@ namespace Storage.TableStorage
         {
             return await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
 
                 return UserTableStorage.FindUserByNickname(table, userBll.Nickname).Any();
             });
@@ -110,13 +110,13 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
 
                 var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
 
                 if (retrievedUser == null)
                 {
-                    throw new Storage.StorageException("The user is not in the database");
+                    throw new StorageException("The user is not in the database");
                 }
 
                 retrievedUser.Merge(UserEntity.FromUserBll(userBll));
@@ -131,13 +131,13 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
 
                 var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
 
                 if (retrievedUser == null)
                 {
-                    throw new Storage.StorageException("The user is not in the database");
+                    throw new StorageException("The user is not in the database");
                 }
 
                 var deleteOperation = TableOperation.Delete(retrievedUser);
@@ -150,7 +150,7 @@ namespace Storage.TableStorage
         {
             await Task.Run(() =>
             {
-                var table = GetStorageTable();
+                var table = this.GetStorageTable();
 
                 var query = new TableQuery<UserEntity>();
 
