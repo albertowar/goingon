@@ -11,56 +11,61 @@
 namespace GoingOn.EndToEndTests
 {
     using System;
-    using System.Net.Http;
-    using System.Net.Http.Formatting;
-    using System.Net.Http.Headers;
-    using Frontend;
-    using Frontend.Entities;
+    using System.Net;
+
+    using GoingOn.Frontend;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Client;
     using GoingOn.Client.Entities;
-    using GoingOn.Common;
+    using GoingOn.Model.EntitiesBll;
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage;
+
     using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Model.EntitiesBll;
+    
     using Newtonsoft.Json;
-    using Storage;
-    using Storage.TableStorage;
 
     [TestClass]
     public class UserTests
     {
-        private static IDisposable webService;
-        private static IUserStorage storage;
+        private GOClient goClient;
+
+        private IDisposable webService;
+
+        private IUserStorage storage;
 
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga" };
 
         [TestInitialize]
         public void TestInitialize()
         {
-            webService = WebApp.Start<Startup>("http://*:80/");
-            storage = UserTableStorage.GetInstance();
+            this.webService = WebApp.Start<Startup>("http://*:80/");
+            this.storage = UserTableStorage.GetInstance();
+            this.goClient = new GOClient(@"http://localhost:80/", "Alberto", "1234");
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            webService.Dispose();
-            storage.DeleteAllUsers().Wait();
+            this.webService.Dispose();
+            this.storage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]
         public void TestCreateUser()
         {
-            UserTests.CreateUser(userClient);
+            this.goClient.CreateUser(userClient).Wait();
 
-            Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234", City = "Malaga" }).Result);
+            Assert.IsTrue(this.storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234", City = "Malaga" }).Result);
         }
 
         [TestMethod]
         public void TestGetExistingUser()
         {
-            UserTests.CreateUser(userClient);
+            this.goClient.CreateUser(userClient).Wait();
 
-            var response = UserTests.GetUser("Alberto");
+            var response = this.goClient.GetUser("Alberto").Result;
 
             var content = response.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -72,20 +77,13 @@ namespace GoingOn.EndToEndTests
         [TestMethod]
         public void TestUpdateUser()
         {
-            UserTests.CreateUser(userClient);
+            this.goClient.CreateUser(userClient).Wait();
 
             UserClient updatedUser = new UserClient { Nickname = "Alberto", Password = "4567", City = "Malaga" };
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
-                
-                client.PatchAsync(GOUriBuilder.BuildUserUri("Alberto"), updatedUser, new JsonMediaTypeFormatter()).Wait();
-            }
+            this.goClient.UpdateUser(updatedUser).Wait();
 
-            var getResponse = UserTests.GetUser("Alberto");
+            var getResponse = this.goClient.GetUser("Alberto").Result;
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -100,35 +98,23 @@ namespace GoingOn.EndToEndTests
             var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234", City = "Malaga" };
             UserClient updatedUser = new UserClient { Nickname = "NotAlberto", Password = "4567", City = "Malaga" };
 
-            UserTests.CreateUser(userClient);
-            UserTests.CreateUser(otherUser);
+            this.goClient.CreateUser(userClient).Wait();
+            this.goClient.CreateUser(otherUser).Wait();
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+            var response = this.goClient.UpdateUser(updatedUser).Result;
 
-                client.PatchAsync(GOUriBuilder.BuildUserUri(otherUser.Nickname), updatedUser, new JsonMediaTypeFormatter()).Wait();
-            }
-
-            Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "NotAlberto", Password = "1234" }).Result);
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.IsTrue(this.storage.ContainsUser(new UserBll { Nickname = "NotAlberto", Password = "1234" }).Result);
         }
 
         [TestMethod]
         public void TestDeleteExistingUser()
         {
-            UserTests.CreateUser(userClient);
+            this.goClient.CreateUser(userClient).Wait();
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+            this.goClient.DeleteUser("Alberto").Wait();
 
-                client.DeleteAsync(GOUriBuilder.BuildUserUri("Alberto")).Wait();
-
-                Assert.IsFalse(storage.ContainsUser(new UserBll{ Nickname = "Alberto", Password = "1234" }).Result);
-            }
+            Assert.IsFalse(this.storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234" }).Result);
         }
 
         [TestMethod]
@@ -136,45 +122,13 @@ namespace GoingOn.EndToEndTests
         {
             var otherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
 
-            UserTests.CreateUser(userClient);
-            UserTests.CreateUser(otherUser);
+            this.goClient.CreateUser(userClient).Wait();
+            this.goClient.CreateUser(otherUser).Wait();
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
+            var response = this.goClient.DeleteUser(otherUser.Nickname).Result;
 
-                client.DeleteAsync(GOUriBuilder.BuildUserUri(otherUser.Nickname)).Wait();
-
-                Assert.IsTrue(storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234" }).Result);
-            }
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.IsTrue(this.storage.ContainsUser(new UserBll { Nickname = "Alberto", Password = "1234" }).Result);
         }
-
-        #region Helper methods
-
-        public static HttpResponseMessage CreateUser(UserClient user)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                return client.PostAsJsonAsync(GOUriBuilder.PostUserTemplate, user).Result;
-            }
-        }
-
-        private static HttpResponseMessage GetUser(string nickname)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "QWxiZXJ0bzoxMjM0");
-
-                return client.GetAsync(GOUriBuilder.BuildUserUri(nickname)).Result;
-            }
-        }
-
-        #endregion
     }
 }

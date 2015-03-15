@@ -14,14 +14,8 @@ namespace GoingOn.Client.Entities
 
     public class NewsClient
     {
-        /*
-         * The title of the news. Mandatory.
-         */
         public string Title { get; set; }
 
-        /*
-         * The content of the news. Mandatory.
-         */
         public string Content { get; set; }
 
         public static NewsClient FromNewsREST(NewsREST newsREST)

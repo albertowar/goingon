@@ -15,23 +15,30 @@ namespace GoingOn.EndToEndTests
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using Frontend;
-    using Frontend.Entities;
+
+    using GoingOn.Frontend;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Client;
     using GoingOn.Client.Entities;
     using GoingOn.Common;
     using GoingOn.Common.Tests;
+    using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage;
+
     using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
-    using Storage;
-    using Storage.TableStorage;
 
     [TestClass]
     public class NewsTests
     {
-        private static IDisposable webService;
-        private static IUserStorage userStorage;
-        private static INewsStorage newsStorage;
+        private IDisposable webService;
+
+        private IUserStorage userStorage;
+
+        private INewsStorage newsStorage;
+
+        private GOClient goClient;
 
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga"};
         private static readonly NewsClient newsClient = new NewsClient { Title = "title", Content = "content" };
@@ -46,7 +53,7 @@ namespace GoingOn.EndToEndTests
             userStorage = UserTableStorage.GetInstance();
             newsStorage = NewsTableStorage.GetInstance();
 
-            UserTests.CreateUser(userClient);
+            this.goClient.CreateUser(userClient).Wait();
         }
 
         [TestCleanup]
@@ -149,7 +156,7 @@ namespace GoingOn.EndToEndTests
         public void TestDeleteNewsFromAnotherUser()
         {
             var anotherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
-            UserTests.CreateUser(anotherUser);
+            this.goClient.CreateUser(anotherUser).Wait();
 
             var createResponse = NewsTests.CreateNews(userClient, newsClient);
 
