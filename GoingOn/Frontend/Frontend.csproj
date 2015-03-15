@@ -171,7 +171,6 @@
     <Compile Include="Authentication\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Authentication\IdentityBasicAuthenticationAttribute.cs" />
     <Compile Include="Common\ApiUriBuilder.cs" />
-    <Compile Include="Common\BusinessValidationException.cs" />
     <Compile Include="Common\InputValidationException.cs" />
     <Compile Include="Entities\NewsREST.cs" />
     <Compile Include="Entities\UserREST.cs" />
