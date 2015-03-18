@@ -14,72 +14,33 @@ namespace GoingOn.Frontend.Links
     using System.Net.Http;
     using System.Web.Http.Routing;
 
-    public class LinkFactory
+    public abstract class LinkFactory
     {
-        private readonly UrlHelper urlHelper;
-        private readonly string controllerName;
-        private const string DefaultApi = "DefaultApi";
+        protected readonly UrlHelper urlHelper;
 
-        protected LinkFactory(HttpRequestMessage request, Type controllerType) 
+        protected LinkFactory(HttpRequestMessage request) 
         {
             this.urlHelper = new UrlHelper(request);
-            this.controllerName = GetControllerName(controllerType);
         }
 
-        protected Link GetLink<TController>(string rel, object id, string action, string route = DefaultApi)
-        {
-            var uri = GetUri(new
-            {
-                controller = GetControllerName(
-                    typeof(TController)),
-                id,
-                action
-            }, route);
+        public abstract Uri GetUri(params string[] routeValues);
 
-            return new Link { Action = action, Href = uri, Rel = rel };
-        }
-
-        private string GetControllerName(Type controllerType) 
-        {
-            var name = controllerType.Name;
-            return name.Substring(0, name.Length - "controller".Length).ToLower();
-        }
-
-        protected Uri GetUri(object routeValues, string route = DefaultApi)
-        {
-            return new Uri(this.urlHelper.Link(route, routeValues));
-        }
-
-        public Link Self(string id, string route = DefaultApi)
+        public Link Self(params string[] routeValues)
         {
             return new Link
             {
-                Rel = Rels.Self,
-                Href = this.GetUri(
-                    new { controller = this.controllerName, id = id }, route)
+                Rel = Rels.self.ToString(),
+                Href = this.GetUri(routeValues)
             };
         }
 
-        public Link Author(string id, string route = DefaultApi)
+        public Link Author(params string[] routeValues)
         {
             return new Link
             {
-                Rel = Rels.Author,
-                Href = this.GetUri(
-                    new { controller = this.controllerName, id = id }, route)
+                Rel = Rels.author.ToString(),
+                Href = this.GetUri(routeValues)
             };
         }
-
-        public class Rels
-        {
-            public const string Self = "self";
-            public const string Author = "author";
-        }
-    }
-
-    public abstract class LinkFactory<TController> : LinkFactory
-    {
-        public LinkFactory(HttpRequestMessage request) :
-            base(request, typeof(TController)) { }
     }
 }

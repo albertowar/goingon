@@ -13,15 +13,11 @@ namespace GoingOn.EndToEndTests
     using System;
     using System.Linq;
     using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
 
     using GoingOn.Frontend;
     using GoingOn.Frontend.Entities;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
-    using GoingOn.Common;
-    using GoingOn.Common.Tests;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
 
@@ -44,14 +40,16 @@ namespace GoingOn.EndToEndTests
         private static readonly NewsClient newsClient = new NewsClient { Title = "title", Content = "content" };
 
         private static readonly string City = "Malaga";
-        private static readonly DateTime Date = DateTime.Parse("2015-05-11");
+        private static readonly string Date = "2015-05-11";
 
         [TestInitialize]
         public void TestInitialize()
         {
-            webService = WebApp.Start<Startup>("http://*:80/");
-            userStorage = UserTableStorage.GetInstance();
-            newsStorage = NewsTableStorage.GetInstance();
+            this.webService = WebApp.Start<Startup>("http://*:80/");
+            this.goClient = new GOClient(@"http://localhost:80/", "Alberto", "1234");
+
+            this.userStorage = UserTableStorage.GetInstance();
+            this.newsStorage = NewsTableStorage.GetInstance();
 
             this.goClient.CreateUser(userClient).Wait();
         }
@@ -59,34 +57,34 @@ namespace GoingOn.EndToEndTests
         [TestCleanup]
         public void TestCleanup()
         {
-            webService.Dispose();
+            this.webService.Dispose();
 
-            newsStorage.DeleteAllNews(City).Wait();
-            userStorage.DeleteAllUsers().Wait();
+            this.newsStorage.DeleteAllNews(City).Wait();
+            this.userStorage.DeleteAllUsers().Wait();
         }
 
         [TestMethod]
         public void TestCreateNews()
         {
-            var response = NewsTests.CreateNews(userClient, newsClient);
+            var response = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
             var newsUri = response.Headers.Location;
             var newsId = newsUri.AbsolutePath.Split('/').Last();
 
-            Assert.IsTrue(newsStorage.Exists(City, Date, Guid.Parse(newsId)).Result);
+            Assert.IsTrue(this.newsStorage.Exists(City, DateTime.Parse(Date), Guid.Parse(newsId)).Result);
         }
 
         [TestMethod]
         public void TestGetNews()
         {
-            var createResponse = NewsTests.CreateNews(userClient, newsClient);
+            var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            var getResponse = NewsTests.GetNews(guid);
+            var getResponse = this.goClient.GetNews(City, Date, guid).Result;
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -100,14 +98,14 @@ namespace GoingOn.EndToEndTests
         {
             var updatedNews = new NewsClient { Title = newsClient.Title + "something else", Content = newsClient.Content + "something else" };
 
-            var createResponse = NewsTests.CreateNews(userClient, newsClient);
+            var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            NewsTests.UpdateNews(userClient, guid, updatedNews);
+            this.goClient.UpdateNews(City, Date, guid, updatedNews).Wait();
 
-            var getResponse = NewsTests.GetNews(guid);
+            var getResponse = this.goClient.GetNews(City, Date, guid).Result;
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -119,18 +117,16 @@ namespace GoingOn.EndToEndTests
         [TestMethod]
         public void TestUpdateNewsAnotherUser()
         {
-            var anotherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
-
             var updatedNews = new NewsClient { Title = newsClient.Title + "something else", Content = newsClient.Content + "something else" };
 
-            var createResponse = NewsTests.CreateNews(userClient, newsClient);
+            var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            NewsTests.UpdateNews(anotherUser, guid, updatedNews);
+            this.goClient.UpdateNews(City, Date, guid, updatedNews).Wait();
 
-            var getResponse = NewsTests.GetNews(guid);
+            var getResponse = this.goClient.GetNews(City, Date, guid).Result;
 
             var content = getResponse.Content;
             var jsonContent = content.ReadAsStringAsync().Result;
@@ -142,14 +138,14 @@ namespace GoingOn.EndToEndTests
         [TestMethod]
         public void TestDeleteNews()
         {
-            var createResponse = NewsTests.CreateNews(userClient, newsClient);
+            var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            NewsTests.DeleteNews(userClient, guid);
+            this.goClient.DeleteNews(City, Date, guid).Wait();
 
-            Assert.IsFalse(newsStorage.Exists(City, Date, Guid.Parse(guid)).Result);
+            Assert.IsFalse(this.newsStorage.Exists(City, DateTime.Parse(Date), Guid.Parse(guid)).Result);
         }
 
         [TestMethod]
@@ -158,71 +154,14 @@ namespace GoingOn.EndToEndTests
             var anotherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
             this.goClient.CreateUser(anotherUser).Wait();
 
-            var createResponse = NewsTests.CreateNews(userClient, newsClient);
+            var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            NewsTests.DeleteNews(anotherUser, guid);
+            this.goClient.DeleteNews(City, Date, guid).Wait();
 
-            Assert.IsTrue(newsStorage.Exists(City, Date, Guid.Parse(guid)).Result);
+            Assert.IsTrue(this.newsStorage.Exists(City, DateTime.Parse(Date), Guid.Parse(guid)).Result);
         }
-
-        #region Helper methods
-
-        public static HttpResponseMessage CreateNews(UserClient user, NewsClient news)
-        {
-            var authorizationString = AuthorizationHelper.Base64Encode(string.Format("{0}:{1}", user.Nickname, user.Password));
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
-
-                return client.PostAsJsonAsync(GOUriBuilder.BuildDiaryEntryUri(City, "2015-05-11"), news).Result;
-            }
-        }
-
-        public static HttpResponseMessage UpdateNews(UserClient user, string id, NewsClient news)
-        {
-            var authorizationString = AuthorizationHelper.Base64Encode(string.Format("{0}:{1}", user.Nickname, user.Password));
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
-
-                return client.PatchAsJsonAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", id), news).Result;
-            }
-        }
-
-        private static HttpResponseMessage GetNews(string guid)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-
-                return client.GetAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", guid)).Result;
-            }
-        }
-
-        private static HttpResponseMessage DeleteNews(UserClient user, string guid)
-        {
-            var authorizationString = AuthorizationHelper.Base64Encode(string.Format("{0}:{1}", user.Nickname, user.Password));
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:80/");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
-
-                return client.DeleteAsync(GOUriBuilder.BuildNewsUri(City, "2015-05-11", guid)).Result;
-            }
-        }
-
-        #endregion
     }
 }

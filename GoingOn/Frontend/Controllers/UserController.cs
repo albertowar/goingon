@@ -16,11 +16,11 @@ namespace GoingOn.Frontend.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
 
-    using Frontend.Authentication;
-    using Frontend.Entities;
-    using Frontend.Links;
-    using Frontend.Validation;
     using GoingOn.Common;
+    using GoingOn.Frontend.Authentication;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Links;
+    using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
 
     public class UserController : ApiController
@@ -39,7 +39,7 @@ namespace GoingOn.Frontend.Controllers
         [IdentityBasicAuthentication]
         [Authorize]
         [HttpGet]
-        [Route(GOUriBuilder.GetUserTemplate)]
+        [Route(GOUriBuilder.GetUserTemplate, Name = "GetUser")]
         public async Task<HttpResponseMessage> Get(string userId)
         {
             if (!this.inputValidation.IsValidNickName(userId))

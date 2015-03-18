@@ -10,14 +10,19 @@
 
 namespace GoingOn.Frontend.Links
 {
+    using System;
     using System.Net.Http;
-    using Frontend.Controllers;
 
-    public class NewsLinkFactory : LinkFactory<NewsController>
+    public class NewsLinkFactory : LinkFactory
     {
         public NewsLinkFactory(HttpRequestMessage message)
             : base(message)
         {
+        }
+
+        public override Uri GetUri(params string[] routeValues)
+        {
+            return new Uri(base.urlHelper.Route("GetNews", new { city = routeValues[0], date = routeValues[1], newsId = routeValues[2] })); 
         }
     }
 }

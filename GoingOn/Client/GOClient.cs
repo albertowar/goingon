@@ -34,6 +34,7 @@ namespace GoingOn.Client
             this.password = password;
         }
 
+        #region User methods
         public async Task<HttpResponseMessage> GetUser(string usernameToGet)
         {
             string authenticationCredentials = GOClient.EncodeTo64(string.Format("{0}:{1}", this.username, this.password));
@@ -41,6 +42,7 @@ namespace GoingOn.Client
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationCredentials);
 
                 return await client.GetAsync(GOUriBuilder.BuildUserUri(usernameToGet));
@@ -54,7 +56,7 @@ namespace GoingOn.Client
                 client.BaseAddress = new Uri(this.rootUri);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                
+
                 return await client.PostAsJsonAsync(GOUriBuilder.PostUserTemplate, user);
             }
         }
@@ -65,7 +67,8 @@ namespace GoingOn.Client
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:80/");
+                client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationCredentials);
 
@@ -79,12 +82,73 @@ namespace GoingOn.Client
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:80/");
+                client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationCredentials);
 
                 return await client.DeleteAsync(GOUriBuilder.BuildUserUri(usernameToDelete));
             }
         }
+
+        #endregion
+
+        #region News methods
+
+        public async Task<HttpResponseMessage> CreateNews(string city, string date, NewsClient news)
+        {
+            var authorizationString = GOClient.EncodeTo64(string.Format("{0}:{1}", this.username, this.password));
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
+
+                return await client.PostAsJsonAsync(GOUriBuilder.BuildDiaryEntryUri(city, date), news);
+            }
+        }
+
+        public async Task<HttpResponseMessage> UpdateNews(string city, string date, string id, NewsClient news)
+        {
+            string authorizationString = GOClient.EncodeTo64(string.Format("{0}:{1}", this.username, this.password));
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
+
+                return await client.PatchAsJsonAsync(GOUriBuilder.BuildNewsUri(city, date, id), news);
+            }
+        }
+
+        public async Task<HttpResponseMessage> GetNews(string city, string date, string guid)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.rootUri);
+
+                return await client.GetAsync(GOUriBuilder.BuildNewsUri(city, date, guid));
+            }
+        }
+
+        public async Task<HttpResponseMessage> DeleteNews(string city, string date, string guid)
+        {
+            string authorizationString = GOClient.EncodeTo64(string.Format("{0}:{1}", this.username, this.password));
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.rootUri);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
+
+                return await client.DeleteAsync(GOUriBuilder.BuildNewsUri(city, date, guid));
+            }
+        }
+
+        #endregion
 
         private static string EncodeTo64(string stringToEncode)
         {

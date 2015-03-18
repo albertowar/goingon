@@ -37,7 +37,7 @@ namespace GoingOn.Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
-        [Route(GOUriBuilder.GetNewsTemplate)]
+        [Route(GOUriBuilder.GetNewsTemplate, Name = "GetNews")]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {

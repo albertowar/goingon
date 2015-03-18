@@ -10,13 +10,18 @@
 
 namespace GoingOn.Frontend.Links
 {
+    using System;
     using System.Net.Http;
-    using Frontend.Controllers;
 
-    public class UserLinkFactory : LinkFactory<UserController>
+    public class UserLinkFactory : LinkFactory
     {
         public UserLinkFactory(HttpRequestMessage message) : base(message)
         {
+        }
+
+        public override Uri GetUri(params string[] routeValues)
+        {
+            return new Uri(base.urlHelper.Link("GetUser", new { userId = routeValues[0] }));
         }
     }
 }

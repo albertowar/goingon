@@ -29,12 +29,12 @@ namespace GoingOn.Frontend.Entities
         {
             this.User = user;
             this.RegistrationDate = registrationDate;
-            Links = new List<Link>();
+            this.Links = new List<Link>();
         }
 
         private UserREST(User user, DateTime registrationDate, HttpRequestMessage request) : this(user, registrationDate)
         {
-            Links.Add(new UserLinkFactory(request).Self(user.Nickname));
+            this.Links.Add(new UserLinkFactory(request).Self(user.Nickname));
         }
 
         public static UserREST FromUserBll(UserBll user, HttpRequestMessage request)

@@ -41,8 +41,9 @@ namespace GoingOn.EndToEndTests
         public void TestInitialize()
         {
             this.webService = WebApp.Start<Startup>("http://*:80/");
-            this.storage = UserTableStorage.GetInstance();
             this.goClient = new GOClient(@"http://localhost:80/", "Alberto", "1234");
+
+            this.storage = UserTableStorage.GetInstance();
         }
 
         [TestCleanup]
