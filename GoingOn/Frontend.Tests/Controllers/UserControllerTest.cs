@@ -239,7 +239,7 @@ namespace GoingOn.Frontend.Tests.Controllers
         private void AssertGetFails(string url, string nickname, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Get, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.ConfigureForTesting(HttpMethod.Get, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
 
             HttpResponseMessage response = userController.Get(nickname).Result;
 
@@ -250,7 +250,7 @@ namespace GoingOn.Frontend.Tests.Controllers
         private void AssertPostFails(string url, User user, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Post, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.ConfigureForTesting(HttpMethod.Post, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
 
             HttpResponseMessage response = userController.Post(user).Result;
 
@@ -261,7 +261,7 @@ namespace GoingOn.Frontend.Tests.Controllers
         private void AssertPatchFails(string nickname, string url, User user, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.ConfigureForTesting(new HttpMethod("PATCH"), url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
             userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
 
             HttpResponseMessage response = userController.Patch(nickname, user).Result;
@@ -273,7 +273,7 @@ namespace GoingOn.Frontend.Tests.Controllers
         private void AssertDeleteFails(string nickname, string url, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, url, "DefaultApi", new HttpRoute("api/{controller}/{id}"));
+            userController.ConfigureForTesting(HttpMethod.Delete, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
             userController.User = new GenericPrincipal(new GenericIdentity(User.Nickname), null);
 
             HttpResponseMessage response = userController.Delete(nickname).Result;

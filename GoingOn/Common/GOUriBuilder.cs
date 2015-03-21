@@ -30,11 +30,21 @@ namespace GoingOn.Common
             return string.Format("{0}/{1}", UserRootTemplate, userId);
         }
 
+        public static string BuildAbsoluteUserUri(string scheme, string host, string userId)
+        {
+            return string.Format("{0}://{1}/{2}", scheme, host, GOUriBuilder.BuildUserUri(userId));
+        }
+
         public static string BuildDiaryEntryUri(string city, string date)
         {
             var result = NewsRootTemplate.Replace("{city}", city);
 
             return result.Replace("{date}", date);
+        }
+
+        public static string BuildAbsoluteNewsUri(string scheme, string host, string city, string date, string newsId)
+        {
+            return string.Format("{0}://{1}/{2}", scheme, host, GOUriBuilder.BuildNewsUri(city, date, newsId));
         }
 
         public static string BuildNewsUri(string city, string date, string newsId)

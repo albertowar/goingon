@@ -12,6 +12,7 @@ namespace GoingOn.Frontend.Links
 {
     using System;
     using System.Net.Http;
+    using GoingOn.Common;
 
     public class UserLinkFactory : LinkFactory
     {
@@ -21,7 +22,10 @@ namespace GoingOn.Frontend.Links
 
         public override Uri GetUri(params string[] routeValues)
         {
-            return new Uri(base.urlHelper.Link("GetUser", new { userId = routeValues[0] }));
+            return new Uri(GOUriBuilder.BuildAbsoluteUserUri(
+                this.request.RequestUri.Scheme,
+                this.request.RequestUri.Host, 
+                routeValues[0]));
         }
     }
 }

@@ -44,7 +44,7 @@ namespace GoingOn.Frontend.Entities
             this.City = city;
             this.Date = date;
             this.Author = author;
-            this.Links.Add(new NewsLinkFactory(request).Self(id.ToString()));
+            this.Links.Add(new NewsLinkFactory(request).Self(city, date.ToString("yy-MM-dd"), id.ToString()));
             this.Links.Add(new UserLinkFactory(request).Author(author));
         }
 

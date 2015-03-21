@@ -16,12 +16,12 @@ namespace GoingOn.Frontend.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
 
-    using Authentication;
-    using Frontend.Common;
-    using Frontend.Entities;
-    using Frontend.Links;
-    using Frontend.Validation;
     using GoingOn.Common;
+    using GoingOn.Frontend.Authentication;
+    using GoingOn.Frontend.Common;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Links;
+    using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
 
     public class NewsController : ApiController
@@ -63,7 +63,7 @@ namespace GoingOn.Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        [Route(GOUriBuilder.PostNewsTemplate)]
+        [Route(GOUriBuilder.PostNewsTemplate, Name = "PostNews")]
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
@@ -78,7 +78,7 @@ namespace GoingOn.Frontend.Controllers
                 await this.storage.AddNews(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date)));
 
                 var response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
-                response.Headers.Location = new NewsLinkFactory(this.Request).Self(newsId.ToString()).Href;
+                response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
 
                 return response;
             }

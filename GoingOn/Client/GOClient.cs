@@ -105,7 +105,9 @@ namespace GoingOn.Client
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorizationString);
 
-                return await client.PostAsJsonAsync(GOUriBuilder.BuildDiaryEntryUri(city, date), news);
+                var uri = GOUriBuilder.BuildDiaryEntryUri(city, date);
+
+                return await client.PostAsJsonAsync(uri, news);
             }
         }
 

@@ -16,11 +16,11 @@ namespace GoingOn.Frontend.Links
 
     public abstract class LinkFactory
     {
-        protected readonly UrlHelper urlHelper;
+        protected readonly HttpRequestMessage request;
 
         protected LinkFactory(HttpRequestMessage request) 
         {
-            this.urlHelper = new UrlHelper(request);
+            this.request = request;
         }
 
         public abstract Uri GetUri(params string[] routeValues);

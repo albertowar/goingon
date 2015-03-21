@@ -151,15 +151,16 @@ namespace GoingOn.EndToEndTests
         [TestMethod]
         public void TestDeleteNewsFromAnotherUser()
         {
+            var anotherGoClient = new GOClient(@"http://localhost:80/", "NotAlberto", "1234");
             var anotherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
-            this.goClient.CreateUser(anotherUser).Wait();
+            anotherGoClient.CreateUser(anotherUser).Wait();
 
             var createResponse = this.goClient.CreateNews(City, Date, newsClient).Result;
 
             var newsUri = createResponse.Headers.Location;
             var guid = newsUri.AbsolutePath.Split('/').Last();
 
-            this.goClient.DeleteNews(City, Date, guid).Wait();
+            anotherGoClient.DeleteNews(City, Date, guid).Wait();
 
             Assert.IsTrue(this.newsStorage.Exists(City, DateTime.Parse(Date), Guid.Parse(guid)).Result);
         }

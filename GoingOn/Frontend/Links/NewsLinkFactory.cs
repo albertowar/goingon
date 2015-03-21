@@ -13,6 +13,8 @@ namespace GoingOn.Frontend.Links
     using System;
     using System.Net.Http;
 
+    using GoingOn.Common;
+
     public class NewsLinkFactory : LinkFactory
     {
         public NewsLinkFactory(HttpRequestMessage message)
@@ -22,7 +24,12 @@ namespace GoingOn.Frontend.Links
 
         public override Uri GetUri(params string[] routeValues)
         {
-            return new Uri(base.urlHelper.Route("GetNews", new { city = routeValues[0], date = routeValues[1], newsId = routeValues[2] })); 
+            return new Uri(GOUriBuilder.BuildAbsoluteNewsUri(
+                this.request.RequestUri.Scheme,
+                this.request.RequestUri.Host,
+                routeValues[0],
+                routeValues[1],
+                routeValues[2]));
         }
     }
 }
