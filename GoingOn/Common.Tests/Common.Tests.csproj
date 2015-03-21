@@ -39,7 +39,7 @@
     <Compile Include="AuthorizationHelper.cs" />
     <Compile Include="NewsBllEqualityComparer.cs" />
     <Compile Include="NewsCompleteEqualityComparer.cs" />
-    <Compile Include="UriBuilderTests.cs" />
+    <Compile Include="GOUriBuilderTests.cs" />
     <Compile Include="UserBllEqualityComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserCompleteEqualityComparer.cs" />
@@ -48,6 +48,10 @@
     <ProjectReference Include="..\Client\Client.csproj">
       <Project>{6F595F59-04E5-4500-8893-451062B142B9}</Project>
       <Name>Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Frontend\Frontend.csproj">
       <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>

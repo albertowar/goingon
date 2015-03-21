@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="UriBuilderTests.cs" company="Universidad de Malaga">
+// <copyright file="Rels.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,9 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Common.Tests
+namespace GoingOn.Frontend.Links
 {
-    public class UriBuilderTests
+    public enum Rels
     {
+        self,
+        author
     }
 }
