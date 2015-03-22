@@ -44,7 +44,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(false));
 
-            Assert.IsTrue(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user));
+            Assert.IsTrue(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user).Result);
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
 
-            Assert.IsFalse(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user));
+            Assert.IsFalse(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user).Result);
         }
 
         [TestMethod]

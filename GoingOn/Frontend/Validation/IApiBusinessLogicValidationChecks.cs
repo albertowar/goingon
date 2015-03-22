@@ -18,15 +18,15 @@ namespace GoingOn.Frontend.Validation
 
     public interface IApiBusinessLogicValidationChecks
     {
-        bool IsValidCreateUser(IUserStorage storage, User user);
+        Task<bool> IsValidCreateUser(IUserStorage storage, User user);
 
-        bool IsValidGetUser(IUserStorage storage, string nickname);
+        Task<bool> IsValidGetUser(IUserStorage storage, string nickname);
 
-        bool IsValidUpdateUser(IUserStorage storage, User user);
+        Task<bool> IsValidUpdateUser(IUserStorage storage, User user);
 
         bool IsAuthorizedUser(string requesterNickname, string userNickname);
 
-        bool IsValidDeleteUser(IUserStorage storage, string nickname);
+        Task<bool> IsValidDeleteUser(IUserStorage storage, string nickname);
 
         bool IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date);
 

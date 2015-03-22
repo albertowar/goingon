@@ -47,7 +47,7 @@ namespace GoingOn.Frontend.Controllers
                 return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidGetUser(this.storage, userId))
+            if (!await this.businessValidation.IsValidGetUser(this.storage, userId))
             {
                 return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not in the database");
             }
@@ -68,7 +68,7 @@ namespace GoingOn.Frontend.Controllers
                 return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidCreateUser(this.storage, user))
+            if (!await this.businessValidation.IsValidCreateUser(this.storage, user))
             {
                 return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The user is already registered");
             }
@@ -113,7 +113,7 @@ namespace GoingOn.Frontend.Controllers
                 return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
-            if (!this.businessValidation.IsValidUpdateUser(this.storage, user))
+            if (!await this.businessValidation.IsValidUpdateUser(this.storage, user))
             {
                 return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }
@@ -141,7 +141,7 @@ namespace GoingOn.Frontend.Controllers
                 return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
-            if (!this.businessValidation.IsValidDeleteUser(this.storage, userId))
+            if (!await this.businessValidation.IsValidDeleteUser(this.storage, userId))
             {
                 return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, "The user is not registered");
             }

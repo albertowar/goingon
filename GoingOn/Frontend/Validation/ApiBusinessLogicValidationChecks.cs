@@ -17,19 +17,19 @@ namespace GoingOn.Frontend.Validation
 
     public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
     {
-        public bool IsValidCreateUser(IUserStorage storage, User user)
+        public async Task<bool> IsValidCreateUser(IUserStorage storage, User user)
         {
-            return !this.IsUserStored(storage, user);
+            return !await this.IsUserStored(storage, user);
         }
 
-        public bool IsValidGetUser(IUserStorage storage, string nickname)
+        public async Task<bool> IsValidGetUser(IUserStorage storage, string nickname)
         {
-            return this.IsUserStored(storage, new User { Nickname = nickname });
+            return await this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
-        public bool IsValidUpdateUser(IUserStorage storage, User user)
+        public async Task<bool> IsValidUpdateUser(IUserStorage storage, User user)
         {
-            return this.IsUserStored(storage, user);
+            return await this.IsUserStored(storage, user);
         }
 
         public bool IsAuthorizedUser(string requesterNickname, string userNickname)
@@ -37,10 +37,9 @@ namespace GoingOn.Frontend.Validation
             return string.Equals(requesterNickname, userNickname);
         }
 
-        public bool IsValidDeleteUser(IUserStorage storage, string nickname)
+        public async Task<bool> IsValidDeleteUser(IUserStorage storage, string nickname)
         {
-            return
-                this.IsUserStored(storage, new User { Nickname = nickname });
+            return await this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
         public bool IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
@@ -65,9 +64,9 @@ namespace GoingOn.Frontend.Validation
 
         #region Helper methods
 
-        private bool IsUserStored(IUserStorage storage,  User user)
+        private async Task<bool> IsUserStored(IUserStorage storage,  User user)
         {
-            return storage.ContainsUser(User.ToUserBll(user)).Result;
+            return await storage.ContainsUser(User.ToUserBll(user));
         }
 
         private bool IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
