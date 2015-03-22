@@ -37,7 +37,7 @@ namespace GoingOn.Frontend.Controllers
             this.businessValidation = businessValidation;
         }
 
-        [Route(GOUriBuilder.GetNewsTemplate, Name = "GetNews")]
+        [Route(GOUriBuilder.GetNewsTemplate)]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
@@ -63,7 +63,7 @@ namespace GoingOn.Frontend.Controllers
 
         [IdentityBasicAuthentication]
         [Authorize]
-        [Route(GOUriBuilder.PostNewsTemplate, Name = "PostNews")]
+        [Route(GOUriBuilder.PostNewsTemplate)]
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
@@ -167,7 +167,7 @@ namespace GoingOn.Frontend.Controllers
             }
         }
 
-        public void ValidatePostOperation(string city, string date, News news, string nickname)
+        public async Task ValidatePostOperation(string city, string date, News news, string nickname)
         {
             if (!this.inputValidation.IsValidCity(city))
             {
@@ -184,7 +184,7 @@ namespace GoingOn.Frontend.Controllers
                 throw new InputValidationException("The news format is incorrect");
             }
 
-            if (!this.businessValidation.IsValidCreateNews(this.storage, news, city, nickname, DateTime.Parse(date)))
+            if (!await this.businessValidation.IsValidCreateNews(this.storage, news, city, nickname, DateTime.Parse(date)))
             {
                 throw new BusinessValidationException("The news is already created");
             }

@@ -42,9 +42,9 @@ namespace GoingOn.Frontend.Validation
             return await this.IsUserStored(storage, new User { Nickname = nickname });
         }
 
-        public bool IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
+        public async Task<bool> IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
         {
-            return !this.IsNewsStored(storage, news, city, author, date);
+            return !await this.IsNewsStored(storage, news, city, author, date);
         }
 
         public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)
@@ -69,9 +69,9 @@ namespace GoingOn.Frontend.Validation
             return await storage.ContainsUser(User.ToUserBll(user));
         }
 
-        private bool IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
+        private async Task<bool> IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
         {
-            return storage.ContainsNews(News.ToNewsBll(news, city, author, date)).Result;
+            return await storage.ContainsNews(News.ToNewsBll(news, city, author, date));
         }
 
         #endregion

@@ -10,17 +10,17 @@
 
 namespace GoingOn.Storage.TableStorage
 {
-    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage.Entities;
 
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Model.EntitiesBll;
+    
     using StorageException = GoingOn.Storage.StorageException;
 
     public class UserTableStorage : IUserStorage
@@ -39,11 +39,10 @@ namespace GoingOn.Storage.TableStorage
         private static UserTableStorage instance;
 
         // Retrieve the storage account from the connection string.
-        private CloudStorageAccount storageAccount;
+        private readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
 
         private UserTableStorage()
         {
-            this.storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
         }
 
         public static UserTableStorage GetInstance()
@@ -161,8 +160,6 @@ namespace GoingOn.Storage.TableStorage
 
         private CloudTable GetStorageTable()
         {
-            this.storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
-
             var tableClient = this.storageAccount.CreateCloudTableClient();
 
             return tableClient.GetTableReference(TableName);

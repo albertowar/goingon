@@ -60,7 +60,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(false));
 
-            Assert.IsTrue(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()));
+            Assert.IsTrue(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(true));
 
-            Assert.IsFalse(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()));
+            Assert.IsFalse(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }
     }
 }

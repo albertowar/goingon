@@ -158,7 +158,7 @@ namespace GoingOn.Frontend.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(false);
             this.inputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
 
             this.PostNewsFails(HttpStatusCode.BadRequest);
         }
@@ -169,7 +169,7 @@ namespace GoingOn.Frontend.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(false);
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
 
             this.PostNewsFails(HttpStatusCode.BadRequest);
         }
@@ -180,7 +180,7 @@ namespace GoingOn.Frontend.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(false);
-            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
 
             this.PostNewsFails(HttpStatusCode.BadRequest);
         }
@@ -191,7 +191,7 @@ namespace GoingOn.Frontend.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(false);
+            this.businessValidation.Setup(validation => validation.IsValidCreateNews(this.newsStorageMock.Object, It.IsAny<News>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(false));
 
             this.PostNewsFails(HttpStatusCode.BadRequest);
         }

@@ -39,7 +39,7 @@ namespace GoingOn.Frontend.Controllers
         [IdentityBasicAuthentication]
         [Authorize]
         [HttpGet]
-        [Route(GOUriBuilder.GetUserTemplate, Name = "GetUser")]
+        [Route(GOUriBuilder.GetUserTemplate)]
         public async Task<HttpResponseMessage> Get(string userId)
         {
             if (!this.inputValidation.IsValidNickName(userId))
