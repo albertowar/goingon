@@ -264,6 +264,10 @@
     <None Include="Properties\PublishProfiles\GoingOn2267.pubxml" />
     <None Include="Properties\PublishProfiles\GoingOnProduction %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\GoingOnProduction.pubxml" />
+    <None Include="Properties\PublishProfiles\GoingOnTest - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\GoingOnTest - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\GoingOnTest - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\GoingOnTest - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

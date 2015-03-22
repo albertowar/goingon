@@ -82,84 +82,78 @@ namespace GoingOn.Storage.TableStorage
         {
             // Not using Contains so it does not perform two queries
 
-            return await Task.Run(() =>
+            var table = this.GetStorageTable();
+
+            var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, nickname);
+
+            var firstUser = retrievedUserSegment.Results.FirstOrDefault();
+
+            if (firstUser == null)
             {
-                var table = this.GetStorageTable();
-                
-                var retrievedUser = UserTableStorage.FindUserByNickname(table, nickname).FirstOrDefault();
+                throw new StorageException("The user is not in the database");
+            }
 
-                if (retrievedUser == null)
-                {
-                    throw new StorageException("The user is not in the database");
-                }
-
-                return UserEntity.ToUserBll(retrievedUser);
-            });
+            return UserEntity.ToUserBll(firstUser);
         }
 
         public async Task<bool> ContainsUser(UserBll userBll)
         {
-            return await Task.Run(() =>
-            {
-                var table = this.GetStorageTable();
+            var table = this.GetStorageTable();
 
-                return UserTableStorage.FindUserByNickname(table, userBll.Nickname).Any();
-            });
+            var userFound = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
+
+            return userFound.Results.Any();
         }
 
         public async Task UpdateUser(UserBll userBll)
         {
-            await Task.Run(() =>
+            var table = this.GetStorageTable();
+
+            var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
+
+            var firstUser = retrievedUserSegment.Results.FirstOrDefault();
+
+            if (firstUser == null)
             {
-                var table = this.GetStorageTable();
+                throw new StorageException("The user is not in the database");
+            }
 
-                var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
+            firstUser.Merge(UserEntity.FromUserBll(userBll));
 
-                if (retrievedUser == null)
-                {
-                    throw new StorageException("The user is not in the database");
-                }
+            var insertOrReplaceOperation = TableOperation.InsertOrReplace(firstUser);
 
-                retrievedUser.Merge(UserEntity.FromUserBll(userBll));
-
-                var insertOrReplaceOperation = TableOperation.InsertOrReplace(retrievedUser);
-
-                table.Execute(insertOrReplaceOperation);
-            });
+            await table.ExecuteAsync(insertOrReplaceOperation);
         }
 
         public async Task DeleteUser(UserBll userBll)
         {
-            await Task.Run(() =>
+            var table = this.GetStorageTable();
+
+            var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
+
+            var firstUser = retrievedUserSegment.Results.FirstOrDefault();
+
+            if (firstUser == null)
             {
-                var table = this.GetStorageTable();
+                throw new StorageException("The user is not in the database");
+            }
 
-                var retrievedUser = UserTableStorage.FindUserByNickname(table, userBll.Nickname).FirstOrDefault();
+            var deleteOperation = TableOperation.Delete(firstUser);
 
-                if (retrievedUser == null)
-                {
-                    throw new StorageException("The user is not in the database");
-                }
-
-                var deleteOperation = TableOperation.Delete(retrievedUser);
-
-                table.Execute(deleteOperation);
-            });
+            await table.ExecuteAsync(deleteOperation);
         }
 
         public async Task DeleteAllUsers()
         {
-            await Task.Run(() =>
+            var table = this.GetStorageTable();
+
+            var query = new TableQuery<UserEntity>();
+
+            var usersSegment = await table.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
+
+            Parallel.ForEach(usersSegment.Results, async user =>
             {
-                var table = this.GetStorageTable();
-
-                var query = new TableQuery<UserEntity>();
-
-                foreach (var entity in table.ExecuteQuery(query))
-                {
-                    var deleteOperation = TableOperation.Delete(entity);
-                    table.Execute(deleteOperation);
-                }
+                await table.ExecuteAsync(TableOperation.Delete(user));
             });
         }
 
@@ -174,7 +168,7 @@ namespace GoingOn.Storage.TableStorage
             return tableClient.GetTableReference(TableName);
         }
 
-        private static IEnumerable<UserEntity> FindUserByNickname(CloudTable table, string nickname)
+        private static Task<TableQuerySegment<UserEntity>> FindUserByNickname(CloudTable table, string nickname)
         {
             var query = new TableQuery<UserEntity>()
                 .Where(TableQuery.GenerateFilterCondition(
@@ -182,7 +176,7 @@ namespace GoingOn.Storage.TableStorage
                     QueryComparisons.Equal,
                     nickname));
 
-            return table.ExecuteQuery(query);
+            return table.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
         }
 
         #endregion
