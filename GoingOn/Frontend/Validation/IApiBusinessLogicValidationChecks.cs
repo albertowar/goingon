@@ -13,9 +13,8 @@ namespace GoingOn.Frontend.Validation
     using System;
     using System.Threading.Tasks;
 
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
     using GoingOn.Storage;
-    using Storage;
 
     public interface IApiBusinessLogicValidationChecks
     {
