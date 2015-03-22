@@ -167,7 +167,7 @@ namespace GoingOn.Storage.TableStorage
 
         private CloudTable GetStorageTable()
         {
-            var tableClient = StorageAccount.CreateCloudTableClient();
+            var tableClient = this.storageAccount.CreateCloudTableClient();
 
             return tableClient.GetTableReference(TableName);
         }
