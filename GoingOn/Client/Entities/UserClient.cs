@@ -20,6 +20,10 @@ namespace GoingOn.Client.Entities
 
         public string City { get; set; }
 
+        public string Name { get; set; }
+
+        public string Email { get; set; }
+
         public static UserClient FromUserREST(UserREST userREST)
         {
             return new UserClient { Nickname = userREST.User.Nickname, Password = userREST.User.Password, City = userREST.User.City};
