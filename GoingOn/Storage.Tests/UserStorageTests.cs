@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using IUserStorage = GoingOn.Storage.IUserStorage;
-using StorageException = GoingOn.Storage.StorageException;
 using UserTableStorage = GoingOn.Storage.TableStorage.UserTableStorage;
 
 namespace GoingOn.Storage.Tests

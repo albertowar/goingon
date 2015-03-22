@@ -148,7 +148,7 @@ namespace GoingOn.Storage.TableStorage
 
             var query = new TableQuery<UserEntity>();
 
-            var usersSegment = await table.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
+            var usersSegment = await table.ExecuteQuerySegmentedAsync(query, null);
 
             Parallel.ForEach(usersSegment.Results, async user =>
             {
@@ -173,7 +173,7 @@ namespace GoingOn.Storage.TableStorage
                     QueryComparisons.Equal,
                     nickname));
 
-            return table.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
+            return table.ExecuteQuerySegmentedAsync(query, null);
         }
 
         #endregion
