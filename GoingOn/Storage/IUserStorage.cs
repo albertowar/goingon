@@ -50,7 +50,6 @@ namespace GoingOn.Storage
         /// <summary>
         /// Deletes all users.
         /// </summary>
-        /// <param name="city">The city.</param>
         Task DeleteAllUsers();
     }
 }

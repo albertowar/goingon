@@ -71,7 +71,7 @@ namespace GoingOn.Frontend.Controllers
             {
                 var nickname = this.User.Identity.Name;
 
-                this.ValidatePostOperation(city, date, news, nickname);
+                await this.ValidatePostOperation(city, date, news, nickname);
 
                 Guid newsId = Guid.NewGuid();
 
