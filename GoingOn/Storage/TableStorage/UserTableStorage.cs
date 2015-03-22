@@ -39,10 +39,11 @@ namespace GoingOn.Storage.TableStorage
         private static UserTableStorage instance;
 
         // Retrieve the storage account from the connection string.
-        private static readonly CloudStorageAccount StorageAccount = CloudStorageAccount.Parse(StorageConnectionString);
+        private CloudStorageAccount storageAccount;
 
         private UserTableStorage()
         {
+            this.storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
         }
 
         public static UserTableStorage GetInstance()

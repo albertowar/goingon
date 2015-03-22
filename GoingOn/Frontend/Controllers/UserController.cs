@@ -76,7 +76,15 @@ namespace GoingOn.Frontend.Controllers
             var userToAdd = Entities.User.ToUserBll(user);
             userToAdd.RegistrationDate = DateTime.Now;
 
-            await this.storage.AddUser(userToAdd);
+            try
+            {
+                await this.storage.AddUser(userToAdd);
+            }
+            catch (Exception)
+            {
+                var badResponse = this.Request.CreateResponse(HttpStatusCode.InternalServerError, "Something really wrong happened");
+                return badResponse;
+            }
 
             var response = this.Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
             response.Headers.Location = new UserLinkFactory(this.Request).Self(user.Nickname).Href;
