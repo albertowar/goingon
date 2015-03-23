@@ -132,7 +132,7 @@ namespace GoingOn.Frontend.Validation
         {
             DateTime date;
 
-            return DateTime.TryParseExact(dateString, "yyyy-mm-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+            return DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
         }
 
         public bool IsValidTitle(string title)
