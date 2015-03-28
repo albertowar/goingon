@@ -19,14 +19,14 @@ namespace GoingOn.Storage
         /// Adds the user.
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
-        /// <exception cref="Storage.StorageException">If the user is already in the database.</exception>
+        /// <exception cref="AzureTableStorageException">If the user is already in the database.</exception>
         Task AddUser(UserBll userBll);
 
         /// <summary>
         /// Gets the user.
         /// </summary>
         /// <param name="nickname">The nickname.</param>
-        /// /// <exception cref="Storage.StorageException">If the user is not in the database.</exception>
+        /// /// <exception cref="AzureTableStorageException">If the user is not in the database.</exception>
         Task<UserBll> GetUser(string nickname);
 
         /// <summary>

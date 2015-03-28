@@ -19,7 +19,7 @@ namespace GoingOn.Frontend.Authentication
     using System.Threading.Tasks;
     using System.Web.Http.Filters;
 
-    public abstract class BasicAuthenticationAttribute : Attribute, IAuthenticationFilter
+    public abstract class BasicAuthenticationAttribute : ActionFilterAttribute, IAuthenticationFilter
     {
         public string Realm { get; set; }
 
@@ -49,7 +49,7 @@ namespace GoingOn.Frontend.Authentication
                 return;
             }
 
-            Tuple<string, string> userNameAndPasword = ExtractUserNameAndPassword(authorization.Parameter);
+            Tuple<string, string> userNameAndPasword = BasicAuthenticationAttribute.ExtractUserNameAndPassword(authorization.Parameter);
 
             if (userNameAndPasword == null)
             {
@@ -61,7 +61,7 @@ namespace GoingOn.Frontend.Authentication
             string userName = userNameAndPasword.Item1;
             string password = userNameAndPasword.Item2;
 
-            IPrincipal principal = await AuthenticateAsync(userName, password, cancellationToken);
+            IPrincipal principal = await this.AuthenticateAsync(userName, password, cancellationToken);
 
             if (principal == null)
             {

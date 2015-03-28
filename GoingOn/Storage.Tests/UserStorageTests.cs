@@ -13,6 +13,7 @@ using UserTableStorage = GoingOn.Storage.TableStorage.UserTableStorage;
 namespace GoingOn.Storage.Tests
 {
     using System;
+    using System.Configuration;
     using GoingOn.Common.Tests;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Model.EntitiesBll;
@@ -28,7 +29,10 @@ namespace GoingOn.Storage.Tests
         [TestInitialize]
         public void Initialize()
         {
-            this.storage = UserTableStorage.GetInstance();
+            string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+            string userTableName = ConfigurationManager.AppSettings["UserTableName"];
+
+            this.storage = new UserTableStorage(connectionString, userTableName);
         }
 
         [TestCleanup]
@@ -53,7 +57,7 @@ namespace GoingOn.Storage.Tests
         {
             this.storage.AddUser(User).Wait();
 
-            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(User).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.AddUser(User).Wait());
         }
 
         [TestMethod]
@@ -65,7 +69,7 @@ namespace GoingOn.Storage.Tests
 
             var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
 
-            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(differentCityUser).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.AddUser(differentCityUser).Wait());
         }
 
         [TestMethod]
@@ -81,7 +85,7 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestGetNonExistingUser()
         {
-            AssertExtensions.Throws<StorageException>(() => this.storage.GetUser(User.Nickname).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetUser(User.Nickname).Wait());
         }
 
         [TestMethod]
@@ -134,7 +138,7 @@ namespace GoingOn.Storage.Tests
         {
             var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
 
-            AssertExtensions.Throws<StorageException>(() => this.storage.UpdateUser(updatedUser).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.UpdateUser(updatedUser).Wait());
         }
 
         [TestMethod]
@@ -150,7 +154,7 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestDeleteNonExistingUser()
         {
-            AssertExtensions.Throws<StorageException>(() => this.storage.DeleteUser(User).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.DeleteUser(User).Wait());
         }
 
         [TestMethod]

@@ -173,6 +173,8 @@
     <Compile Include="Common\ApiUriBuilder.cs" />
     <Compile Include="Common\BusinessValidationException.cs" />
     <Compile Include="Common\InputValidationException.cs" />
+    <Compile Include="DependencyInjection\UnityFilterProvider.cs" />
+    <Compile Include="DependencyInjection\UnityResolver.cs" />
     <Compile Include="Entities\NewsREST.cs" />
     <Compile Include="Entities\UserREST.cs" />
     <Compile Include="Global.asax.cs">

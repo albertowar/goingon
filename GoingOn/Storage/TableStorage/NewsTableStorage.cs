@@ -11,51 +11,46 @@
 namespace GoingOn.Storage.TableStorage
 {
     using System;
-    using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage.Entities;
+
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Model.EntitiesBll;
-    using StorageException = GoingOn.Storage.StorageException;
 
     public class NewsTableStorage : INewsStorage
     {
         // Configuration info
-        private static readonly string TableName = ConfigurationManager.AppSettings["NewsTableName"];
-        private static readonly string StorageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+        private readonly string tableName;
+        private readonly CloudStorageAccount storageAccount;
 
-        // Singleton pattern
-        private static NewsTableStorage instance;
-
-        // Retrieve the storage account from the connection string.
-        private readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
-
-        private NewsTableStorage()
+        public NewsTableStorage(string connectionString, string tableName)
         {
-        }
+            this.tableName = tableName;
 
-        public static NewsTableStorage GetInstance()
-        {
-            return NewsTableStorage.instance ?? (NewsTableStorage.instance = new NewsTableStorage());
+            try
+            {
+                this.storageAccount = CloudStorageAccount.Parse(connectionString);
+            }
+            catch (Exception e)
+            {
+                throw new AzureTableStorageException(string.Format("The storage account could not be created. Erro: {0}", e.Message));
+            }
         }
 
         public async Task AddNews(NewsBll newsBll)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             await table.ExecuteAsync(TableOperation.InsertOrReplace(NewsEntity.FromNewsBll(newsBll)));
         }
 
         public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
             var rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
@@ -73,7 +68,7 @@ namespace GoingOn.Storage.TableStorage
 
             if (element == null)
             {
-                throw new StorageException("The news is not in the database");
+                throw new AzureTableStorageException("The news is not in the database");
             }
 
             return NewsEntity.ToNewsBll(element);
@@ -81,9 +76,7 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task<bool> Exists(string city, DateTime date, Guid id)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
 
@@ -94,9 +87,7 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
             var rowKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
@@ -119,9 +110,7 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task<bool> ContainsNews(NewsBll newsBll)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
             var titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
@@ -144,9 +133,7 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task UpdateNews(NewsBll newsBll)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date), newsBll.Id.ToString());
 
@@ -166,9 +153,7 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task DeleteNews(string city, DateTime date, Guid id)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city,date), id.ToString());
 
@@ -186,22 +171,29 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task DeleteAllNews(string city)
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
-
-            var table = tableClient.GetTableReference(TableName);
+            var table = this.GetStorageTable();
 
             var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, city);
 
             var newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
 
-            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            var newsSegment = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
-            foreach (var news in result)
+            Parallel.ForEach(newsSegment.Results, async user =>
             {
-                var deleteOperation = TableOperation.Delete(news);
-
-                await table.ExecuteAsync(deleteOperation);
-            }
+                await table.ExecuteAsync(TableOperation.Delete(user));
+            });
         }
+
+        #region Helper methods
+
+        private CloudTable GetStorageTable()
+        {
+            var tableClient = this.storageAccount.CreateCloudTableClient();
+
+            return tableClient.GetTableReference(this.tableName);
+        }
+
+        #endregion
     }
 }

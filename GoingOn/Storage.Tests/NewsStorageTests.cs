@@ -13,6 +13,7 @@ using NewsTableStorage = GoingOn.Storage.TableStorage.NewsTableStorage;
 namespace GoingOn.Storage.Tests
 {
     using System;
+    using System.Configuration;
     using GoingOn.Common.Tests;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Model.EntitiesBll;
@@ -39,7 +40,10 @@ namespace GoingOn.Storage.Tests
         [TestInitialize]
         public void Initialize()
         {
-            this.storage = NewsTableStorage.GetInstance();
+            string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+            string newsTableName = ConfigurationManager.AppSettings["NewsTableName"];
+
+            this.storage = new NewsTableStorage(connectionString, newsTableName);
         }
 
         [TestCleanup]
@@ -69,7 +73,7 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestGetNewsEmptyStorage()
         {
-            AssertExtensions.Throws<StorageException>(() => this.storage.GetNews(city, date, newsGuid).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetNews(city, date, newsGuid).Wait());
         }
 
         [TestMethod]

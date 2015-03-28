@@ -18,12 +18,12 @@ namespace GoingOn.Frontend.Authentication
     {
         public static void ChallengeWith(this HttpAuthenticationChallengeContext context, string scheme)
         {
-            ChallengeWith(context, new AuthenticationHeaderValue(scheme));
+            HttpAuthenticationChallengeContextExtensions.ChallengeWith(context, new AuthenticationHeaderValue(scheme));
         }
 
         public static void ChallengeWith(this HttpAuthenticationChallengeContext context, string scheme, string parameter)
         {
-            ChallengeWith(context, new AuthenticationHeaderValue(scheme, parameter));
+            HttpAuthenticationChallengeContextExtensions.ChallengeWith(context, new AuthenticationHeaderValue(scheme, parameter));
         }
 
         private static void ChallengeWith(this HttpAuthenticationChallengeContext context, AuthenticationHeaderValue challenge)

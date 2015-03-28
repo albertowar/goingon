@@ -14,18 +14,18 @@ namespace GoingOn.Frontend.Authentication
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
     using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage;
-    using Storage;
+    using Microsoft.Practices.Unity;
 
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
+        [Dependency]
+        public IUserStorage Storage { get; set; }
+
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)
         {
-            IUserStorage storage = UserTableStorage.GetInstance();
-
-            var containsUserTask = await storage.ContainsUser(User.ToUserBll(new User { Nickname = nickname, Password = password }));
+            bool containsUserTask = await this.Storage.ContainsUser(User.ToUserBll(new User { Nickname = nickname, Password = password }));
 
             if (containsUserTask)
             {

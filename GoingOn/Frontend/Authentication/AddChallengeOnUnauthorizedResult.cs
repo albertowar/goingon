@@ -22,8 +22,8 @@ namespace GoingOn.Frontend.Authentication
     {
         public AddChallengeOnUnauthorizedResult(AuthenticationHeaderValue challenge, IHttpActionResult innerResult)
         {
-            Challenge = challenge;
-            InnerResult = innerResult;
+            this.Challenge = challenge;
+            this.InnerResult = innerResult;
         }
 
         public AuthenticationHeaderValue Challenge { get; private set; }
@@ -32,14 +32,14 @@ namespace GoingOn.Frontend.Authentication
 
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await InnerResult.ExecuteAsync(cancellationToken);
+            HttpResponseMessage response = await this.InnerResult.ExecuteAsync(cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 // Only add one challenge per authentication scheme.
-                if (!response.Headers.WwwAuthenticate.Any((h) => h.Scheme == Challenge.Scheme))
+                if (response.Headers.WwwAuthenticate.All(h => h.Scheme != this.Challenge.Scheme))
                 {
-                    response.Headers.WwwAuthenticate.Add(Challenge);
+                    response.Headers.WwwAuthenticate.Add(this.Challenge);
                 }
             }
 

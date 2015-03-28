@@ -20,8 +20,8 @@ namespace GoingOn.Frontend.Authentication
     {
         public AuthenticationFailureResult(string reasonPhrase, HttpRequestMessage request)
         {
-            ReasonPhrase = reasonPhrase;
-            Request = request;
+            this.ReasonPhrase = reasonPhrase;
+            this.Request = request;
         }
 
         public string ReasonPhrase { get; private set; }
@@ -30,15 +30,15 @@ namespace GoingOn.Frontend.Authentication
 
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            return Task.FromResult(Execute());
+            return Task.FromResult(this.Execute());
         }
 
         private HttpResponseMessage Execute()
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
             {
-                RequestMessage = Request,
-                ReasonPhrase = ReasonPhrase
+                RequestMessage = this.Request,
+                ReasonPhrase = this.ReasonPhrase
             };
 
             return response;

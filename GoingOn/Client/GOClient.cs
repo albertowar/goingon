@@ -35,6 +35,7 @@ namespace GoingOn.Client
         }
 
         #region User methods
+
         public async Task<HttpResponseMessage> GetUser(string usernameToGet)
         {
             string authenticationCredentials = GOClient.EncodeTo64(string.Format("{0}:{1}", this.username, this.password));

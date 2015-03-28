@@ -13,20 +13,21 @@ namespace GoingOn.EndToEndTests
     using System;
     using System.Configuration;
     using System.Net;
-
+    using System.Net.Http;
     using GoingOn.Frontend.Entities;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
+    using GoingOn.Frontend;
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
-
+    using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     
     using Newtonsoft.Json;
 
     [TestClass]
-    public class UserTests
+    public class UserTestsLocalhost
     {
         private GOClient goClient;
 
@@ -39,7 +40,8 @@ namespace GoingOn.EndToEndTests
         [TestInitialize]
         public void TestInitialize()
         {
-            this.goClient = new GOClient(@"http://goingonproduction.azurewebsites.net/", "Alberto", "1234");
+            this.webService = WebApp.Start<Startup>("http://*:80/");
+            this.goClient = new GOClient(@"http://localhost/", "Alberto", "1234");
 
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string userTable = ConfigurationManager.AppSettings["UserTableName"];
@@ -85,10 +87,10 @@ namespace GoingOn.EndToEndTests
 
             this.goClient.UpdateUser(updatedUser).Wait();
 
-            var getResponse = this.goClient.GetUser("Alberto").Result;
+            HttpResponseMessage getResponse = this.goClient.GetUser("Alberto").Result;
 
-            var content = getResponse.Content;
-            var jsonContent = content.ReadAsStringAsync().Result;
+            HttpContent content = getResponse.Content;
+            string jsonContent = content.ReadAsStringAsync().Result;
             var actualUserREST = JsonConvert.DeserializeObject<UserREST>(jsonContent);
 
             Assert.IsTrue(new UserClientEqualityComparer().Equals(updatedUser, UserClient.FromUserREST(actualUserREST)));

@@ -10,7 +10,7 @@
 
 namespace GoingOn.Storage.TableStorage
 {
-    using System.Configuration;
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -20,8 +20,6 @@ namespace GoingOn.Storage.TableStorage
 
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-    
-    using StorageException = GoingOn.Storage.StorageException;
 
     public class UserTableStorage : IUserStorage
     {
@@ -32,55 +30,32 @@ namespace GoingOn.Storage.TableStorage
          **/
 
         // Configuration info
-        private static readonly string TableName = ConfigurationManager.AppSettings["UserTableName"];
-        private static readonly string StorageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+        private readonly string tableName;
+        private readonly CloudStorageAccount storageAccount;
 
-        // Singleton pattern
-        private static UserTableStorage instance;
-
-        // Retrieve the storage account from the connection string.
-        private readonly CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
-
-        private UserTableStorage()
+        public UserTableStorage(string connectionString, string tableName)
         {
-        }
+            this.tableName = tableName;
 
-        public static UserTableStorage GetInstance()
-        {
-            if (UserTableStorage.instance == null)
+            try
             {
-                UserTableStorage.instance = new UserTableStorage();
+                this.storageAccount = CloudStorageAccount.Parse(connectionString);
             }
-
-            return UserTableStorage.instance;
+            catch (Exception e)
+            {
+                throw new AzureTableStorageException(string.Format("The storage account could not be created. Erro: {0}", e.Message));
+            }
         }
 
         public async Task AddUser(UserBll userBll)
         {
-            // It needs to perform 2 queries, otherwise it would allow to have
-            // two users with the same name in different cities
+            var table = this.GetStorageTable();
 
-            await Task.Run(() =>
-            {
-                var table = this.GetStorageTable();
-
-                if (this.ContainsUser(userBll).Result)
-                {
-                    throw new StorageException("The user is already in the database");
-                }
-
-                var user = UserEntity.FromUserBll(userBll);
-
-                var insertOperation = TableOperation.Insert(user);
-
-                table.Execute(insertOperation);
-            });
+            await table.ExecuteAsync(TableOperation.InsertOrReplace(UserEntity.FromUserBll(userBll)));
         }
 
         public async Task<UserBll> GetUser(string nickname)
         {
-            // Not using Contains so it does not perform two queries
-
             var table = this.GetStorageTable();
 
             var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, nickname);
@@ -89,7 +64,7 @@ namespace GoingOn.Storage.TableStorage
 
             if (firstUser == null)
             {
-                throw new StorageException("The user is not in the database");
+                throw new AzureTableStorageException("The user is not in the database");
             }
 
             return UserEntity.ToUserBll(firstUser);
@@ -114,7 +89,7 @@ namespace GoingOn.Storage.TableStorage
 
             if (firstUser == null)
             {
-                throw new StorageException("The user is not in the database");
+                throw new AzureTableStorageException("The user is not in the database");
             }
 
             firstUser.Merge(UserEntity.FromUserBll(userBll));
@@ -134,7 +109,7 @@ namespace GoingOn.Storage.TableStorage
 
             if (firstUser == null)
             {
-                throw new StorageException("The user is not in the database");
+                throw new AzureTableStorageException("The user is not in the database");
             }
 
             var deleteOperation = TableOperation.Delete(firstUser);
@@ -162,7 +137,7 @@ namespace GoingOn.Storage.TableStorage
         {
             var tableClient = this.storageAccount.CreateCloudTableClient();
 
-            return tableClient.GetTableReference(TableName);
+            return tableClient.GetTableReference(this.tableName);
         }
 
         private static Task<TableQuerySegment<UserEntity>> FindUserByNickname(CloudTable table, string nickname)

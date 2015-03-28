@@ -18,15 +18,18 @@ namespace GoingOn.EndToEndTests
     using GoingOn.Frontend.Entities;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
+    using GoingOn.Frontend;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
-
+    using Microsoft.Owin.Hosting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
 
     [TestClass]
-    public class NewsTests
+    public class NewsTestsLocalhost
     {
+        private IDisposable webService;
+
         private IUserStorage userStorage;
 
         private INewsStorage newsStorage;
@@ -42,7 +45,8 @@ namespace GoingOn.EndToEndTests
         [TestInitialize]
         public void TestInitialize()
         {
-            this.goClient = new GOClient(@"http://goingonproduction.azurewebsites.net/", "Alberto", "1234");
+            this.webService = WebApp.Start<Startup>("http://*:80/");
+            this.goClient = new GOClient(@"http://localhost/", "Alberto", "1234");
 
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string userTable = ConfigurationManager.AppSettings["UserTableName"];
@@ -57,6 +61,8 @@ namespace GoingOn.EndToEndTests
         [TestCleanup]
         public void TestCleanup()
         {
+            this.webService.Dispose();
+
             this.newsStorage.DeleteAllNews(City).Wait();
             this.userStorage.DeleteAllUsers().Wait();
         }

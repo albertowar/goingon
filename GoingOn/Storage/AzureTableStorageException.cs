@@ -13,9 +13,9 @@ namespace GoingOn.Storage
     using System;
 
     [Serializable]
-    public class StorageException : Exception
+    public class AzureTableStorageException : Exception
     {
-        public StorageException(string message)
+        public AzureTableStorageException(string message)
             : base(message)
         {
         }

@@ -13,13 +13,16 @@ namespace GoingOn.Frontend
     using System;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Web.Http;
     using System.Web.Http.Dependencies;
-
+    using System.Web.Http.Filters;
+    using GoingOn.Frontend.DependencyInjection;
     using Microsoft.Practices.Unity;
     
-    using Frontend.Validation;
+    using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
 
@@ -29,69 +32,31 @@ namespace GoingOn.Frontend
     {
         public static void Register(HttpConfiguration configuration)
         {
+            string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+            string userTableName = ConfigurationManager.AppSettings["UserTableName"];
+            string newsTableName = ConfigurationManager.AppSettings["NewsTableName"];
+
+            var userTableStorage = new UserTableStorage(connectionString, userTableName);
+            var newsTableStorage = new NewsTableStorage(connectionString, newsTableName);
+
             // Dependy injection configuration
             var container = new UnityContainer();
-            container.RegisterInstance<IUserStorage>(UserTableStorage.GetInstance());
-            container.RegisterInstance<INewsStorage>(NewsTableStorage.GetInstance());
+            container.RegisterInstance<IUserStorage>(userTableStorage);
+            container.RegisterInstance<INewsStorage>(newsTableStorage);
             container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks(new ApiInputValidationChecks()));
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
             configuration.DependencyResolver = new UnityResolver(container);
+
+            // Register the filter injector
+            List<IFilterProvider> providers = configuration.Services.GetFilterProviders().ToList();
+
+            IFilterProvider defaultprovider = providers.Single(i => i is ActionDescriptorFilterProvider);
+            
+            configuration.Services.Remove(typeof(IFilterProvider), defaultprovider);
+            configuration.Services.Add(typeof(IFilterProvider), new UnityFilterProvider(container));
 
             // Web API routes
             configuration.MapHttpAttributeRoutes();
         }
     }
-
-    #region Dependency injection helpers
-    [ExcludeFromCodeCoverage]
-    public class UnityResolver : IDependencyResolver
-    {
-        protected IUnityContainer container;
-
-        public UnityResolver(IUnityContainer container)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException("container");
-            }
-
-            this.container = container;
-        }
-
-        public object GetService(Type serviceType)
-        {
-            try
-            {
-                return this.container.Resolve(serviceType);
-            }
-            catch (ResolutionFailedException)
-            {
-                return null;
-            }
-        }
-
-        public IEnumerable<object> GetServices(Type serviceType)
-        {
-            try
-            {
-                return this.container.ResolveAll(serviceType);
-            }
-            catch (ResolutionFailedException)
-            {
-                return new List<object>();
-            }
-        }
-
-        public IDependencyScope BeginScope()
-        {
-            var child = this.container.CreateChildContainer();
-            return new UnityResolver(child);
-        }
-
-        public void Dispose()
-        {
-            container.Dispose();
-        }
-    }
-    #endregion
 }
