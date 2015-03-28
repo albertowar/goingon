@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="NewsFinder" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
+  <Role name="NewsFinderWorkerRole">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="Alb_Erc" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCED5eha51X7GaQ5r8l7RtwacwDQYJKoZIhvcNAQEBBQAEggEAI/XSmr27VeVNRfbPLCPVpcosDy24WhDuO08zj0SfrHRBB5BxRIENFANlEd3wxBPb0Ngn0GDdgb2H/Df82/Z+P+/D/0yl4q94/76lgTcbEeB8TMrwRSnY1gc5dvrF41rNbaHFWV3ZvOGmTF8rQ/a/EK5ZcoC1ZV13/ItDH9YkiHWP4E/E+AFrosI0NX7smkacqTpd1pEyhzKmlW5EiyAjSKm0ulzBvkSw+OP9P2XpZIybPF7P0CbLj062rxNBCfwK0/OuUOwq+Fu1LHRbVHDCfIYaoD2EbtLY5dq4okz2wTIaOkxq5GsKHVDfA5Ly3spb68Wn9GKWymvQYs06ZTNtWzAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECAh4MLsxz8pjgBDvYvny55y8suip4Rxddfui" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2016-03-24T23:59:59.0000000+00:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="4042BA7949F327670EB2E19890547F59D7046CCA" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>
