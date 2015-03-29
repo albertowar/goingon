@@ -11,6 +11,7 @@
 namespace GoingOn.Storage
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Model.EntitiesBll;
 
@@ -31,6 +32,14 @@ namespace GoingOn.Storage
         /// <param name="id">The id of the news.</param>
         /// <returns></returns>
         Task<NewsBll> GetNews(string city, DateTime date, Guid id);
+
+        /// <summary>
+        /// Retrieve a news.
+        /// </summary>
+        /// <param name="city">The city where the news happened.</param>
+        /// <param name="date">The date when the news happened.</param>
+        /// <returns></returns>
+        Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date);
 
         /// <summary>
         /// Checks whether there is a news matching these values.

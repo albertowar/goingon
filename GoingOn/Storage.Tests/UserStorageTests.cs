@@ -16,6 +16,7 @@ namespace GoingOn.Storage.Tests
     using System.Configuration;
     using GoingOn.Common.Tests;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.WindowsAzure.Storage;
     using Model.EntitiesBll;
 
     [TestClass]
@@ -57,19 +58,7 @@ namespace GoingOn.Storage.Tests
         {
             this.storage.AddUser(User).Wait();
 
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.AddUser(User).Wait());
-        }
-
-        [TestMethod]
-        public void TestAddSameUserDifferentCity()
-        {
-            var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
-
-            this.storage.AddUser(user).Wait();
-
-            var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
-
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.AddUser(differentCityUser).Wait());
+            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(User).Wait());
         }
 
         [TestMethod]

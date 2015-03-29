@@ -11,6 +11,7 @@
 namespace GoingOn.Storage.TableStorage
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -50,19 +51,19 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
-            var rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
+            string rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
 
-            var filter = TableQuery.CombineFilters(
+            string filter = TableQuery.CombineFilters(
                 partitionKeyFilter,
                 TableOperators.And,
                 rowKeyFilter);
 
-            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(filter);
 
-            var retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            TableQuerySegment<NewsEntity> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
             var element = retrievedNews.FirstOrDefault();
 
@@ -74,26 +75,46 @@ namespace GoingOn.Storage.TableStorage
             return NewsEntity.ToNewsBll(element);
         }
 
+        public async Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date)
+        {
+            CloudTable table = this.GetStorageTable();
+
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
+
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+
+            TableQuerySegment<NewsEntity> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            NewsEntity element = retrievedNews.FirstOrDefault();
+
+            if (element == null)
+            {
+                throw new AzureTableStorageException("The news is not in the database");
+            }
+
+            return retrievedNews.Select(newsEntity => NewsEntity.ToNewsBll(newsEntity));
+        }
+
         public async Task<bool> Exists(string city, DateTime date, Guid id)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
+            TableOperation retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
 
-            var retrievedResult = await table.ExecuteAsync(retrieveOperation);
+            TableResult retrievedResult = await table.ExecuteAsync(retrieveOperation);
 
             return retrievedResult.Result != null;
         }
 
         public async Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
-            var rowKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
-            var authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, author);
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
+            string rowKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString());
+            string authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, author);
 
-            var filter = TableQuery.CombineFilters(
+            string filter = TableQuery.CombineFilters(
                 partitionKeyFilter,
                 TableOperators.And,
                 TableQuery.CombineFilters(
@@ -101,22 +122,22 @@ namespace GoingOn.Storage.TableStorage
                     TableOperators.And,
                     authorFilter));
 
-            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(filter);
 
-            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            TableQuerySegment<NewsEntity> result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
             return result.Any();
         }
 
         public async Task<bool> ContainsNews(NewsBll newsBll)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
-            var titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
-            var authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsBll.Author);
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
+            string titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
+            string authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsBll.Author);
 
-            var filter = TableQuery.CombineFilters(
+            string filter = TableQuery.CombineFilters(
                 partitionKeyFilter,
                 TableOperators.And,
                 TableQuery.CombineFilters(
@@ -124,20 +145,20 @@ namespace GoingOn.Storage.TableStorage
                     TableOperators.And,
                     authorFilter));
 
-            var newsQuery = new TableQuery<NewsEntity>().Where(filter);
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(filter);
 
-            var result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            TableQuerySegment<NewsEntity> result = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
             return result.Any();
         }
 
         public async Task UpdateNews(NewsBll newsBll)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date), newsBll.Id.ToString());
+            TableOperation retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date), newsBll.Id.ToString());
 
-            var retrievedNews = await table.ExecuteAsync(retrieveOperation);
+            TableResult retrievedNews = await table.ExecuteAsync(retrieveOperation);
 
             var updateEntity = retrievedNews.Result as NewsEntity;
 
@@ -145,7 +166,7 @@ namespace GoingOn.Storage.TableStorage
             {
                 updateEntity.Merge(NewsEntity.FromNewsBll(newsBll));
 
-                var insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
+                TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(updateEntity);
 
                 await table.ExecuteAsync(insertOrReplaceOperation);
             }
@@ -153,17 +174,17 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task DeleteNews(string city, DateTime date, Guid id)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city,date), id.ToString());
+            TableOperation retrieveOperation = TableOperation.Retrieve<NewsEntity>(NewsEntity.BuildPartitionkey(city,date), id.ToString());
 
-            var retrievedResult = await table.ExecuteAsync(retrieveOperation);
+            TableResult retrievedResult = await table.ExecuteAsync(retrieveOperation);
 
             var deleteEntity = retrievedResult.Result as NewsEntity;
 
             if (deleteEntity != null)
             {
-                var deleteOperation = TableOperation.Delete(deleteEntity);
+                TableOperation deleteOperation = TableOperation.Delete(deleteEntity);
 
                 await table.ExecuteAsync(deleteOperation);
             }
@@ -171,13 +192,13 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task DeleteAllNews(string city)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, city);
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, city);
 
-            var newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
 
-            var newsSegment = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            TableQuerySegment<NewsEntity> newsSegment = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
             Parallel.ForEach(newsSegment.Results, async user =>
             {
@@ -189,7 +210,7 @@ namespace GoingOn.Storage.TableStorage
 
         private CloudTable GetStorageTable()
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
+            CloudTableClient tableClient = this.storageAccount.CreateCloudTableClient();
 
             return tableClient.GetTableReference(this.tableName);
         }
