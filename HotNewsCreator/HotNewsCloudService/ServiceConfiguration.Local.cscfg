@@ -2,6 +2,15 @@
 <ServiceConfiguration serviceName="HotNewsCloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
   <Role name="HotNewsCreatorWorkerRole">
     <Instances count="1" />
-    <ConfigurationSettings />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="Alb_Erc" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEHNLH7lVPtmmRtgCkfys2BAwDQYJKoZIhvcNAQEBBQAEggEAP7YWGX6jDR6qyWoqFe4Sedqg8JjEl7KklTaCdcrKivgcKjD5zMS+CMO6zQJtZz10CepHuXjk7kiU+WQP0Q3pv4Z6VrTJ2PgDfhtcHN7YAG3r4WAnEq1W/ypU6COKMDNCuijqMe+3dBWGkE0rv9TZ26uS3QnbaCwyQzjFhNWkVDZkNGWSj/zGUiU/XfOusOK/JZy27M9dq4WNQ5GXe6GE+SZMfalfVmzd9vrU3Z16To83MgoS0HIsqwJSOhg5sNq5GB9afdmH0mnTR/2R5SYLMOfhP5mpNtXtxNCeW+Sc+Ce512jujRCWK6frgPm4vC8fOQpuIS5CsMg8RLkc3jVBCzAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECMQDu1Mgio8fgBBtdk3JhWnl61SoxP8X8Lk3" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2016-03-29T23:59:59.0000000+01:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="A2EF220527AFEFD57F6922A94E5D1622B4EAC492" thumbprintAlgorithm="sha1" />
+    </Certificates>
   </Role>
 </ServiceConfiguration>
