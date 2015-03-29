@@ -12,6 +12,7 @@ namespace GoingOn.Storage.TableStorage
 {
     using System;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
 
     using GoingOn.Model.EntitiesBll;
@@ -49,9 +50,9 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task AddUser(UserBll userBll)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            await table.ExecuteAsync(TableOperation.InsertOrReplace(UserEntity.FromUserBll(userBll)));
+            await table.ExecuteAsync(TableOperation.Insert(UserEntity.FromUserBll(userBll)));
         }
 
         public async Task<UserBll> GetUser(string nickname)

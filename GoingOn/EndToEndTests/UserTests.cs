@@ -30,8 +30,6 @@ namespace GoingOn.EndToEndTests
     {
         private GOClient goClient;
 
-        private IDisposable webService;
-
         private IUserStorage storage;
 
         private static readonly UserClient userClient = new UserClient { Nickname = "Alberto", Password = "1234", City = "Malaga" };
@@ -39,7 +37,8 @@ namespace GoingOn.EndToEndTests
         [TestInitialize]
         public void TestInitialize()
         {
-            this.goClient = new GOClient(@"http://goingonproduction.azurewebsites.net/", "Alberto", "1234");
+            string frontendEndpoint = ConfigurationManager.AppSettings["FrontendTestEndpoint"];
+            this.goClient = new GOClient(frontendEndpoint, "Alberto", "1234");
 
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string userTable = ConfigurationManager.AppSettings["UserTableName"];
@@ -50,7 +49,6 @@ namespace GoingOn.EndToEndTests
         [TestCleanup]
         public void TestCleanup()
         {
-            this.webService.Dispose();
             this.storage.DeleteAllUsers().Wait();
         }
 

@@ -22,6 +22,7 @@ namespace GoingOn.EndToEndTests
     using GoingOn.Storage.TableStorage;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using Newtonsoft.Json;
 
     [TestClass]
@@ -42,7 +43,8 @@ namespace GoingOn.EndToEndTests
         [TestInitialize]
         public void TestInitialize()
         {
-            this.goClient = new GOClient(@"http://goingonproduction.azurewebsites.net/", "Alberto", "1234");
+            string frontendEndpoint = ConfigurationManager.AppSettings["FrontendTestEndpoint"];
+            this.goClient = new GOClient(frontendEndpoint, "Alberto", "1234");
 
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string userTable = ConfigurationManager.AppSettings["UserTableName"];
@@ -149,7 +151,8 @@ namespace GoingOn.EndToEndTests
         [TestMethod]
         public void TestDeleteNewsFromAnotherUser()
         {
-            var anotherGoClient = new GOClient(@"http://localhost:80/", "NotAlberto", "1234");
+            string frontendEndpoint = ConfigurationManager.AppSettings["FrontendTestEndpoint"];
+            var anotherGoClient = new GOClient(frontendEndpoint, "NotAlberto", "1234");
             var anotherUser = new UserClient { Nickname = "NotAlberto", Password = "1234" };
             anotherGoClient.CreateUser(anotherUser).Wait();
 

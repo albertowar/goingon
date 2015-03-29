@@ -13,7 +13,9 @@ using NewsTableStorage = GoingOn.Storage.TableStorage.NewsTableStorage;
 namespace GoingOn.Storage.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
     using GoingOn.Common.Tests;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Model.EntitiesBll;
@@ -68,6 +70,29 @@ namespace GoingOn.Storage.Tests
             NewsBll actualNews = this.storage.GetNews(city, date, newsGuid).Result;
 
             Assert.IsTrue(new NewsBllEqualityComparer().Equals(News, actualNews));
+        }
+
+        [TestMethod]
+        public void TestGetNewsCityDate()
+        {
+            for (int i = 0; i < 10; ++i)
+            {
+                var news = new NewsBll
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "title" + i,
+                    City = city,
+                    Content = "content" + i,
+                    Author = "author",
+                    Date = date
+                };
+
+                this.storage.AddNews(news).Wait();
+            }
+
+            IEnumerable<NewsBll> newsList = this.storage.GetNews(city, date).Result;
+
+            Assert.AreEqual(10, newsList.Count());
         }
 
         [TestMethod]
@@ -238,7 +263,7 @@ namespace GoingOn.Storage.Tests
         {
             this.storage.AddNews(News).Wait();
 
-            this.storage.DeleteAllNews(city).Wait();
+            this.storage.DeleteAllNews(News.City).Wait();
 
             Assert.IsFalse(this.storage.ContainsNews(News).Result);
         }
