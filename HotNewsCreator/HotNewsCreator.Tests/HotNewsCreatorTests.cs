@@ -8,26 +8,29 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.HotNewsCreatorWorkerRole
+namespace GoingOn.HotNewsCreatorTests
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
-    using System.Threading.Tasks;
-
+    using System.Linq;
+    using GoingOn.HotNewsCreatorWorkerRole;
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Microsoft.WindowsAzure.Storage;
-
-    public class HotNewsCreator
+    [TestClass]
+    public class HotNewsCreatorTests
     {
         private INewsStorage newsStorage;
 
         private INewsStorage hotNewsStorage;
 
-        public HotNewsCreator()
+        private HotNewsCreator hotNewsCreator;
+
+        [TestInitialize]
+        public void Initialize()
         {
             string storageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
 
@@ -36,33 +39,45 @@ namespace GoingOn.HotNewsCreatorWorkerRole
 
             this.newsStorage = new NewsTableStorage(storageConnectionString, newsTableName);
             this.hotNewsStorage = new NewsTableStorage(storageConnectionString, hotNewsTableName);
+
+            this.hotNewsCreator = new HotNewsCreator();
         }
 
-        public async Task RunAsync()
+        [TestMethod]
+        public void TestPushNews()
         {
-            IEnumerable<NewsBll> hotNews = await this.GetHotNews();
+            NewsBll[] hotNews = this.CreateHotNews().ToArray();
 
-            this.PushHotNews(hotNews);
-        }
+            this.hotNewsCreator.PushHotNews(hotNews);
 
-        public async Task<IEnumerable<NewsBll>> GetHotNews()
-        {
-            return await this.newsStorage.GetNews("Malaga", DateTime.Today);
-        }
-
-        public void PushHotNews(IEnumerable<NewsBll> hotNewsCollection)
-        {
-            Parallel.ForEach(hotNewsCollection, async hotNews =>
+            for (var i = 0; i < 10; ++i)
             {
-                try
+                Assert.IsTrue(this.hotNewsStorage.ContainsNews(hotNews[i]).Result);
+            }
+        }
+
+        #region Helper methods
+
+        private IEnumerable<NewsBll> CreateHotNews()
+        {
+            var news = new List<NewsBll>();
+
+            for (var i = 0; i < 10; ++i)
+            {
+                news.Add(new NewsBll
                 {
-                    await this.hotNewsStorage.AddNews(hotNews);
-                }
-                catch (StorageException)
-                {
-                    
-                }
-            });
-        } 
+                    Id = Guid.NewGuid(),
+                    Title = "title",
+                    Content = "content",
+                    City = "Malaga",
+                    Date = DateTime.Today,
+                    Author = "author"
+                });
+            }
+
+            return news;
+        }
+
+        #endregion
     }
 }
