@@ -20,7 +20,7 @@ namespace GoingOn.Client.Entities
 
         public static NewsClient FromNewsREST(NewsREST newsREST)
         {
-            return new NewsClient { Title = newsREST.News.Title, Content = newsREST.News.Content };
+            return new NewsClient { Title = newsREST.Title, Content = newsREST.Content };
         }
     }
 }

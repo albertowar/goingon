@@ -19,7 +19,9 @@ namespace GoingOn.Frontend.Entities
 
     public class NewsREST
     {
-        public News News { get; private set; }
+        public string Title { get; set; }
+
+        public string Content { get; set; }
 
         public string City { get; set; }
 
@@ -31,7 +33,8 @@ namespace GoingOn.Frontend.Entities
 
         public NewsREST(News news, string author, DateTime date)
         {
-            this.News = news;
+            this.Title = news.Title;
+            this.Content = news.Content;
             this.Author = author;
             this.Date = date;
             this.Links = new List<Link>();
@@ -40,7 +43,8 @@ namespace GoingOn.Frontend.Entities
         private NewsREST(News news, string city, DateTime date, string author, Guid id, HttpRequestMessage request)
             : this(news, author, date)
         {
-            this.News = news;
+            this.Title = news.Title;
+            this.Content = news.Content;
             this.City = city;
             this.Date = date;
             this.Author = author;
