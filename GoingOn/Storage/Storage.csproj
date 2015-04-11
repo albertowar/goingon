@@ -46,6 +46,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IHotNewsStorage.cs" />
     <Compile Include="INewsStorage.cs" />
     <Compile Include="IUserStorage.cs" />
     <Compile Include="AzureTableStorageException.cs" />

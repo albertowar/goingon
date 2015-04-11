@@ -13,11 +13,12 @@ namespace GoingOn.Frontend.Validation
     using System;
     using System.Globalization;
     using System.Text.RegularExpressions;
-
+    using GoingOn.Common;
     using Microsoft.Ajax.Utilities;
 
-    using Frontend.Entities;
-    using GoingOn.Common;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Common;
+    using GoingOn.Frontend.Entities;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {

@@ -12,7 +12,8 @@ namespace GoingOn.Frontend.Validation
 {
     using System;
 
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Entities;
 
     public interface IApiInputValidationChecks
     {

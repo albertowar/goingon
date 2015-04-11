@@ -13,7 +13,7 @@ namespace GoingOn.Common.Tests
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
 
     [ExcludeFromCodeCoverage]
     public class UserCompleteEqualityComparer : IEqualityComparer<User>

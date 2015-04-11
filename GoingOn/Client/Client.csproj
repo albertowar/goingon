@@ -53,8 +53,12 @@
       <Project>{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FrontendWebRole\FrontendWebRole.csproj">
+      <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>
+      <Name>FrontendWebRole</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Frontend\Frontend.csproj">
-      <Project>{4e84c04b-d78d-433d-97ea-cb52b72c04c6}</Project>
+      <Project>{A1E3D701-26EC-4AA9-A387-6755A5C80072}</Project>
       <Name>Frontend</Name>
     </ProjectReference>
   </ItemGroup>

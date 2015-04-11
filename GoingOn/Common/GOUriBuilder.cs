@@ -14,6 +14,7 @@ namespace GoingOn.Common
     {
         private const string UserRootTemplate = "api/user";
         private const string NewsRootTemplate = "api/city/{city}/date/{date}";
+        private const string HotNewsRootTemplate = "api/hot/{city}";
 
         public const string GetUserTemplate = UserRootTemplate + "/{userId}";
         public const string PostUserTemplate = UserRootTemplate;
@@ -24,6 +25,8 @@ namespace GoingOn.Common
         public const string PostNewsTemplate = NewsRootTemplate;
         public const string PatchNewsTemplate = NewsRootTemplate + "/news/{newsId}";
         public const string DeleteNewsTemplate = NewsRootTemplate + "/news/{newsId}";
+
+        public const string GetHotNewsTemplate = HotNewsRootTemplate;
 
         public static string BuildUserUri(string userId)
         {

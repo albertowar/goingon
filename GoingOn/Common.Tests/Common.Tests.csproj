@@ -54,7 +54,7 @@
       <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Frontend\Frontend.csproj">
-      <Project>{4E84C04B-D78D-433D-97EA-CB52B72C04C6}</Project>
+      <Project>{A1E3D701-26EC-4AA9-A387-6755A5C80072}</Project>
       <Name>Frontend</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">

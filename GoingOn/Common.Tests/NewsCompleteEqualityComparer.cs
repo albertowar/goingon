@@ -12,7 +12,7 @@ namespace GoingOn.Common.Tests
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
 
     [ExcludeFromCodeCoverage]
     public class NewsCompleteEqualityComparer : IEqualityComparer<News>

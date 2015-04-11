@@ -11,13 +11,11 @@
 namespace GoingOn.Frontend.Tests.Validation
 {
     using System;
-
+    using GoingOn.Frontend.Entities;
+    using GoingOn.Frontend.Validation;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
-
-    using Frontend.Entities;
-    using Frontend.Validation;
 
     [TestClass]
     public class ApiInputValidationChecksTests

@@ -22,7 +22,7 @@ namespace GoingOn.Storage.TableStorage
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
 
-    public class NewsTableStorage : INewsStorage
+    public class NewsTableStorage : INewsStorage, IHotNewsStorage
     {
         // Configuration info
         private readonly string tableName;

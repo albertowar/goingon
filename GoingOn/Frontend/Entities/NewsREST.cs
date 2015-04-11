@@ -14,7 +14,7 @@ namespace GoingOn.Frontend.Entities
     using System.Collections.Generic;
     using System.Net.Http;
 
-    using Frontend.Links;
+    using GoingOn.Frontend.Links;
     using GoingOn.Model.EntitiesBll;
 
     public class NewsREST

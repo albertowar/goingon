@@ -10,7 +10,7 @@
 
 namespace GoingOn.Client.Entities
 {
-    using Frontend.Entities;
+    using GoingOn.Frontend.Entities;
 
     public class NewsClient
     {
