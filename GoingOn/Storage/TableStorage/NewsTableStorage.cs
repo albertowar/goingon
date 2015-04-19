@@ -13,7 +13,6 @@ namespace GoingOn.Storage.TableStorage
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
 
     using GoingOn.Model.EntitiesBll;
@@ -104,7 +103,7 @@ namespace GoingOn.Storage.TableStorage
 
             TableResult retrievedResult = await table.ExecuteAsync(retrieveOperation);
 
-            return retrievedResult.HttpStatusCode == (int)HttpStatusCode.OK;
+            return retrievedResult.Result != null;
         }
 
         public async Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)

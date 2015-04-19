@@ -190,7 +190,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException("The news newsId format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id)))
+            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException("The news is not in the database");
             }

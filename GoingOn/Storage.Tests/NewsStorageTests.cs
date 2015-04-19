@@ -269,5 +269,11 @@ namespace GoingOn.Storage.Tests
         }
 
         // TODO: add CT for IsAuthorOf
+
+        [TestMethod]
+        public void TestExists()
+        {
+            Assert.IsTrue(this.storage.Exists("Malaga", DateTime.Parse("2015-04-18"), Guid.Parse("fedf9223-1121-46d9-b346-26f91477411f")).Result);
+        }
     }
 }
