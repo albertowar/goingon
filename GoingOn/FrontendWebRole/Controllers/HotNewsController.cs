@@ -45,12 +45,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             {
                 await this.ValidateGetOperation(city);
 
-                List<NewsREST> retrievedNews = (await this.storage.GetNews(city, DateTime.Today)).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
-
-                if (!retrievedNews.Any())
-                {
-                    retrievedNews = (await this.storage.GetNews(city, DateTime.Now.AddDays(-1))).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
-                }
+                List<NewsREST> retrievedNews = (await this.storage.GetNews(city, DateTime.Now.AddDays(-1))).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
 
                 HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
 
