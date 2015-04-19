@@ -17,8 +17,6 @@ namespace GoingOn.Frontend.Validation
     using Microsoft.Ajax.Utilities;
 
     using GoingOn.Frontend.Entities;
-    using GoingOn.Frontend.Common;
-    using GoingOn.Frontend.Entities;
 
     public class ApiInputValidationChecks : IApiInputValidationChecks
     {
