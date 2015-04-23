@@ -52,7 +52,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 {
                     try
                     {
-                        retrievedNews = (await this.storage.GetNews(city, day)).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
+                        retrievedNews = (await this.storage.GetNews(city, day)).Select(news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
                     }
                     catch (Exception)
                     {
