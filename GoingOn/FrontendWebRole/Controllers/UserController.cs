@@ -21,10 +21,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Links;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Frontend.Authentication;
-    using GoingOn.Frontend.Entities;
-    using GoingOn.Frontend.Links;
-    using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
 
     public class UserController : ApiController

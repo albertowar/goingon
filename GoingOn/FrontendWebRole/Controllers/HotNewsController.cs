@@ -21,7 +21,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
 
     public class HotNewsController : ApiController
@@ -45,7 +44,21 @@ namespace GoingOn.FrontendWebRole.Controllers
             {
                 await this.ValidateGetOperation(city);
 
-                List<NewsREST> retrievedNews = (await this.storage.GetNews(city, DateTime.Now.AddDays(-1))).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
+                DateTime day = DateTime.Now;
+
+                List<NewsREST> retrievedNews = null;
+
+                while (retrievedNews == null)
+                {
+                    try
+                    {
+                        retrievedNews = (await this.storage.GetNews(city, day)).Select(news => NewsREST.FromNewsBll(news, this.Request)).ToList();
+                    }
+                    catch (Exception)
+                    {
+                        day = day.AddDays(-1);
+                    }
+                }
 
                 HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
 

@@ -8,11 +8,14 @@ using System.Web.Http.OData;
 
 namespace GoingOn.FrontendWebRole.Areas.HelpPage.App_Start
 {
+    using System;
     using System.CodeDom.Compiler;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Net.Http.Headers;
     using System.Web;
     using System.Web.Http;
+    using GoingOn.Frontend.Entities;
     using GoingOn.FrontendWebRole.Areas.HelpPage.SampleGeneration;
 
     /// <summary>
@@ -40,8 +43,10 @@ namespace GoingOn.FrontendWebRole.Areas.HelpPage.App_Start
             //// formats by the available formatters.
             //config.SetSampleObjects(new Dictionary<Type, object>
             //{
-            //    {typeof(string), "sample string"},
-            //    {typeof(IEnumerable<string>), new string[]{"sample 1", "sample 2"}}
+            //    {
+            //        typeof(List<NewsREST>), 
+            //        ModelExamples.GenerateExample<List<NewsREST>>()
+            //    }
             //});
 
             // Extend the following to provide factories for types not handled automatically (those lacking parameterless
@@ -76,7 +81,9 @@ namespace GoingOn.FrontendWebRole.Areas.HelpPage.App_Start
 
             //// Uncomment the following to correct the sample response when the action returns an HttpResponseMessage with ObjectContent<string>.
             //// The sample will be generated as if the controller named "Values" and action named "Post" were returning a string.
-            //config.SetActualResponseType(typeof(string), "Values", "Post");
+            //config.SetActualResponseType(typeof(NewsREST[]), "HotNews", "Get");
+            //config.SetActualResponseType(typeof(NewsREST), "News", "Get");
+            //config.SetActualResponseType(typeof(UserREST), "User", "Get");
         }
 
 #if Handle_PageResultOfT
