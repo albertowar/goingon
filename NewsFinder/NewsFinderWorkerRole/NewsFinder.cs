@@ -10,6 +10,7 @@
 
 namespace NewsFinderWorkerRole
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
@@ -36,25 +37,45 @@ namespace NewsFinderWorkerRole
 
         private static async Task<List<Category>> GetCategories()
         {
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                var response = await client.GetAsync(@"http://api.feedzilla.com/v1/categories.json");
+                try
+                {
+                    client.Timeout = new TimeSpan(0, 0, 1, 0);
 
-                var categoriesJson = await response.Content.ReadAsStringAsync();
+                    HttpResponseMessage response = await client.GetAsync(@"http://api.feedzilla.com/v1/categories.json");
 
-                return JsonConvert.DeserializeObject<List<Category>>(categoriesJson);
+                    string categoriesJson = await response.Content.ReadAsStringAsync();
+
+                    return JsonConvert.DeserializeObject<List<Category>>(categoriesJson);
+                }
+                catch (Exception)
+                {
+                }
+
+                return new List<Category>();
             }
         }
 
         private static async Task<List<Article>> GetArticles(Category category)
         {
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                var response = await client.GetAsync(string.Format(@"http://api.feedzilla.com/v1/categories/{0}/articles.json", category.CategoryId));
+                try
+                {
+                    client.Timeout = new TimeSpan(0, 0, 1, 0);
 
-                var categoriesJson = await response.Content.ReadAsStringAsync();
+                    HttpResponseMessage response = await client.GetAsync(string.Format(@"http://api.feedzilla.com/v1/categories/{0}/articles.json", category.CategoryId));
 
-                return JsonConvert.DeserializeObject<ArticleEnumeration>(categoriesJson).Articles;
+                    string categoriesJson = await response.Content.ReadAsStringAsync();
+
+                    return JsonConvert.DeserializeObject<ArticleEnumeration>(categoriesJson).Articles;
+                }
+                catch (Exception)
+                {
+                }
+
+                return new List<Article>();
             }
         }
     }
