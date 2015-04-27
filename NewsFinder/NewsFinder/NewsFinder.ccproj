@@ -54,7 +54,7 @@
     <DiagnosticsConfiguration Include="NewsFinderWorkerRoleContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="Profiles\NewsFinderProduction.azurePubxml" />
+    <PublishProfile Include="Profiles\NewsFinder.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
