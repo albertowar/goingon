@@ -13,6 +13,7 @@ namespace GoingOn.HotNewsCreatorWorkerRole
     using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using GoingOn.Model.EntitiesBll;
@@ -47,7 +48,25 @@ namespace GoingOn.HotNewsCreatorWorkerRole
 
         public async Task<IEnumerable<NewsBll>> GetHotNews()
         {
-            return await this.newsStorage.GetNews("Malaga", DateTime.Today);
+            DateTime date = DateTime.Today;
+
+            var news = new List<NewsBll>();
+
+            try
+            {
+                news = (await this.newsStorage.GetNews("Malaga", date)).ToList();
+
+                while (!news.Any())
+                {
+                    date = date.AddDays(-1);
+                    news = (await this.newsStorage.GetNews("Malaga", date)).ToList();
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return news;
         }
 
         public void PushHotNews(IEnumerable<NewsBll> hotNewsCollection)

@@ -76,9 +76,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\ArticleEnumeration.cs" />
-    <Compile Include="Entities\Category.cs" />
-    <Compile Include="Entities\Article.cs" />
+    <Compile Include="Entities\GuardianEdition.cs" />
+    <Compile Include="Entities\GuardianSectionResponse.cs" />
+    <Compile Include="Entities\GuardianSectionContainer.cs" />
+    <Compile Include="Entities\GuardianSectionsContainer.cs" />
+    <Compile Include="Entities\GuardianSectionsListResponse.cs" />
+    <Compile Include="Entities\GuardianSection.cs" />
+    <Compile Include="Entities\GuardianSingleItem.cs" />
     <Compile Include="NewsConverter.cs" />
     <Compile Include="NewsFinder.cs" />
     <Compile Include="NewsPusher.cs" />

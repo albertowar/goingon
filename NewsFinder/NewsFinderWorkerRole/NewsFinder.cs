@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="Article.cs" company="Universidad de Malaga">
+// <copyright file="NewsFinder.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,74 +8,58 @@
 // </summary>
 // ****************************************************************************
 
-namespace NewsFinderWorkerRole
+namespace GoingOn.NewsFinderWorkerRole
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
-
-    using Entities;
+    using GoingOn.NewsFinderWorkerRole.Entities;
     using Newtonsoft.Json;
 
     public class NewsFinder
     {
-        public static async Task<List<Article>> FindNews()
+        public static async Task<List<GuardianSingleItem>> FindNews()
         {
-            var articles = new List<Article>();
+            var guardianItems = new List<GuardianSingleItem>();
 
-            var categories = await NewsFinder.GetCategories();
+            GuardianSectionsContainer categories = await NewsFinder.GetSections();
+            GuardianSectionsListResponse sectionResponse = categories.Response;
 
-            foreach (var category in categories)
+            List<GuardianSection> results = sectionResponse.Results;
+
+            for (int i = 0; i < 10; ++i)
             {
-                articles = articles.Concat(await NewsFinder.GetArticles(category)).ToList();
+                guardianItems = guardianItems.Concat(await NewsFinder.GetSectionResponse(results.ElementAt(i))).ToList();
             }
 
-            return articles;
+            return guardianItems;
         }
 
-        private static async Task<List<Category>> GetCategories()
+        private static async Task<GuardianSectionsContainer> GetSections()
         {
             using (var client = new HttpClient())
             {
-                try
-                {
-                    client.Timeout = new TimeSpan(0, 0, 1, 0);
+                HttpResponseMessage response = await client.GetAsync(@"http://content.guardianapis.com/sections?api-key=zaffsfb2fpmkfrsdbygpf6hm");
 
-                    HttpResponseMessage response = await client.GetAsync(@"http://api.feedzilla.com/v1/categories.json");
+                string categoriesJson = await response.Content.ReadAsStringAsync();
 
-                    string categoriesJson = await response.Content.ReadAsStringAsync();
-
-                    return JsonConvert.DeserializeObject<List<Category>>(categoriesJson);
-                }
-                catch (Exception)
-                {
-                }
-
-                return new List<Category>();
+                return JsonConvert.DeserializeObject<GuardianSectionsContainer>(categoriesJson);
             }
         }
 
-        private static async Task<List<Article>> GetArticles(Category category)
+        private static async Task<List<GuardianSingleItem>> GetSectionResponse(GuardianSection section)
         {
             using (var client = new HttpClient())
             {
-                try
-                {
-                    client.Timeout = new TimeSpan(0, 0, 1, 0);
+                HttpResponseMessage response = await client.GetAsync(section.ApiUrl + "?api-key=zaffsfb2fpmkfrsdbygpf6hm");
 
-                    HttpResponseMessage response = await client.GetAsync(string.Format(@"http://api.feedzilla.com/v1/categories/{0}/articles.json", category.CategoryId));
+                string categoriesJson = await response.Content.ReadAsStringAsync();
 
-                    string categoriesJson = await response.Content.ReadAsStringAsync();
+                var sectionResponse = JsonConvert.DeserializeObject<GuardianSectionContainer>(categoriesJson);
 
-                    return JsonConvert.DeserializeObject<ArticleEnumeration>(categoriesJson).Articles;
-                }
-                catch (Exception)
-                {
-                }
-
-                return new List<Article>();
+                return sectionResponse.Response.Results;
             }
         }
     }

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace NewsFinderWorkerRole
+namespace GoingOn.NewsFinderWorkerRole
 {
     using System;
     using System.Diagnostics;
@@ -26,7 +26,7 @@ namespace NewsFinderWorkerRole
 
         public NewsFinderWorkerRole()
         {
-            newsPusher = new NewsPusher();
+            this.newsPusher = new NewsPusher();
         }
 
         public override void Run()

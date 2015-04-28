@@ -23,8 +23,6 @@ namespace GoingOn.HotNewsCreatorTests
     [TestClass]
     public class HotNewsCreatorTests
     {
-        private INewsStorage newsStorage;
-
         private INewsStorage hotNewsStorage;
 
         private HotNewsCreator hotNewsCreator;
@@ -34,13 +32,17 @@ namespace GoingOn.HotNewsCreatorTests
         {
             string storageConnectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
 
-            string newsTableName = ConfigurationManager.AppSettings["NewsTableName"];
             string hotNewsTableName = ConfigurationManager.AppSettings["HotNewsTableName"];
 
-            this.newsStorage = new NewsTableStorage(storageConnectionString, newsTableName);
             this.hotNewsStorage = new NewsTableStorage(storageConnectionString, hotNewsTableName);
 
             this.hotNewsCreator = new HotNewsCreator();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.hotNewsStorage.DeleteAllNews("Malaga");
         }
 
         [TestMethod]

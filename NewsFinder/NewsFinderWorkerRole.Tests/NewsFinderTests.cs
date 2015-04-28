@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="Article.cs" company="Universidad de Malaga">
+// <copyright file="NewsFinderTests.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -11,7 +11,7 @@
 namespace NewsFinderWorkerRole.Tests
 {
     using System.Linq;
-
+    using GoingOn.NewsFinderWorkerRole;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

@@ -8,14 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-namespace NewsFinderWorkerRole
+namespace GoingOn.NewsFinderWorkerRole
 {
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using Entities;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
+    using GoingOn.NewsFinderWorkerRole.Entities;
 
     public class NewsPusher
     {
@@ -34,15 +35,15 @@ namespace NewsFinderWorkerRole
             this.client.CreateUser(new UserClient { Nickname = username, Password = password, City = "Malaga", Name = "Fedzilla", Email = "alberto@gmail.com" }).Wait();
         }
 
-        public async Task PushNews(List<Article> articles)
+        public async Task PushNews(List<GuardianSingleItem> items)
         {
-            foreach (var article in articles)
+            foreach (GuardianSingleItem singleItem in items)
             {
                 // TODO: improve the City
                 var response = await this.client.CreateNews(
-                    "Malaga", 
-                    article.PublishDate.ToString("yyyy-MM-dd"),
-                    NewsConverter.ToNewsClient(article));
+                    "Malaga",
+                    DateTime.Parse(singleItem.WebPublicationDate).ToString("yyyy-MM-dd"),
+                    NewsConverter.ToNewsClient(singleItem));
             }
         }
     }

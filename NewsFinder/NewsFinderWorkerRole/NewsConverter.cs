@@ -8,19 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-namespace NewsFinderWorkerRole
+namespace GoingOn.NewsFinderWorkerRole
 {
-    using Entities;
     using GoingOn.Client.Entities;
+    using GoingOn.NewsFinderWorkerRole.Entities;
 
     public class NewsConverter
     {
-        public static NewsClient ToNewsClient(Article article)
+        public static NewsClient ToNewsClient(GuardianSingleItem guardianSingleItem)
         {
             return new NewsClient
             {
-                Title = article.Title,
-                Content = article.Summary
+                Title = guardianSingleItem.SectionName,
+                Content = guardianSingleItem.WebUrl
             };
         }
     }

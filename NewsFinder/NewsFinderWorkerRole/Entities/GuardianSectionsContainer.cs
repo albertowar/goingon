@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="Articles.cs" company="Universidad de Malaga">
+// <copyright file="GuardianSection.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,14 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace NewsFinderWorkerRole.Entities
+namespace GoingOn.NewsFinderWorkerRole.Entities
 {
-    using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class ArticleEnumeration
+    public class GuardianSectionsContainer
     {
-        [JsonProperty(PropertyName = "articles")]
-        public List<Article> Articles { get; set; } 
+        [JsonProperty(PropertyName = "response")]
+        public GuardianSectionsListResponse Response { get; set; }
     }
 }

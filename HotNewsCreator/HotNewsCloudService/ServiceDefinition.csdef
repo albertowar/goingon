@@ -5,5 +5,10 @@
       <Import moduleName="RemoteAccess" />
       <Import moduleName="RemoteForwarder" />
     </Imports>
+    <ConfigurationSettings>
+      <Setting name="NewsTableName" />
+      <Setting name="HotNewsTableName" />
+      <Setting name="StorageConnectionString" />
+    </ConfigurationSettings>
   </WorkerRole>
 </ServiceDefinition>
