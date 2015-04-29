@@ -10,13 +10,10 @@
 
 namespace NewsFinderWorkerRole.Tests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Configuration;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
     using GoingOn.NewsFinderWorkerRole;
-    using GoingOn.NewsFinderWorkerRole.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

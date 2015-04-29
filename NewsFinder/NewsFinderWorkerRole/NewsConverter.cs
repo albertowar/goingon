@@ -11,16 +11,16 @@
 namespace GoingOn.NewsFinderWorkerRole
 {
     using GoingOn.Client.Entities;
-    using GoingOn.NewsFinderWorkerRole.Entities;
+    using GoingOn.GuardianClient.API.Entities;
 
     public class NewsConverter
     {
-        public static NewsClient ToNewsClient(GuardianSingleItem guardianSingleItem)
+        public static NewsClient ToNewsClient(GuardianSectionArticle guardianSectionArticle)
         {
             return new NewsClient
             {
-                Title = guardianSingleItem.SectionName,
-                Content = guardianSingleItem.WebUrl
+                Title = guardianSectionArticle.SectionName,
+                Content = guardianSectionArticle.WebUrl
             };
         }
     }

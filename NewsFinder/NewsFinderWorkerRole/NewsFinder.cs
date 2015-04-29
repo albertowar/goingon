@@ -14,30 +14,49 @@ namespace GoingOn.NewsFinderWorkerRole
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
-    using GoingOn.NewsFinderWorkerRole.Entities;
+    using GoingOn.GuardianClient.API;
+    using GoingOn.GuardianClient.API.Entities;
     using Newtonsoft.Json;
 
     public class NewsFinder
     {
-        public static async Task<List<GuardianSingleItem>> FindNews()
+        public static async Task<List<GuardianSectionArticle>> FindNews()
         {
-            var guardianItems = new List<GuardianSingleItem>();
+            var guardianItems = new List<GuardianSectionArticle>();
 
-            GuardianSectionsContainer categories = await NewsFinder.GetSections();
-            GuardianSectionsListResponse sectionResponse = categories.Response;
+            GuardianSectionEnumerationResponse categories = await NewsFinder.GetSections();
+            GuardianSectionEnumerationResponseField sectionResponse = categories.Response;
 
-            List<GuardianSection> results = sectionResponse.Results;
+            var queries = 0;
 
-            for (int i = 0; i < 10; ++i)
+            foreach (GuardianSection section in sectionResponse.Results)
             {
-                guardianItems = guardianItems.Concat(await NewsFinder.GetSectionResponse(results.ElementAt(i))).ToList();
+                long start = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+                guardianItems = guardianItems.Concat(await NewsFinder.GetSectionResponse(section)).ToList();
+
+                ++queries;
+
+                if (queries == 12)
+                {
+                    long end = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                    var totalTime = (int) (end - start);
+
+                    if (totalTime < 1000)
+                    {
+                        Thread.Sleep(1000 - totalTime + 100);
+                    }
+
+                    queries = 0;
+                }
             }
 
             return guardianItems;
         }
 
-        private static async Task<GuardianSectionsContainer> GetSections()
+        private static async Task<GuardianSectionEnumerationResponse> GetSections()
         {
             using (var client = new HttpClient())
             {
@@ -45,11 +64,11 @@ namespace GoingOn.NewsFinderWorkerRole
 
                 string categoriesJson = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<GuardianSectionsContainer>(categoriesJson);
+                return JsonConvert.DeserializeObject<GuardianSectionEnumerationResponse>(categoriesJson);
             }
         }
 
-        private static async Task<List<GuardianSingleItem>> GetSectionResponse(GuardianSection section)
+        private static async Task<List<GuardianSectionArticle>> GetSectionResponse(GuardianSection section)
         {
             using (var client = new HttpClient())
             {

@@ -8,13 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.NewsFinderWorkerRole.Entities
+namespace GoingOn.GuardianClient.API.Entities
 {
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class GuardianSectionContainer
+    public class GuardianSection : GuardianBaseEntity
     {
-        [JsonProperty(PropertyName = "response")]
-        public GuardianSectionResponse Response { get; set; }
+        [JsonProperty(PropertyName = "editions")]
+        public List<GuardianEdition> Editions { get; set; }
     }
 }

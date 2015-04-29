@@ -16,7 +16,7 @@ namespace GoingOn.NewsFinderWorkerRole
     using System.Threading.Tasks;
     using GoingOn.Client;
     using GoingOn.Client.Entities;
-    using GoingOn.NewsFinderWorkerRole.Entities;
+    using GoingOn.GuardianClient.API.Entities;
 
     public class NewsPusher
     {
@@ -35,9 +35,9 @@ namespace GoingOn.NewsFinderWorkerRole
             this.client.CreateUser(new UserClient { Nickname = username, Password = password, City = "Malaga", Name = "Fedzilla", Email = "alberto@gmail.com" }).Wait();
         }
 
-        public async Task PushNews(List<GuardianSingleItem> items)
+        public async Task PushNews(List<GuardianSectionArticle> items)
         {
-            foreach (GuardianSingleItem singleItem in items)
+            foreach (GuardianSectionArticle singleItem in items)
             {
                 // TODO: improve the City
                 var response = await this.client.CreateNews(

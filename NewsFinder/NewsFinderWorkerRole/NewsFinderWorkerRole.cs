@@ -11,10 +11,12 @@
 namespace GoingOn.NewsFinderWorkerRole
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+    using GoingOn.GuardianClient.API.Entities;
     using Microsoft.WindowsAzure.ServiceRuntime;
 
     public class NewsFinderWorkerRole : RoleEntryPoint
@@ -77,7 +79,7 @@ namespace GoingOn.NewsFinderWorkerRole
             {
                 Trace.TraceInformation("Working");
 
-                var articles = await NewsFinder.FindNews();
+                List<GuardianSectionArticle> articles = await NewsFinder.FindNews();
 
                 await this.newsPusher.PushNews(articles);
 

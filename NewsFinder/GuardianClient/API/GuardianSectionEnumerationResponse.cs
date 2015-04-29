@@ -8,13 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.NewsFinderWorkerRole.Entities
+namespace GoingOn.GuardianClient.API
 {
     using Newtonsoft.Json;
 
-    public class GuardianSectionsContainer
+    public class GuardianSectionEnumerationResponse
     {
         [JsonProperty(PropertyName = "response")]
-        public GuardianSectionsListResponse Response { get; set; }
+        public GuardianSectionEnumerationResponseField Response { get; set; }
     }
 }

@@ -60,6 +60,10 @@
       <Project>{6F595F59-04E5-4500-8893-451062B142B9}</Project>
       <Name>Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GuardianClient\GuardianClient.csproj">
+      <Project>{a9b4b69a-d4f8-4dd4-b561-54415b1e8ccb}</Project>
+      <Name>GuardianClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NewsFinderWorkerRole\NewsFinderWorkerRole.csproj">
       <Project>{13b4d452-6035-410c-ad9d-63c97f27b412}</Project>
       <Name>NewsFinderWorkerRole</Name>
