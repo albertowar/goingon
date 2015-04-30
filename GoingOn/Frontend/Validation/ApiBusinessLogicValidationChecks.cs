@@ -14,6 +14,7 @@ namespace GoingOn.Frontend.Validation
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
     using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage.Entities;
 
     public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
     {
@@ -49,7 +50,7 @@ namespace GoingOn.Frontend.Validation
 
         public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)
         {
-            return await storage.Exists(city, date, id);
+            return await storage.ContainsNews(city, date, id);
         }
 
         public async Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
@@ -71,7 +72,7 @@ namespace GoingOn.Frontend.Validation
 
         private async Task<bool> IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
         {
-            return await storage.ContainsNews(News.ToNewsBll(news, city, author, date));
+            return await storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(News.ToNewsBll(news, city, author, date)));
         }
 
         #endregion

@@ -16,19 +16,19 @@ namespace GoingOn.Storage.TableStorage.Entities
 
     public class NewsEntity : TableEntity
     {
-        /*
-         * The title of the news. Mandatory.
-         */
+        /// <summary>
+        /// The title of the news.
+        /// </summary>
         public string Title { get; set; }
 
-        /*
-         * The content of the news. Mandatory.
-         */
+        /// <summary>
+        /// The content of the news.
+        /// </summary>
         public string Content { get; set; }
 
-        /*
-         * The author of the news. Mandatory.
-         */
+        /// <summary>
+        /// The author of the news.
+        /// </summary>
         public string Author { get; set; }
 
         public static NewsEntity FromNewsBll(NewsBll newsBll)

@@ -23,6 +23,7 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Links;
     using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage.Entities;
 
     public class NewsController : ApiController
     {
@@ -89,7 +90,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
                 Guid newsId = Guid.NewGuid();
 
-                await this.storage.AddNews(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date)));
+                await this.storage.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
 
                 var response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
                 response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;

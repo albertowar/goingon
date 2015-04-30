@@ -15,6 +15,7 @@ namespace GoingOn.Frontend.Tests.Validation
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
+    using GoingOn.Storage.TableStorage.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -58,7 +59,7 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestMethod]
         public void TestIsValidCreateNewsSucceedsIfStorageDoesNotContainsTheNews()
         {
-            this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(false));
+            this.newsStorageMock.Setup(storage => storage.ContainsNewsCheckContent(It.IsAny<NewsEntity>())).Returns(Task.FromResult(false));
 
             Assert.IsTrue(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }
@@ -66,7 +67,7 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestMethod]
         public void TestIsValidCreateNewsFailsIfStorageContainsTheNews()
         {
-            this.newsStorageMock.Setup(storage => storage.ContainsNews(It.IsAny<NewsBll>())).Returns(Task.FromResult(true));
+            this.newsStorageMock.Setup(storage => storage.ContainsNewsCheckContent(It.IsAny<NewsEntity>())).Returns(Task.FromResult(true));
 
             Assert.IsFalse(this.businessValidation.IsValidCreateNews(this.newsStorageMock.Object, news, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }

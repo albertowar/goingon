@@ -8,22 +8,22 @@
 // </summary>
 // ****************************************************************************
 
-using UserTableStorage = GoingOn.Storage.TableStorage.UserTableStorage;
-
 namespace GoingOn.Storage.Tests
 {
     using System;
     using System.Configuration;
+    using System.Threading.Tasks;
     using GoingOn.Common.Tests;
+    using GoingOn.Model.EntitiesBll;
+    using GoingOn.Storage.TableStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Microsoft.WindowsAzure.Storage;
-    using Model.EntitiesBll;
 
     [TestClass]
     public class UserStorageTests
     {
         // RegistrationDate has to be initializated otherwise it will get the min value that crashes on TableStorage
-        private static readonly UserBll User = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", BirthDate = new DateTime(2014, 12, 4), RegistrationDate = new DateTime(2014, 12, 4) };
+        private static readonly UserBll DefaultUser = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", BirthDate = new DateTime(2014, 12, 4), RegistrationDate = new DateTime(2014, 12, 4) };
 
         private IUserStorage storage;
 
@@ -39,15 +39,15 @@ namespace GoingOn.Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            this.storage.DeleteAllUsers().Wait();
+            this.storage.DeleteAllUsers(DefaultUser.City).Wait();
         }
 
         [TestMethod]
         public void TestAddUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            var containsUserTask = this.storage.ContainsUser(User);
+            Task<bool> containsUserTask = this.storage.ContainsUser(DefaultUser);
             containsUserTask.Wait();
 
             Assert.IsTrue(containsUserTask.Result);
@@ -56,39 +56,39 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestAddExistingUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(User).Wait());
+            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(DefaultUser).Wait());
         }
 
         [TestMethod]
         public void TestGetUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            var actualUser = this.storage.GetUser(User.Nickname).Result;
+            UserBll actualUser = this.storage.GetUser(DefaultUser.Nickname).Result;
 
-            Assert.IsTrue(new UserBllEqualityComparer().Equals(User, actualUser));
+            Assert.IsTrue(new UserBllEqualityComparer().Equals(DefaultUser, actualUser));
         }
 
         [TestMethod]
         public void TestGetNonExistingUser()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetUser(User.Nickname).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetUser(DefaultUser.Nickname).Wait());
         }
 
         [TestMethod]
         public void TestContainsExistingUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            Assert.IsTrue(this.storage.ContainsUser(User).Result);
+            Assert.IsTrue(this.storage.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
         public void TestContainsNonExistingUser()
         {
-            Assert.IsFalse(this.storage.ContainsUser(User).Result);
+            Assert.IsFalse(this.storage.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
@@ -107,13 +107,13 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestUpdateUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password", City = "Dublin", BirthDate = new DateTime(2015, 12, 4) };
+            var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password", City = "Dublin", BirthDate = new DateTime(2015, 12, 4) };
 
             this.storage.UpdateUser(updatedUser).Wait();
 
-            var actualUser = this.storage.GetUser(User.Nickname).Result;
+            UserBll actualUser = this.storage.GetUser(DefaultUser.Nickname).Result;
 
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
@@ -125,7 +125,7 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestUpdateNonExistingUser()
         {
-            var updatedUser = new UserBll { Nickname = User.Nickname, Password = "other password" };
+            var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password" };
 
             AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.UpdateUser(updatedUser).Wait());
         }
@@ -133,17 +133,17 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestDeleteUser()
         {
-            this.storage.AddUser(User).Wait();
+            this.storage.AddUser(DefaultUser).Wait();
 
-            this.storage.DeleteUser(User).Wait();
+            this.storage.DeleteUser(DefaultUser).Wait();
 
-            Assert.IsFalse(this.storage.ContainsUser(User).Result);
+            Assert.IsFalse(this.storage.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
         public void TestDeleteNonExistingUser()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.DeleteUser(User).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.DeleteUser(DefaultUser).Wait());
         }
 
         [TestMethod]
@@ -165,7 +165,7 @@ namespace GoingOn.Storage.Tests
         {
             this.AddUsers();
 
-            this.storage.DeleteAllUsers().Wait();
+            this.storage.DeleteAllUsers(DefaultUser.City).Wait();
 
             for (int i = 0; i < 10; ++i)
             {

@@ -8,8 +8,6 @@
 // </summary>
 // ****************************************************************************
 
-using NewsTableStorage = GoingOn.Storage.TableStorage.NewsTableStorage;
-
 namespace GoingOn.Storage.Tests
 {
     using System;
@@ -17,24 +15,24 @@ namespace GoingOn.Storage.Tests
     using System.Configuration;
     using System.Linq;
     using GoingOn.Common.Tests;
+    using GoingOn.Storage.TableStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
+    using GoingOn.Storage.TableStorage.Entities;
 
     [TestClass]
     public class NewsStorageTests
     {
-        private static readonly string city = "Malaga";
-        private static readonly DateTime date = DateTime.Parse("2015-05-14");
-        private static readonly Guid newsGuid = Guid.NewGuid();
+        private const string City = "Malaga";
 
-        private static readonly NewsBll News = new NewsBll
+        private static readonly NewsBll DefaultNews = new NewsBll
         {
-            Id = newsGuid,
+            Id = Guid.NewGuid(),
             Title = "title",
-            City = city,
+            City = City,
             Content = "content",
             Author = "author",
-            Date = date
+            Date = DateTime.Parse("2015-05-14")
         };
 
         private INewsStorage storage;
@@ -51,46 +49,45 @@ namespace GoingOn.Storage.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            this.storage.DeleteAllNews(city).Wait();
+            this.storage.DeleteAllNews(City).Wait();
         }
 
         [TestMethod]
         public void TestAddNews()
         {
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            Assert.IsTrue(this.storage.ContainsNews(News).Result);
+            Assert.IsTrue(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(DefaultNews)).Result);
         }
 
         [TestMethod]
         public void TestGetNews()
         {
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            NewsBll actualNews = this.storage.GetNews(city, date, newsGuid).Result;
+            NewsBll actualNews = this.storage.GetNews(DefaultNews.City, DefaultNews.Date, DefaultNews.Id).Result;
 
-            Assert.IsTrue(new NewsBllEqualityComparer().Equals(News, actualNews));
+            Assert.IsTrue(new NewsBllEqualityComparer().Equals(DefaultNews, actualNews));
         }
 
         [TestMethod]
-        public void TestGetNewsCityDate()
+        public void TestGetNews_UsingCityDate()
         {
             for (int i = 0; i < 10; ++i)
             {
-                var news = new NewsBll
+                var news = new NewsEntity
                 {
-                    Id = Guid.NewGuid(),
+                    PartitionKey = NewsEntity.BuildPartitionkey(DefaultNews.City, DefaultNews.Date),
+                    RowKey = Guid.NewGuid().ToString(),
                     Title = "title" + i,
-                    City = city,
                     Content = "content" + i,
-                    Author = "author",
-                    Date = date
+                    Author = "author"
                 };
 
                 this.storage.AddNews(news).Wait();
             }
 
-            IEnumerable<NewsBll> newsList = this.storage.GetNews(city, date).Result;
+            IEnumerable<NewsBll> newsList = this.storage.GetNews(DefaultNews.City, DefaultNews.Date).Result;
 
             Assert.AreEqual(10, newsList.Count());
         }
@@ -98,71 +95,68 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestGetNewsEmptyStorage()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetNews(city, date, newsGuid).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetNews(DefaultNews.City, DefaultNews.Date, DefaultNews.Id).Wait());
         }
 
         [TestMethod]
         public void TestContainsNews()
         {
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            Assert.IsTrue(this.storage.ContainsNews(News).Result);
+            Assert.IsTrue(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(DefaultNews)).Result);
         }
 
         [TestMethod]
         public void TestUpdateNews()
         {
-            Guid guid1 = Guid.NewGuid();
-            Guid guid2 = Guid.NewGuid();
-
-            NewsBll oldNews1 = new NewsBll
+            var oldNews1 = new NewsBll
             {
-                Id = guid1,
+                Id = Guid.NewGuid(),
                 Title = "title 1",
                 Content = "content",
                 Author = "author",
                 Date = DateTime.Parse("2014-12-24"),
-                City = city
+                City = DefaultNews.City
             };
 
-            NewsBll oldNews2 = new NewsBll
+            var oldNews2 = new NewsBll
             {
-                Id = guid2,
+                Id = Guid.NewGuid(),
                 Title = "title 2",
                 Content = "content",
                 Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Date = DefaultNews.Date,
+                City = DefaultNews.City
             };
 
-            this.storage.AddNews(oldNews1).Wait();
-            this.storage.AddNews(oldNews2).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(oldNews1)).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(oldNews2)).Wait();
 
-            NewsBll updatedTitleNews = new NewsBll
+            var updatedTitleNews = new NewsBll
             {
-                Id = guid1,
+                Id = oldNews1.Id,
                 Title = "title 1",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Content = oldNews1.Content,
+                Author = oldNews1.Author,
+                Date = oldNews1.Date,
+                City = oldNews1.City
             };
 
             NewsBll updatedContentNews = new NewsBll
             {
-                Id = guid2,
-                Title = "title 2",
+                Id = oldNews2.Id,
+                Title = oldNews2.Title,
                 Content = "updated content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Author = oldNews2.Author,
+                Date = oldNews2.Date,
+                City = oldNews2.City
             };
 
             this.storage.UpdateNews(updatedTitleNews).Wait();
             this.storage.UpdateNews(updatedContentNews).Wait();
 
-            Assert.IsTrue(this.storage.ContainsNews(updatedTitleNews).Result);
-            Assert.IsTrue(this.storage.ContainsNews(updatedContentNews).Result);
+            Assert.IsTrue(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(updatedTitleNews)).Result);
+            Assert.IsTrue(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(updatedContentNews)).Result);
         }
 
         [TestMethod]
@@ -170,110 +164,122 @@ namespace GoingOn.Storage.Tests
         {
             NewsBll newsDifferentTitle = new NewsBll
             {
-                Id = newsGuid,
+                Id = DefaultNews.Id,
                 Title = "different title",
-                Content = "content",
-                Author = "author",
-                Date = new DateTime(2014, 12, 24, 13, 0, 0)
+                Content = DefaultNews.Content,
+                Author = DefaultNews.Author,
+                Date = DefaultNews.Date
             };
             NewsBll newsDifferentYear = new NewsBll
             {
-                Id = newsGuid,
-                Title = "title",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Id = DefaultNews.Id,
+                Title = DefaultNews.Title,
+                Content = DefaultNews.Content,
+                Author = DefaultNews.Author,
+                Date = DefaultNews.Date.AddYears(1),
+                City = DefaultNews.City
             };
             NewsBll newsDifferentMonth = new NewsBll
             {
-                Id = newsGuid,
-                Title = "title",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Id = DefaultNews.Id,
+                Title = DefaultNews.Title,
+                Content = DefaultNews.Content,
+                Author = DefaultNews.Author,
+                Date = DefaultNews.Date.AddMonths(1),
+                City = DefaultNews.City
             };
-            NewsBll newsDifferentHour = new NewsBll
+            NewsBll newsDifferentDay = new NewsBll
             {
-                Id = newsGuid,
-                Title = "title",
-                Content = "content",
-                Author = "author",
-                Date = DateTime.Parse("2014-12-24"),
-                City = city
+                Id = DefaultNews.Id,
+                Title = DefaultNews.Title,
+                Content = DefaultNews.Content,
+                Author = DefaultNews.Author,
+                Date = DefaultNews.Date.AddDays(1),
+                City = DefaultNews.City
             };
 
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            Assert.IsFalse(this.storage.ContainsNews(newsDifferentTitle).Result);
-
-            Assert.IsFalse(this.storage.ContainsNews(newsDifferentYear).Result);
-            Assert.IsFalse(this.storage.ContainsNews(newsDifferentMonth).Result);
-            Assert.IsFalse(this.storage.ContainsNews(newsDifferentHour).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(newsDifferentTitle)).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(newsDifferentYear)).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(newsDifferentMonth)).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(newsDifferentDay)).Result);
         }
 
         [TestMethod]
         public void TestDeleteNews()
         {
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            this.storage.DeleteNews(city, date, newsGuid).Wait();
+            this.storage.DeleteNews(DefaultNews.City, DefaultNews.Date, DefaultNews.Id).Wait();
 
-            Assert.IsFalse(this.storage.ContainsNews(News).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(DefaultNews)).Result);
         }
 
         [TestMethod]
         public void TestDeleteNewsDoesNotAffectOtherNews()
         {
-            var guid1 = Guid.NewGuid();
-            var guid2 = Guid.NewGuid();
-
             var news1 = new NewsBll
             {
-                Id = guid1,
+                Id = Guid.NewGuid(),
                 Title = "title",
                 Content = "content",
                 Author = "author",
-                Date = date,
-                City = city
+                Date = DefaultNews.Date,
+                City = DefaultNews.City
             };
 
             var news2 = new NewsBll
             {
-                Id = guid2,
+                Id = Guid.NewGuid(),
                 Title = "other title",
                 Content = "content",
                 Author = "author",
-                Date = date,
-                City = city
+                Date = DefaultNews.Date,
+                City = DefaultNews.City
             };
 
-            this.storage.AddNews(news1).Wait();
-            this.storage.AddNews(news2).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(news1)).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(news2)).Wait();
 
-            this.storage.DeleteNews(city, date, guid1).Wait();
+            this.storage.DeleteNews(news1.City, news1.Date, news1.Id).Wait();
 
-            Assert.IsFalse(this.storage.ContainsNews(news1).Result);
-            Assert.IsTrue(this.storage.ContainsNews(news2).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(news1)).Result);
+            Assert.IsTrue(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(news2)).Result);
         }
 
         [TestMethod]
         public void TestDeleteAll()
         {
-            this.storage.AddNews(News).Wait();
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
 
-            this.storage.DeleteAllNews(News.City).Wait();
+            this.storage.DeleteAllNews(DefaultNews.City).Wait();
 
-            Assert.IsFalse(this.storage.ContainsNews(News).Result);
+            Assert.IsFalse(this.storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(DefaultNews)).Result);
         }
 
-        // TODO: add CT for IsAuthorOf
+        [TestMethod]
+        public void TestIsAuthorOf()
+        {
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
+
+            Assert.IsTrue(this.storage.IsAuthorOf(DefaultNews.City, DefaultNews.Date, DefaultNews.Id, DefaultNews.Author).Result);
+        }
+
+        [TestMethod]
+        public void TestIsAuthorOf_WrongAuthor()
+        {
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
+
+            Assert.IsFalse(this.storage.IsAuthorOf(DefaultNews.City, DefaultNews.Date, DefaultNews.Id, string.Format("not-the-author-{0}", DefaultNews.Author)).Result);
+        }
 
         [TestMethod]
         public void TestExists()
         {
-            Assert.IsTrue(this.storage.Exists("Malaga", DateTime.Parse("2015-04-18"), Guid.Parse("fedf9223-1121-46d9-b346-26f91477411f")).Result);
+            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultNews)).Wait();
+
+            Assert.IsTrue(this.storage.ContainsNews(DefaultNews.City, DefaultNews.Date, DefaultNews.Id).Result);
         }
     }
 }

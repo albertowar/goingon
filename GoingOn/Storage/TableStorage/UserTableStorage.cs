@@ -118,18 +118,28 @@ namespace GoingOn.Storage.TableStorage
             await table.ExecuteAsync(deleteOperation);
         }
 
-        public async Task DeleteAllUsers()
+        public async Task DeleteAllUsers(string city)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var query = new TableQuery<UserEntity>();
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, city);
 
-            var usersSegment = await table.ExecuteQuerySegmentedAsync(query, null);
+            TableQuery<UserEntity> userQuery = new TableQuery<UserEntity>().Where(partitionKeyFilter);
 
-            Parallel.ForEach(usersSegment.Results, async user =>
+            TableContinuationToken token = null;
+
+            do
             {
-                await table.ExecuteAsync(TableOperation.Delete(user));
-            });
+                TableQuerySegment<UserEntity> usersSegment = await table.ExecuteQuerySegmentedAsync(userQuery, token);
+
+                foreach (UserEntity user in usersSegment)
+                {
+                    await table.ExecuteAsync(TableOperation.Delete(user));
+                }
+
+                token = usersSegment.ContinuationToken;
+
+            } while (token != null);
         }
 
         #region Helper methods

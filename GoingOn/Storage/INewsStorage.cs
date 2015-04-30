@@ -13,16 +13,17 @@ namespace GoingOn.Storage
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
+    using GoingOn.Storage.TableStorage.Entities;
 
     public interface INewsStorage
     {
         /// <summary>
         /// Add a news.
         /// </summary>
-        /// <param name="newsBll">The news to add.</param>
+        /// <param name="newsEntity">The news to add.</param>
         /// <returns></returns>
-        Task AddNews(NewsBll newsBll);
+        Task AddNews(NewsEntity newsEntity);
 
         /// <summary>
         /// Retrieve a news.
@@ -42,13 +43,13 @@ namespace GoingOn.Storage
         Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date);
 
         /// <summary>
-        /// Checks whether there is a news matching these values.
+        /// Checks whether there is a news with the same PartitionKey and RowKey.
         /// </summary>
         /// <param name="city">The city where the news happened.</param>
         /// <param name="date">The date when the news happened.</param>
         /// <param name="id">The id of the news.</param>
         /// <returns></returns>
-        Task<bool> Exists(string city, DateTime date, Guid id);
+        Task<bool> ContainsNews(string city, DateTime date, Guid id);
 
         /// <summary>
         /// Checks whether there is a news matching these values.
@@ -63,13 +64,14 @@ namespace GoingOn.Storage
         Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author);
 
         /// <summary>
-        /// Checks whether there is a news matching these values.
+        /// Checks whether there is a news with the same PartitionKey (City,Date) and
+        /// similar information (title, content).
         /// Used in create operation to determine whether there was a news
         /// with the same content created before.
         /// </summary>
-        /// <param name="news">The news to check.</param>
+        /// <param name="newsEntity">The news to check</param>
         /// <returns></returns>
-        Task<bool> ContainsNews(NewsBll news);
+        Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity);
 
         /// <summary>
         /// Update a news.

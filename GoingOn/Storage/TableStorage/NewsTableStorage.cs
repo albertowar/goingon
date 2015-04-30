@@ -42,11 +42,11 @@ namespace GoingOn.Storage.TableStorage
             }
         }
 
-        public async Task AddNews(NewsBll newsBll)
+        public async Task AddNews(NewsEntity newsEntity)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            await table.ExecuteAsync(TableOperation.InsertOrReplace(NewsEntity.FromNewsBll(newsBll)));
+            await table.ExecuteAsync(TableOperation.InsertOrReplace(newsEntity));
         }
 
         public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
@@ -95,7 +95,7 @@ namespace GoingOn.Storage.TableStorage
             return retrievedNews.Select(newsEntity => NewsEntity.ToNewsBll(newsEntity));
         }
 
-        public async Task<bool> Exists(string city, DateTime date, Guid id)
+        public async Task<bool> ContainsNews(string city, DateTime date, Guid id)
         {
             CloudTable table = this.GetStorageTable();
 
@@ -129,13 +129,13 @@ namespace GoingOn.Storage.TableStorage
             return result.Any();
         }
 
-        public async Task<bool> ContainsNews(NewsBll newsBll)
+        public async Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity)
         {
             CloudTable table = this.GetStorageTable();
 
-            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date));
-            string titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsBll.Title);
-            string authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsBll.Author);
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, newsEntity.PartitionKey);
+            string titleFilter = TableQuery.GenerateFilterCondition("Title", QueryComparisons.Equal, newsEntity.Title);
+            string authorFilter = TableQuery.GenerateFilterCondition("Author", QueryComparisons.Equal, newsEntity.Author);
 
             string filter = TableQuery.CombineFilters(
                 partitionKeyFilter,
@@ -198,12 +198,20 @@ namespace GoingOn.Storage.TableStorage
 
             TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
 
-            TableQuerySegment<NewsEntity> newsSegment = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+            TableContinuationToken token = null;
 
-            Parallel.ForEach(newsSegment.Results, async user =>
+            do
             {
-                await table.ExecuteAsync(TableOperation.Delete(user));
-            });
+                TableQuerySegment<NewsEntity> newsSegment = await table.ExecuteQuerySegmentedAsync(newsQuery, token);
+
+                foreach (NewsEntity news in newsSegment)
+                {
+                    await table.ExecuteAsync(TableOperation.Delete(news));
+                }
+
+                token = newsSegment.ContinuationToken;
+
+            } while (token != null);
         }
 
         #region Helper methods
