@@ -45,7 +45,7 @@ namespace GoingOn.Storage.TableStorage.Entities
 
         public static NewsBll ToNewsBll(NewsEntity newsEntity)
         {
-            var pairCityDate = NewsEntity.ExtractFromPartitionKey(newsEntity.PartitionKey);
+            Tuple<string, DateTime> pairCityDate = NewsEntity.ExtractFromPartitionKey(newsEntity.PartitionKey);
 
             return new NewsBll
             {

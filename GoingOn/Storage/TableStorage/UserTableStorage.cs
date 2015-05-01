@@ -82,11 +82,11 @@ namespace GoingOn.Storage.TableStorage
 
         public async Task UpdateUser(UserBll userBll)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
+            TableQuerySegment<UserEntity> retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
 
-            var firstUser = retrievedUserSegment.Results.FirstOrDefault();
+            UserEntity firstUser = retrievedUserSegment.Results.FirstOrDefault();
 
             if (firstUser == null)
             {
@@ -95,25 +95,25 @@ namespace GoingOn.Storage.TableStorage
 
             firstUser.Merge(UserEntity.FromUserBll(userBll));
 
-            var insertOrReplaceOperation = TableOperation.InsertOrReplace(firstUser);
+            TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(firstUser);
 
             await table.ExecuteAsync(insertOrReplaceOperation);
         }
 
         public async Task DeleteUser(UserBll userBll)
         {
-            var table = this.GetStorageTable();
+            CloudTable table = this.GetStorageTable();
 
-            var retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
+            TableQuerySegment<UserEntity> retrievedUserSegment = await UserTableStorage.FindUserByNickname(table, userBll.Nickname);
 
-            var firstUser = retrievedUserSegment.Results.FirstOrDefault();
+            UserEntity firstUser = retrievedUserSegment.Results.FirstOrDefault();
 
             if (firstUser == null)
             {
                 throw new AzureTableStorageException("The user is not in the database");
             }
 
-            var deleteOperation = TableOperation.Delete(firstUser);
+            TableOperation deleteOperation = TableOperation.Delete(firstUser);
 
             await table.ExecuteAsync(deleteOperation);
         }
@@ -146,14 +146,14 @@ namespace GoingOn.Storage.TableStorage
 
         private CloudTable GetStorageTable()
         {
-            var tableClient = this.storageAccount.CreateCloudTableClient();
+            CloudTableClient tableClient = this.storageAccount.CreateCloudTableClient();
 
             return tableClient.GetTableReference(this.tableName);
         }
 
         private static Task<TableQuerySegment<UserEntity>> FindUserByNickname(CloudTable table, string nickname)
         {
-            var query = new TableQuery<UserEntity>()
+            TableQuery<UserEntity> query = new TableQuery<UserEntity>()
                 .Where(TableQuery.GenerateFilterCondition(
                     "RowKey",
                     QueryComparisons.Equal,

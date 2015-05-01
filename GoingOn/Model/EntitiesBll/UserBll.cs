@@ -14,34 +14,34 @@ namespace GoingOn.Model.EntitiesBll
 
     public class UserBll
     {
-        /**
-         * The nickname of the user. Mandatory and unique.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Nickname { get; set; }
 
-        /**
-         * The password of the user. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Password { get; set; }
 
-        /**
-         * The city where the user belongs to. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string City { get; set; }
 
-        /**
-         * The real name of the user. Optional.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
 
-        /**
-         * The e-mail address of the user. Optional.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Email { get; set; }
 
-        /**
-         * The birth date of the user. Optional.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime? BirthDate { get; set; }
 
         /**

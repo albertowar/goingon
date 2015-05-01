@@ -42,23 +42,13 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             try
             {
-                await this.ValidateGetOperation(city);
-
                 DateTime day = DateTime.Now;
 
-                List<NewsREST> retrievedNews = null;
+                await this.ValidateGetOperation(city, day);
 
-                while (retrievedNews == null)
-                {
-                    try
-                    {
-                        retrievedNews = (await this.storage.GetNews(city, day)).Select(news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
-                    }
-                    catch (Exception)
-                    {
-                        day = day.AddDays(-1);
-                    }
-                }
+                List<NewsREST> retrievedNews =
+                            (await this.storage.GetNews(city, day)).Select(
+                                news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
 
                 HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
 
@@ -68,15 +58,24 @@ namespace GoingOn.FrontendWebRole.Controllers
             {
                 return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
             }
+            catch (BusinessValidationException businessValidationException)
+            {
+                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, businessValidationException.Message);
+            }
         }
 
         #region Validation code
 
-        public async Task ValidateGetOperation(string city)
+        public async Task ValidateGetOperation(string city, DateTime date)
         {
             if (!this.inputValidation.IsValidCity(city))
             {
                 throw new InputValidationException("The city format is incorrect");
+            }
+
+            if (!await this.businessValidation.IsValidGetHotNews((INewsStorage) this.storage, city, date))
+            {
+                throw new BusinessValidationException(string.Format("There are not HotNews in {0} at {1}", city, date));
             }
         }
 

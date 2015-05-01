@@ -24,7 +24,7 @@ namespace GoingOn.Frontend.Validation
 
         Task<bool> IsValidUpdateUser(IUserStorage storage, User user);
 
-        bool IsAuthorizedUser(string requesterNickname, string userNickname);
+        Task<bool> IsAuthorizedUser(string requesterNickname, string userNickname);
 
         Task<bool> IsValidDeleteUser(IUserStorage storage, string nickname);
 
@@ -35,5 +35,7 @@ namespace GoingOn.Frontend.Validation
         Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
 
         Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
+
+        Task<bool> IsValidGetHotNews(INewsStorage storage, string city, DateTime date);
     }
 }

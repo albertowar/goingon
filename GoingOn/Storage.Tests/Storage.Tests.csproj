@@ -84,6 +84,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Entitites\NewsEntityTests.cs" />
+    <Compile Include="Entitites\UserEntityTests.cs" />
+    <Compile Include="HotNewsStorageTests.cs" />
     <Compile Include="NewsStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserStorageTests.cs" />

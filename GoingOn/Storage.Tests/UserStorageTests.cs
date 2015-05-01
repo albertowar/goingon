@@ -40,6 +40,7 @@ namespace GoingOn.Storage.Tests
         public void Cleanup()
         {
             this.storage.DeleteAllUsers(DefaultUser.City).Wait();
+            this.storage.DeleteAllUsers("Dublin").Wait();
         }
 
         [TestMethod]
@@ -109,7 +110,7 @@ namespace GoingOn.Storage.Tests
         {
             this.storage.AddUser(DefaultUser).Wait();
 
-            var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password", City = "Dublin", BirthDate = new DateTime(2015, 12, 4) };
+            var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password", City = DefaultUser.City, BirthDate = new DateTime(2015, 12, 4) };
 
             this.storage.UpdateUser(updatedUser).Wait();
 
@@ -118,7 +119,6 @@ namespace GoingOn.Storage.Tests
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
             Assert.AreEqual(updatedUser.Password, actualUser.Password);
-            Assert.AreEqual(updatedUser.City, actualUser.City);
             Assert.AreEqual(updatedUser.BirthDate, actualUser.BirthDate);
         }
 

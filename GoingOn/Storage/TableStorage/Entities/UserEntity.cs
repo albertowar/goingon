@@ -16,29 +16,24 @@ namespace GoingOn.Storage.TableStorage.Entities
 
     public class UserEntity : TableEntity
     {
-        /**
-         * The password of the user. Mandatory.
-         */
+        /// <summary>
+        /// The password
+        /// </summary>
         public string Password { get; set; }
 
-        /**
-         * The real name of the user. Optional.
-         */
-        public string Name { get; set; }
-
-        /**
-         * The e-mail address of the user. Optional.
-         */
+        /// <summary>
+        /// The email of the user
+        /// </summary>
         public string Email { get; set; }
 
-        /**
-         * The birth date of the user. Optional.
-         */
+        /// <summary>
+        /// The date of birth
+        /// </summary>
         public DateTime? BirthDate { get; set; }
 
-        /**
-         * The registration date of the user. Mandatory.
-         */
+        /// <summary>
+        /// The registration date
+        /// </summary>
         public DateTime RegistrationDate { get; set; }
 
         public static UserEntity FromUserBll(UserBll userBll)
@@ -48,7 +43,6 @@ namespace GoingOn.Storage.TableStorage.Entities
                 PartitionKey = userBll.City,
                 RowKey = userBll.Nickname,
                 Password = userBll.Password,
-                Name = userBll.Name,
                 Email = userBll.Email,
                 RegistrationDate = userBll.RegistrationDate,
                 BirthDate = userBll.BirthDate
@@ -62,7 +56,6 @@ namespace GoingOn.Storage.TableStorage.Entities
                 Nickname = userEntity.RowKey,
                 Password = userEntity.Password,
                 City = userEntity.PartitionKey,
-                Name = userEntity.Name,
                 Email = userEntity.Email,
                 BirthDate = userEntity.BirthDate,
                 RegistrationDate = userEntity.RegistrationDate
@@ -84,29 +77,24 @@ namespace GoingOn.Storage.TableStorage.Entities
                 this.PartitionKey.GetHashCode() ^
                 this.RowKey.GetHashCode() ^ 
                 this.Password.GetHashCode() ^
-                this.Name.GetHashCode() ^
                 this.Email.GetHashCode() ^
                 this.BirthDate.GetHashCode() ^
                 this.RegistrationDate.GetHashCode();
         }
 
+        /// <summary>
+        /// This method combines two user entities with the same RowKey (the same name).
+        /// It does not allow to update PartitionKey or RowKey. Therefore,
+        /// to update the city, it requires to delete and create the user again.
+        /// </summary>
+        /// <param name="userEntity"></param>
         public void Merge(UserEntity userEntity)
         {
             if (this.Equals(userEntity))
             {
-                if (!string.IsNullOrWhiteSpace(userEntity.PartitionKey))
-                {
-                    this.PartitionKey = userEntity.PartitionKey;
-                }
-
                 if (!string.IsNullOrWhiteSpace(userEntity.Password))
                 {
                     this.Password = userEntity.Password;
-                }
-
-                if (!string.IsNullOrWhiteSpace(userEntity.Name))
-                {
-                    this.Name = userEntity.Name;
                 }
 
                 if (!string.IsNullOrWhiteSpace(userEntity.Email))

@@ -14,34 +14,34 @@ namespace GoingOn.Model.EntitiesBll
 
     public class NewsBll
     {
-        /*
-         * Id. Mandatory and unique.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public Guid Id { get; set; } 
 
-        /*
-         * The title of the news. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Title { get; set; }
 
-        /*
-         * The content of the news. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Content { get; set; }
 
-        /*
-         * The city of the news. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string City { get; set; }
 
-        /*
-         * The author of the news. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public string Author { get; set; }
 
-        /*
-         * The creation date of the news. Mandatory.
-         */
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime Date { get; set; }
     }
 }
