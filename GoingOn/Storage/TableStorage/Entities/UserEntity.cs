@@ -12,7 +12,7 @@ namespace GoingOn.Storage.TableStorage.Entities
 {
     using System;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
 
     public class UserEntity : TableEntity
     {
@@ -35,6 +35,8 @@ namespace GoingOn.Storage.TableStorage.Entities
         /// The registration date
         /// </summary>
         public DateTime RegistrationDate { get; set; }
+
+        // TODO: missing Name (real name)
 
         public static UserEntity FromUserBll(UserBll userBll)
         {

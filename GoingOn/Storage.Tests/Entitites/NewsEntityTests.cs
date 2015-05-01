@@ -21,7 +21,7 @@ namespace GoingOn.Storage.Tests.Entitites
         [TestMethod]
         public void TestFromNewsBll()
         {
-            NewsBll newsBll = new NewsBll
+            var newsBll = new NewsBll
             {
                 Id = Guid.NewGuid(),
                 Date = DateTime.Parse("2015-05-04"),
@@ -43,7 +43,7 @@ namespace GoingOn.Storage.Tests.Entitites
         [TestMethod]
         public void TestToNewsBll()
         {
-            NewsEntity newsEntity = new NewsEntity
+            var newsEntity = new NewsEntity
             {
                 PartitionKey = "Malaga;2015-05-04",
                 RowKey = Guid.NewGuid().ToString(),
@@ -62,7 +62,7 @@ namespace GoingOn.Storage.Tests.Entitites
         [TestMethod]
         public void TestEquals()
         {
-            NewsEntity referenceNews = new NewsEntity
+            var referenceNews = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -71,7 +71,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity differentTitleNews = new NewsEntity
+            var differentTitleNews = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -80,7 +80,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity differentContentNews = new NewsEntity
+            var differentContentNews = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -89,7 +89,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity differentAuthorNews = new NewsEntity
+            var differentAuthorNews = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -98,7 +98,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "another-author"
             };
 
-            NewsEntity differentPrimaryKeyNews = new NewsEntity
+            var differentPrimaryKeyNews = new NewsEntity
             {
                 PartitionKey = "differentPartitionKey",
                 RowKey = "rowKey",
@@ -107,7 +107,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity differentRowKeyNews = new NewsEntity
+            var differentRowKeyNews = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "differentRowKey",
@@ -127,7 +127,7 @@ namespace GoingOn.Storage.Tests.Entitites
         [TestMethod]
         public void TestMergeNews()
         {
-            NewsEntity newsToMerge = new NewsEntity
+            var newsToMerge = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -136,7 +136,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity newsDifferentTitle = new NewsEntity
+            var newsDifferentTitle = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
@@ -145,7 +145,7 @@ namespace GoingOn.Storage.Tests.Entitites
                 Author = "author"
             };
 
-            NewsEntity newsDifferentContent = new NewsEntity
+            var newsDifferentContent = new NewsEntity
             {
                 PartitionKey = "partitionKey",
                 RowKey = "rowKey",
