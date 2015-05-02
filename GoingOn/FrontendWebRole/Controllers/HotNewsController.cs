@@ -73,7 +73,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException("The city format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidGetHotNews((INewsStorage) this.storage, city, date))
+            if (!await this.businessValidation.IsValidGetHotNews(this.storage, city, date))
             {
                 throw new BusinessValidationException(string.Format("There are not HotNews in {0} at {1}", city, date));
             }

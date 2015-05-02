@@ -11,20 +11,12 @@
 namespace GoingOn.Storage
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage.TableStorage.Entities;
 
-    public interface INewsStorage
+    public interface INewsStorage : INewsStorageBase
     {
-        /// <summary>
-        /// Add a news.
-        /// </summary>
-        /// <param name="newsEntity">The news to add.</param>
-        /// <returns></returns>
-        Task AddNews(NewsEntity newsEntity);
-
         /// <summary>
         /// Retrieve a news.
         /// </summary>
@@ -33,14 +25,6 @@ namespace GoingOn.Storage
         /// <param name="id">The id of the news.</param>
         /// <returns></returns>
         Task<NewsBll> GetNews(string city, DateTime date, Guid id);
-
-        /// <summary>
-        /// Retrieve a news.
-        /// </summary>
-        /// <param name="city">The city where the news happened.</param>
-        /// <param name="date">The date when the news happened.</param>
-        /// <returns></returns>
-        Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date);
 
         /// <summary>
         /// Checks whether there is a news with the same PartitionKey and RowKey.
@@ -72,28 +56,5 @@ namespace GoingOn.Storage
         /// <param name="newsEntity">The news to check</param>
         /// <returns></returns>
         Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity);
-
-        /// <summary>
-        /// Update a news.
-        /// </summary>
-        /// <param name="newsBll">Update the news.</param>
-        /// <returns></returns>
-        Task UpdateNews(NewsBll newsBll);
-
-        /// <summary>
-        /// Delete a news.
-        /// </summary>
-        /// <param name="city">The city where the news happened.</param>
-        /// <param name="date">The date when the news happened.</param>
-        /// <param name="id">The id of the news.</param>
-        /// <returns></returns>
-        Task DeleteNews(string city, DateTime date, Guid id);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="city"></param>
-        /// <returns></returns>
-        Task DeleteAllNews(string city);
     }
 }

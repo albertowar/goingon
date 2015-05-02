@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="IHotNewsStorage.cs" />
     <Compile Include="INewsStorage.cs" />
+    <Compile Include="INewsStorageBase.cs" />
     <Compile Include="IUserStorage.cs" />
     <Compile Include="AzureTableStorageException.cs" />
     <Compile Include="TableStorage\Entities\NewsEntity.cs" />

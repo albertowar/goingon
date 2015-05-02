@@ -11,6 +11,7 @@
 namespace GoingOn.Frontend.Validation
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
     using GoingOn.Storage;
@@ -61,6 +62,11 @@ namespace GoingOn.Frontend.Validation
         public async Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
         {
             return await storage.IsAuthorOf(city, date, id, author);
+        }
+
+        public async Task<bool> IsValidGetHotNews(IHotNewsStorage storage, string city, DateTime date)
+        {
+            return await storage.ContainsHotNews(city, date);
         }
 
         #region Helper methods

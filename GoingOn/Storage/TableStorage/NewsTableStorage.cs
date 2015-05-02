@@ -95,6 +95,21 @@ namespace GoingOn.Storage.TableStorage
             return retrievedNews.Select(newsEntity => NewsEntity.ToNewsBll(newsEntity));
         }
 
+        public async Task<bool> ContainsHotNews(string city, DateTime date)
+        {
+            CloudTable table = this.GetStorageTable();
+
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, NewsEntity.BuildPartitionkey(city, date));
+
+            TableQuery<NewsEntity> newsQuery = new TableQuery<NewsEntity>().Where(partitionKeyFilter);
+
+            TableQuerySegment<NewsEntity> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            NewsEntity element = retrievedNews.FirstOrDefault();
+
+            return element != null;
+        }
+
         public async Task<bool> ContainsNews(string city, DateTime date, Guid id)
         {
             CloudTable table = this.GetStorageTable();
