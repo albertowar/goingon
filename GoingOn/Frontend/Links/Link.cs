@@ -17,7 +17,5 @@ namespace GoingOn.Frontend.Links
         public string Rel { get; set; }
 
         public Uri Href { get; set; }
-
-        public string Action { get; set; }
     }
 }

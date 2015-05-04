@@ -92,7 +92,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
                 await this.storage.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
 
-                var response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
+                HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
                 response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
 
                 return response;

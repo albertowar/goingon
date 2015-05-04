@@ -18,6 +18,7 @@ namespace GoingOn.HotNewsCreatorTests
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
+    using GoingOn.Storage.TableStorage.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -54,7 +55,7 @@ namespace GoingOn.HotNewsCreatorTests
 
             for (var i = 0; i < 10; ++i)
             {
-                Assert.IsTrue(this.hotNewsStorage.ContainsNews(hotNews[i]).Result);
+                Assert.IsTrue(this.hotNewsStorage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(hotNews[i])).Result);
             }
         }
 

@@ -60,7 +60,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
             catch (BusinessValidationException businessValidationException)
             {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, businessValidationException.Message);
+                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
             }
         }
 

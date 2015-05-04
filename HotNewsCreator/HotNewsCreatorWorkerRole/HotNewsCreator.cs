@@ -19,7 +19,7 @@ namespace GoingOn.HotNewsCreatorWorkerRole
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage;
-
+    using GoingOn.Storage.TableStorage.Entities;
     using Microsoft.WindowsAzure.Storage;
 
     public class HotNewsCreator
@@ -75,7 +75,7 @@ namespace GoingOn.HotNewsCreatorWorkerRole
             {
                 try
                 {
-                    await this.hotNewsStorage.AddNews(hotNews);
+                    await this.hotNewsStorage.AddNews(NewsEntity.FromNewsBll(hotNews));
                 }
                 catch (StorageException)
                 {

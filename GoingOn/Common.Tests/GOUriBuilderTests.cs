@@ -25,7 +25,7 @@ namespace GoingOn.Common.Tests
         [TestMethod]
         public void BuildAbsoluteUserUriTest()
         {
-            Assert.AreEqual("scheme://host/api/user/alberto", GOUriBuilder.BuildAbsoluteUserUri("scheme", "host", "alberto"));
+            Assert.AreEqual("scheme://host:123/api/user/alberto", GOUriBuilder.BuildAbsoluteUserUri("scheme", "host", 123, "alberto"));
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace GoingOn.Common.Tests
         [TestMethod]
         public void BuildNewsUri()
         {
-            var guid = Guid.NewGuid().ToString();
+            string guid = Guid.NewGuid().ToString();
 
             Assert.AreEqual("api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildNewsUri("Malaga", "2015-12-05", guid));
         }
@@ -45,9 +45,9 @@ namespace GoingOn.Common.Tests
         [TestMethod]
         public void BuildAbsoluteNewsUri()
         {
-            var guid = Guid.NewGuid().ToString();
+            string guid = Guid.NewGuid().ToString();
 
-            Assert.AreEqual("scheme://host/api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildAbsoluteNewsUri("scheme", "host", "Malaga", "2015-12-05", guid));
+            Assert.AreEqual("scheme://host:123/api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildAbsoluteNewsUri("scheme", "host", 123, "Malaga", "2015-12-05", guid));
         }
     }
 }

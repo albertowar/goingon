@@ -16,6 +16,7 @@ namespace GoingOn.Frontend.Entities
 
     using GoingOn.Frontend.Links;
     using GoingOn.Model.EntitiesBll;
+    using Newtonsoft.Json;
 
     public class NewsREST
     {
@@ -30,6 +31,17 @@ namespace GoingOn.Frontend.Entities
         public string Author { get; private set; }
 
         public IList<Link> Links { get; private set; }
+
+        [JsonConstructor]
+        public NewsREST(string title, string content, string city, DateTime date, string author, IList<Link> links)
+        {
+            this.Title = title;
+            this.Content = content;
+            this.City = city;
+            this.Date = date;
+            this.Author = author;
+            this.Links = links;
+        }
 
         public NewsREST(News news, string author, DateTime date)
         {
@@ -55,6 +67,15 @@ namespace GoingOn.Frontend.Entities
         public static NewsREST FromNewsBll(NewsBll newsBll, HttpRequestMessage request)
         {
             return new NewsREST(new News { Title = newsBll.Title, Content = newsBll.Content }, newsBll.City, newsBll.Date, newsBll.Author, newsBll.Id, request);
+        }
+
+        public static News ToNews(NewsREST newsRest)
+        {
+            return new News
+            {
+                Title = newsRest.Title, 
+                Content = newsRest.Content
+            };
         }
     }
 }

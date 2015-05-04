@@ -40,6 +40,10 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
         private static readonly User User = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
 
+        private const string Scheme = "http";
+        private const string Host = "test.com";
+        private const int Port = 123;
+
         [TestInitialize]
         public void Initizalize()
         {
@@ -56,7 +60,11 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(User)));
 
             var userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Get, "http://test.com/api/user/nickname", "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, User.Nickname));
+            request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, User.Nickname));
+
+            userController.ConfigureForTesting(request, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
 
             HttpResponseMessage response = userController.Get("nickname").Result;
 
@@ -68,7 +76,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             Assert.IsTrue(new UserCompleteEqualityComparer().Equals(User, actualUser.User));
             Assert.IsTrue(actualUser.Links.Any());
             Assert.AreEqual("self", actualUser.Links.First().Rel);
-            Assert.AreEqual(new Uri("http://test.com/api/user/nickname"), actualUser.Links.First().Href);
+            Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, User.Nickname)), actualUser.Links.First().Href);
         }
 
         [TestMethod]
@@ -98,12 +106,16 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.businessValidation.Setup(validation => validation.IsValidCreateUser(this.userStorageMock.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
 
             UserController userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Post, "http://test.com/api/user", "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
+            request.Headers.Referrer = new Uri(GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
+
+            userController.ConfigureForTesting(request, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
 
             HttpResponseMessage response = userController.Post(User).Result;
 
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-            Assert.AreEqual(new Uri("http://test.com/api/user/nickname"), response.Headers.Location);
+            Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, User.Nickname)), response.Headers.Location);
             this.userStorageMock.Verify(storage => storage.AddUser(It.IsAny<UserBll>()), Times.Once());
         }
 
