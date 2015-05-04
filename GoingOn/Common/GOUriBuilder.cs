@@ -28,7 +28,9 @@ namespace GoingOn.Common
 
         public const string GetHotNewsTemplate = HotNewsRootTemplate;
 
-        public static string BuildUserUri(string userId)
+        public const string PostNewsImageTemplate = GetNewsTemplate + "/image";
+
+        private static string BuildUserUri(string userId)
         {
             return string.Format("{0}/{1}", UserRootTemplate, userId);
         }
@@ -38,7 +40,7 @@ namespace GoingOn.Common
             return string.Format("{0}://{1}:{2}/{3}", scheme, host, port, GOUriBuilder.BuildUserUri(userId));
         }
 
-        public static string BuildCreateUserUri()
+        private static string BuildCreateUserUri()
         {
             return UserRootTemplate;
         }
@@ -48,7 +50,7 @@ namespace GoingOn.Common
             return string.Format("{0}://{1}:{2}/{3}", scheme, host, port, GOUriBuilder.BuildCreateUserUri());
         }
 
-        public static string BuildDiaryEntryUri(string city, string date)
+        private static string BuildDiaryEntryUri(string city, string date)
         {
             string result = NewsRootTemplate.Replace("{city}", city);
 
@@ -60,7 +62,7 @@ namespace GoingOn.Common
             return string.Format("{0}://{1}:{2}/{3}", scheme, host, port, GOUriBuilder.BuildDiaryEntryUri(city, date));
         }
 
-        public static string BuildNewsUri(string city, string date, string newsId)
+        private static string BuildNewsUri(string city, string date, string newsId)
         {
             string result = NewsRootTemplate.Replace("{city}", city);
             result = result.Replace("{date}", date);

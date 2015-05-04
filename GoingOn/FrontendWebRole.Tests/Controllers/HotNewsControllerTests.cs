@@ -69,7 +69,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
             var hotNewsController = new HotNewsController(this.hotNewsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildDiaryEntryUri(City, Date));
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date));
 
             hotNewsController.ConfigureForTesting(request, "GetHotNews", new HttpRoute(GOUriBuilder.GetHotNewsTemplate));
@@ -95,7 +95,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.businessValidation.Setup(validation => validation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
             this.hotNewsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
 
-            this.AssertGetFails(url: GOUriBuilder.BuildDiaryEntryUri(City, Date), city: City, resultCode: HttpStatusCode.BadRequest);
+            this.AssertGetFails(url: GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date), city: City, resultCode: HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.businessValidation.Setup(validation => validation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(false));
             this.hotNewsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
 
-            this.AssertGetFails(url: GOUriBuilder.BuildDiaryEntryUri(City, Date), city: City, resultCode: HttpStatusCode.NotFound);
+            this.AssertGetFails(url: GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date), city: City, resultCode: HttpStatusCode.NotFound);
         }
 
         #region Assert helper methods

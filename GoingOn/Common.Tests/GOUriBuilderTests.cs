@@ -16,30 +16,20 @@ namespace GoingOn.Common.Tests
     [TestClass]
     public class GOUriBuilderTests
     {
-        [TestMethod]
-        public void BuildUserUriTest()
-        {
-            Assert.AreEqual("api/user/alberto", GOUriBuilder.BuildUserUri("alberto"));
-        }
+        private const string Scheme = "scheme";
+        private const string Host = "host";
+        private const int Port = 123;
 
         [TestMethod]
         public void BuildAbsoluteUserUriTest()
         {
-            Assert.AreEqual("scheme://host:123/api/user/alberto", GOUriBuilder.BuildAbsoluteUserUri("scheme", "host", 123, "alberto"));
+            Assert.AreEqual("scheme://host:123/api/user/alberto", GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, "alberto"));
         }
 
         [TestMethod]
-        public void BuildDiaryEntryUri()
+        public void BuildAbsoluteDiaryEntryUri()
         {
-            Assert.AreEqual("api/city/Malaga/date/2015-12-05", GOUriBuilder.BuildDiaryEntryUri("Malaga", "2015-12-05"));
-        }
-
-        [TestMethod]
-        public void BuildNewsUri()
-        {
-            string guid = Guid.NewGuid().ToString();
-
-            Assert.AreEqual("api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildNewsUri("Malaga", "2015-12-05", guid));
+            Assert.AreEqual("scheme://host:123/api/city/Malaga/date/2015-12-05", GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, "Malaga", "2015-12-05"));
         }
 
         [TestMethod]
@@ -47,7 +37,13 @@ namespace GoingOn.Common.Tests
         {
             string guid = Guid.NewGuid().ToString();
 
-            Assert.AreEqual("scheme://host:123/api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildAbsoluteNewsUri("scheme", "host", 123, "Malaga", "2015-12-05", guid));
+            Assert.AreEqual("scheme://host:123/api/city/Malaga/date/2015-12-05/news/" + guid, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, "Malaga", "2015-12-05", guid));
+        }
+
+        [TestMethod]
+        public void BuildCreateAbsoluteUseruri()
+        {
+            Assert.AreEqual("scheme://host:123/api/user", GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
         }
     }
 }
