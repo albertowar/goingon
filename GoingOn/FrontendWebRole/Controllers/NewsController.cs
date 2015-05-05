@@ -25,7 +25,7 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Storage;
     using GoingOn.Storage.TableStorage.Entities;
 
-    public class NewsController : ApiController
+    public class NewsController : GoingOnApiController
     {
         private readonly INewsStorage storage;
         private readonly IApiInputValidationChecks inputValidation;
@@ -49,24 +49,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
-            try
-            {
-                await this.ValidateGetOperation(city, date, newsId);
-
-                var news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(newsId)), this.Request);
-
-                var response = this.Request.CreateResponse(HttpStatusCode.OK, news);
-
-                return response;
-            }
-            catch (InputValidationException inputValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
-            }
-            catch (BusinessValidationException businessValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
-            }
+            return await this.ValidateExecute(this.ExecuteGetAsync, city, date, newsId);
         }
 
         /// <summary>
@@ -82,29 +65,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
-            try
-            {
-                var nickname = this.User.Identity.Name;
-
-                await this.ValidatePostOperation(city, date, news, nickname);
-
-                Guid newsId = Guid.NewGuid();
-
-                await this.storage.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
-
-                HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
-                response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
-
-                return response;
-            }
-            catch (InputValidationException inputValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
-            }
-            catch (BusinessValidationException businessValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, businessValidationException.Message);
-            }
+            return await this.ValidateExecute(this.ExecutePostAsync, city, date, news);
         }
 
         /// <summary>
@@ -121,24 +82,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]News news)
         {
-            try
-            {
-                await this.ValidatePatchOperation(city, date, newsId, news);
-
-                await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
-
-                var response = this.Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
-
-                return response;
-            }
-            catch (InputValidationException inputValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
-            }
-            catch (BusinessValidationException businessValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
-            }
+            return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, news);
         }
 
         /// <summary>
@@ -154,42 +98,82 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
-            try
-            {
-                await this.ValidateDeleteOperation(city, date, newsId);
-
-                await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
-
-                return this.Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
-            }
-            catch (InputValidationException inputValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
-            }
-            catch (BusinessValidationException businessValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
-            }
+            return await this.ValidateExecute(this.ExecuteDeleteAsync, city, date, newsId);
         }
+
+        #region Operations code
+
+        private async Task<HttpResponseMessage> ExecuteGetAsync(params object[] parameters)
+        {
+            var city = (string)parameters[0];
+            var date = (string)parameters[1];
+            var newsId = (string)parameters[2];
+
+            await this.ValidateGetNewsOperation(city, date, newsId);
+
+            NewsREST news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(newsId)), this.Request);
+
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, news);
+
+            return response;
+        }
+
+        private async Task<HttpResponseMessage> ExecutePostAsync(params object[] parameters)
+        {
+            var city = (string)parameters[0];
+            var date = (string)parameters[1];
+            var news = (News)parameters[2];
+
+            string nickname = this.User.Identity.Name;
+
+            await this.ValidatePostNewsOperation(city, date, news, nickname);
+
+            Guid newsId = Guid.NewGuid();
+
+            await this.storage.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
+
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
+            response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
+
+            return response;
+        }
+
+        private async Task<HttpResponseMessage> ExecutePatchAsync(params object[] parameters)
+        {
+            var city = (string)parameters[0];
+            var date = (string)parameters[1];
+            var newsId = (string)parameters[2];
+            var news = (News)parameters[3];
+
+            await this.ValidatePatchNewsOperation(city, date, newsId, news);
+
+            await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
+
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
+
+            return response;
+        }
+
+        private async Task<HttpResponseMessage> ExecuteDeleteAsync(params object[] parameters)
+        {
+            string city = (string)parameters[0];
+            string date = (string)parameters[1];
+            string newsId = (string)parameters[3];
+
+            await this.ValidateDeleteNewsOperation(city, date, newsId);
+
+            await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
+
+            return this.Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
+        }
+
+        #endregion
 
         #region Validation code
 
-        public async Task ValidateGetOperation(string city, string date, string id)
+        public async Task ValidateGetNewsOperation(string city, string date, string id)
         {
-            if (!this.inputValidation.IsValidCity(city))
-            {
-                throw new InputValidationException("The city format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsDate(date))
-            {
-                throw new InputValidationException("The date format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsId(id))
-            {
-                throw new InputValidationException("The news newsId format is incorrect");
-            }
+            this.inputValidation.ValidateNewsParameters(city, date, id);
 
             if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
@@ -197,17 +181,9 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidatePostOperation(string city, string date, News news, string nickname)
+        public async Task ValidatePostNewsOperation(string city, string date, News news, string nickname)
         {
-            if (!this.inputValidation.IsValidCity(city))
-            {
-                throw new InputValidationException("The city format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsDate(date))
-            {
-                throw new InputValidationException("The date format is incorrect");
-            }
+            this.inputValidation.ValidateDiaryEntryParameters(city, date);
 
             if (!this.inputValidation.IsValidNews(news))
             {
@@ -220,22 +196,9 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidatePatchOperation(string city, string date, string id, News news)
+        public async Task ValidatePatchNewsOperation(string city, string date, string id, News news)
         {
-            if (!this.inputValidation.IsValidCity(city))
-            {
-                throw new InputValidationException("The city format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsDate(date))
-            {
-                throw new InputValidationException("The date format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsId(id))
-            {
-                throw new InputValidationException("The news newsId format is incorrect");
-            }
+            this.inputValidation.ValidateNewsParameters(city, date, id);
 
             if (!this.inputValidation.IsValidNews(news))
             {
@@ -248,22 +211,9 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidateDeleteOperation(string city, string date, string id)
+        public async Task ValidateDeleteNewsOperation(string city, string date, string id)
         {
-            if (!this.inputValidation.IsValidCity(city))
-            {
-                throw new InputValidationException("The city format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsDate(date))
-            {
-                throw new InputValidationException("The date format is incorrect");
-            }
-
-            if (!this.inputValidation.IsValidNewsId(id))
-            {
-                throw new InputValidationException("The news newsId format is incorrect");
-            }
+            this.inputValidation.ValidateNewsParameters(city, date, id);
 
             if (!await this.businessValidation.IsValidDeleteNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {

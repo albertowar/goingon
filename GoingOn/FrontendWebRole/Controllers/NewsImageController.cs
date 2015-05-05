@@ -9,10 +9,8 @@
 // ****************************************************************************
 namespace GoingOn.FrontendWebRole.Controllers
 {
-    using System.Diagnostics;
-    using System.Drawing;
+    using System;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -20,10 +18,11 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.Web;
     using System.Web.Http;
     using GoingOn.Common;
+    using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
 
-    public class NewsImageController : ApiController
+    public class NewsImageController : GoingOnApiController
     {
         private readonly INewsStorage storage;
         private readonly IApiInputValidationChecks inputValidation;
@@ -40,6 +39,13 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, string newsId)
         {
+            return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId);
+        }
+
+        #region Operations code
+
+        private async Task<HttpResponseMessage> ExecutePostAsync(params object[] parameters)
+        {
             byte[] imageBytes = await this.Request.Content.ReadAsByteArrayAsync();
 
             MemoryStream ms = new MemoryStream(imageBytes);
@@ -54,5 +60,21 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             return response;
         }
+
+        #endregion
+
+        #region Validation helpers
+
+        public async Task ValidatePostOperation(string city, string date, string id)
+        {
+            this.inputValidation.ValidateNewsParameters(city, date, id);
+
+            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
+            {
+                throw new BusinessValidationException("The news is not in the database");
+            }
+        }
+
+        #endregion
     }
 }

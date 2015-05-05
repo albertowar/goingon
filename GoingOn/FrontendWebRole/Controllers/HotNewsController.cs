@@ -23,7 +23,7 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Storage;
 
-    public class HotNewsController : ApiController
+    public class HotNewsController : GoingOnApiController
     {
         private readonly IHotNewsStorage storage;
         private readonly IApiInputValidationChecks inputValidation;
@@ -40,29 +40,29 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city)
         {
-            try
-            {
-                DateTime day = DateTime.Now;
-
-                await this.ValidateGetOperation(city, day);
-
-                List<NewsREST> retrievedNews =
-                            (await this.storage.GetNews(city, day)).Select(
-                                news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
-
-                HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
-
-                return response;
-            }
-            catch (InputValidationException inputValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
-            }
-            catch (BusinessValidationException businessValidationException)
-            {
-                return this.Request.CreateErrorResponse(HttpStatusCode.NotFound, businessValidationException.Message);
-            }
+            return await this.ValidateExecute(this.ExecuteGetAsync, city);
         }
+
+        #region Operations code
+
+        private async Task<HttpResponseMessage> ExecuteGetAsync(params object[] parameters)
+        {
+            var city = (string)parameters[0];
+
+            DateTime day = DateTime.Now;
+
+            await this.ValidateGetOperation(city, day);
+
+            List<NewsREST> retrievedNews =
+                        (await this.storage.GetNews(city, day)).Select(
+                            news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
+
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
+
+            return response;
+        }
+
+        #endregion
 
         #region Validation code
 

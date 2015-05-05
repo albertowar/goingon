@@ -13,7 +13,6 @@ namespace GoingOn.Frontend.Validation
     using System;
 
     using GoingOn.Frontend.Entities;
-    using GoingOn.Frontend.Entities;
 
     public interface IApiInputValidationChecks
     {
@@ -36,5 +35,9 @@ namespace GoingOn.Frontend.Validation
         bool IsValidNewsId(string id);
 
         bool IsValidNewsDate(string date);
+
+        void ValidateDiaryEntryParameters(string city, string date);
+
+        void ValidateNewsParameters(string city, string date, string newsId);
     }
 }

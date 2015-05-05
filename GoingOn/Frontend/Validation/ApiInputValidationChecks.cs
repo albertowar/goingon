@@ -14,6 +14,7 @@ namespace GoingOn.Frontend.Validation
     using System.Globalization;
     using System.Text.RegularExpressions;
     using GoingOn.Common;
+    using GoingOn.Frontend.Common;
     using Microsoft.Ajax.Utilities;
 
     using GoingOn.Frontend.Entities;
@@ -132,6 +133,29 @@ namespace GoingOn.Frontend.Validation
             DateTime date;
 
             return DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+        }
+
+        public void ValidateDiaryEntryParameters(string city, string date)
+        {
+            if (!this.inputValidation.IsValidCity(city))
+            {
+                throw new InputValidationException(string.Format("'{0}' is not a valid city.", city));
+            }
+
+            if (!this.inputValidation.IsValidNewsDate(date))
+            {
+                throw new InputValidationException(string.Format("'{0}' is not a valid date.", date));
+            }
+        }
+
+        public void ValidateNewsParameters(string city, string date, string newsId)
+        {
+            this.ValidateDiaryEntryParameters(city, date);
+
+            if (!this.inputValidation.IsValidNewsId(newsId))
+            {
+                throw new InputValidationException(string.Format("'{0}' is not a valid identifier for news.", newsId));
+            }
         }
 
         public bool IsValidTitle(string title)
