@@ -4,9 +4,10 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Controller for News Image
 // </summary>
 // ****************************************************************************
+
 namespace GoingOn.FrontendWebRole.Controllers
 {
     using System;
@@ -24,13 +25,15 @@ namespace GoingOn.FrontendWebRole.Controllers
 
     public class NewsImageController : GoingOnApiController
     {
-        private readonly INewsStorage storage;
+        private readonly INewsStorage newsStorage;
+        private readonly IImageStorage newsImageBlobStorage;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public NewsImageController(INewsStorage hotNewsTableStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public NewsImageController(INewsStorage newsStorage, IImageStorage newsImageBlobStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            this.storage = hotNewsTableStorage;
+            this.newsStorage = newsStorage;
+            this.newsImageBlobStorage = newsImageBlobStorage;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -115,7 +118,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetNews(this.newsStorage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
@@ -127,7 +130,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetNews(this.newsStorage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
@@ -137,7 +140,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetNews(this.newsStorage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }

@@ -46,7 +46,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlobStorage\NewsImageBlobStorage.cs" />
     <Compile Include="IHotNewsStorage.cs" />
+    <Compile Include="IImageStorage.cs" />
     <Compile Include="INewsStorage.cs" />
     <Compile Include="INewsStorageBase.cs" />
     <Compile Include="IUserStorage.cs" />
@@ -91,6 +93,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>

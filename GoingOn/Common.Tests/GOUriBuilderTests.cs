@@ -41,9 +41,11 @@ namespace GoingOn.Common.Tests
         }
 
         [TestMethod]
-        public void BuildCreateAbsoluteUseruri()
+        public void BuildCreateAbsoluteUserUri()
         {
             Assert.AreEqual("scheme://host:123/api/user", GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
         }
+
+        // TODO: add test for absolute image URI
     }
 }

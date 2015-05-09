@@ -138,7 +138,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GoingOnApiControllerTests.cs" />
     <Compile Include="Controllers\HotNewsControllerTests.cs" />
+    <Compile Include="Controllers\NewsImageControllerTests.cs" />
     <Compile Include="Controllers\UserControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />

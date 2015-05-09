@@ -74,5 +74,10 @@ namespace GoingOn.Common
         {
             return string.Format("{0}://{1}:{2}/{3}", scheme, host, port, GOUriBuilder.BuildNewsUri(city, date, newsId));
         }
+
+        public static string BuildAbsoluteNewsImageUri(string scheme, string host, int port, string city, string date, string newsId)
+        {
+            return string.Format("{0}/image", GOUriBuilder.BuildAbsoluteNewsUri(scheme, host, port, city, date, newsId));
+        }
     }
 }
