@@ -12,6 +12,7 @@ namespace GoingOn.Frontend.Validation
 {
     using System;
     using System.Globalization;
+    using System.Net;
     using System.Text.RegularExpressions;
     using GoingOn.Common;
     using GoingOn.Frontend.Common;
@@ -139,12 +140,12 @@ namespace GoingOn.Frontend.Validation
         {
             if (!this.inputValidation.IsValidCity(city))
             {
-                throw new InputValidationException(string.Format("'{0}' is not a valid city.", city));
+                throw new InputValidationException(HttpStatusCode.BadRequest, string.Format("'{0}' is not a valid city.", city));
             }
 
             if (!this.inputValidation.IsValidNewsDate(date))
             {
-                throw new InputValidationException(string.Format("'{0}' is not a valid date.", date));
+                throw new InputValidationException(HttpStatusCode.BadRequest, string.Format("'{0}' is not a valid date.", date));
             }
         }
 
@@ -154,7 +155,7 @@ namespace GoingOn.Frontend.Validation
 
             if (!this.inputValidation.IsValidNewsId(newsId))
             {
-                throw new InputValidationException(string.Format("'{0}' is not a valid identifier for news.", newsId));
+                throw new InputValidationException(HttpStatusCode.BadRequest, string.Format("'{0}' is not a valid identifier for news.", newsId));
             }
         }
 

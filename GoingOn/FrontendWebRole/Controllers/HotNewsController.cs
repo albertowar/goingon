@@ -70,12 +70,12 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             if (!this.inputValidation.IsValidCity(city))
             {
-                throw new InputValidationException("The city format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The city format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidGetHotNews(this.storage, city, date))
             {
-                throw new BusinessValidationException(string.Format("There are not HotNews in {0} at {1}", city, date));
+                throw new BusinessValidationException(HttpStatusCode.NotFound, string.Format("There are not HotNews in {0} at {1}", city, date));
             }
         }
 

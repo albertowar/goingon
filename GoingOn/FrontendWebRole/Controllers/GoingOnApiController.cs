@@ -27,11 +27,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
             catch (InputValidationException inputValidationException)
             {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, inputValidationException.Message);
+                return this.Request.CreateErrorResponse(inputValidationException.StatusCode, inputValidationException.Message);
             }
             catch (BusinessValidationException businessValidationException)
             {
-                return this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, businessValidationException.Message);
+                return this.Request.CreateErrorResponse(businessValidationException.StatusCode, businessValidationException.Message);
             }
         }
     }

@@ -65,7 +65,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.PatchUserTemplate)]
         public async Task<HttpResponseMessage> Patch(string userId, [FromBody]User user)
         {
-            return await this.ValidateExecute(this.ExecutePatchAsync, user);
+            return await this.ValidateExecute(this.ExecutePatchAsync, userId, user);
         }
 
         [IdentityBasicAuthentication]
@@ -83,6 +83,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             string userId = (string) parameters[0];
 
+            await this.ValidateGetOperation(userId);
+
             UserREST user = UserREST.FromUserBll(await this.storage.GetUser(userId), this.Request);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, user);
@@ -93,6 +95,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         private async Task<HttpResponseMessage> ExecutePostAsync(params object[] parameters)
         {
             User user = (User) parameters[0];
+
+            await this.ValidatePostNewsOperation(user);
 
             UserBll userToAdd = GoingOn.Frontend.Entities.User.ToUserBll(user);
             userToAdd.RegistrationDate = DateTime.Now;
@@ -107,7 +111,10 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         private async Task<HttpResponseMessage> ExecutePatchAsync(params object[] parameters)
         {
-            var user = (User) parameters[0];
+            var userId = (string) parameters[0];
+            var user = (User) parameters[1];
+
+            await this.ValidatePatchNewsOperation(userId, user);
 
             UserBll userToUpdate = GoingOn.Frontend.Entities.User.ToUserBll(user);
 
@@ -135,12 +142,12 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {
-                throw new InputValidationException("The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidGetUser(this.storage, userId))
             {
-                throw new BusinessValidationException("The user is not in the database");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not in the database");
             }
         }
 
@@ -148,12 +155,12 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             if (!this.inputValidation.IsValidUser(user))
             {
-                throw new InputValidationException("The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidCreateUser(this.storage, user))
             {
-                throw new BusinessValidationException("The user is already registered");
+                throw new BusinessValidationException(HttpStatusCode.BadRequest, "The user is already registered");
             }
         }
 
@@ -161,22 +168,22 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {
-                throw new InputValidationException("The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!this.inputValidation.IsValidUser(user))
             {
-                throw new InputValidationException("The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!this.businessValidation.IsAuthorizedUser(this.User.Identity.Name, userId))
             {
-                throw new BusinessValidationException("The user is not authorized to update another user");
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
             if (!await this.businessValidation.IsValidUpdateUser(this.storage, user))
             {
-                throw new BusinessValidationException("The user is not registered");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }
         }
 
@@ -184,17 +191,17 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {
-                throw new InputValidationException("The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
             if (!this.businessValidation.IsAuthorizedUser(this.User.Identity.Name, userId))
             {
-                throw new BusinessValidationException("The user is not authorized to delete another user");
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
             if (!await this.businessValidation.IsValidDeleteUser(this.storage, userId))
             {
-                throw new BusinessValidationException("The user is not registered");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }
         }
 

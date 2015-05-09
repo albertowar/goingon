@@ -11,10 +11,12 @@
 namespace GoingOn.Frontend.Common
 {
     using System;
+    using System.Net;
 
-    public class InputValidationException : Exception
+    public class InputValidationException : FrontendException
     {
-        public InputValidationException(string message) : base(message)
+        public InputValidationException(HttpStatusCode statusCode, string message)
+            : base(statusCode, message)
         {
         }
     }

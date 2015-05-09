@@ -158,7 +158,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             string city = (string)parameters[0];
             string date = (string)parameters[1];
-            string newsId = (string)parameters[3];
+            string newsId = (string)parameters[2];
 
             await this.ValidateDeleteNewsOperation(city, date, newsId);
 
@@ -177,7 +177,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
-                throw new BusinessValidationException("The news is not in the database");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
         }
 
@@ -187,12 +187,12 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!this.inputValidation.IsValidNews(news))
             {
-                throw new InputValidationException("The news format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidCreateNews(this.storage, news, city, nickname, DateTime.Parse(date)))
             {
-                throw new BusinessValidationException("The news is already created");
+                throw new BusinessValidationException(HttpStatusCode.BadRequest, "The news is already created");
             }
         }
 
@@ -202,12 +202,12 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!this.inputValidation.IsValidNews(news))
             {
-                throw new InputValidationException("The news format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
             if (!await this.businessValidation.IsValidUpdateNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
-                throw new BusinessValidationException("The news does not exist");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }
         }
 
@@ -217,7 +217,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!await this.businessValidation.IsValidDeleteNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
-                throw new BusinessValidationException("The news does not exist");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }
         }
 

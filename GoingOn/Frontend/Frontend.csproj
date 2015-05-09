@@ -129,6 +129,7 @@
     <Compile Include="Authentication\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Authentication\IdentityBasicAuthenticationAttribute.cs" />
     <Compile Include="Common\BusinessValidationException.cs" />
+    <Compile Include="Common\FrontendException.cs" />
     <Compile Include="Common\InputValidationException.cs" />
     <Compile Include="Entities\News.cs" />
     <Compile Include="Entities\NewsREST.cs" />

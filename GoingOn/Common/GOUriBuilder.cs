@@ -28,7 +28,7 @@ namespace GoingOn.Common
 
         public const string GetHotNewsTemplate = HotNewsRootTemplate;
 
-        public const string PostNewsImageTemplate = GetNewsTemplate + "/image";
+        public const string NewsImageTemplate = GetNewsTemplate + "/image";
 
         private static string BuildUserUri(string userId)
         {
