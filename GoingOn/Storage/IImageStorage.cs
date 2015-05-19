@@ -26,6 +26,15 @@ namespace GoingOn.Storage
         Task<Image> GetNewsImage(string city, DateTime date, Guid id);
 
         /// <summary>
+        /// Retrieve the news thumbnail image.
+        /// </summary>
+        /// <param name="city">The city where the news happened.</param>
+        /// <param name="date">The date when the news happened.</param>
+        /// <param name="id">The id of the news.</param>
+        /// <returns></returns>
+        Task<Image> GetNewsThumbnailImage(string city, DateTime date, Guid id);
+
+        /// <summary>
         /// Create a news simage.
         /// </summary>
         /// <param name="city">The city where the news happened.</param>

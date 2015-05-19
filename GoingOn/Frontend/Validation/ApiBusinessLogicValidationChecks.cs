@@ -11,7 +11,6 @@
 namespace GoingOn.Frontend.Validation
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
     using GoingOn.Storage;
@@ -47,6 +46,16 @@ namespace GoingOn.Frontend.Validation
         public async Task<bool> IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
         {
             return !await this.IsNewsStored(storage, news, city, author, date);
+        }
+
+        public async Task<bool> IsValidGetImageNews(IImageStorage storage, string city, DateTime date, Guid id)
+        {
+            return !await storage.ContainsImage(city, date, id);
+        }
+
+        public Task<bool> IsValidGetThumbnailImageNews(IImageStorage storage, string city, DateTime date, Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)

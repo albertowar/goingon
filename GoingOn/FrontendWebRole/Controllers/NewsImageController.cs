@@ -11,12 +11,13 @@
 namespace GoingOn.FrontendWebRole.Controllers
 {
     using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
     using System.IO;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
-    using System.Web;
     using System.Web.Http;
     using GoingOn.Common;
     using GoingOn.Frontend.Common;
@@ -29,6 +30,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         private readonly IImageStorage newsImageBlobStorage;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
+
+        // TODO: handle different formats (just PNG for now)
+        // Use Image.RawFormat and compare with existing formats
 
         public NewsImageController(INewsStorage newsStorage, IImageStorage newsImageBlobStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
@@ -69,7 +73,15 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateGetOperation(city, date, newsId);
 
+            Image image = await this.newsImageBlobStorage.GetNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId));
+
+            var memoryStream = new MemoryStream();
+            image.Save(memoryStream, ImageFormat.Png);
+
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
+
+            response.Content = new StreamContent(memoryStream);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
 
             return response;
         }
@@ -84,15 +96,13 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             byte[] imageBytes = await this.Request.Content.ReadAsByteArrayAsync();
 
-            MemoryStream ms = new MemoryStream(imageBytes);
-            //Image returnImage = Image.FromStream(ms);
+            var memoryStream = new MemoryStream(imageBytes);
 
-            string root = HttpContext.Current.Server.MapPath("~/App_Data");
-            File.WriteAllBytes(root + "/goku.png", imageBytes);
+            Image image = Image.FromStream(memoryStream);
+
+            await this.newsImageBlobStorage.CreateNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId), image);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StreamContent(ms);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
 
             return response;
         }
@@ -123,7 +133,10 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            // TODO: check whether the image exists
+            if (!(await this.businessValidation.IsValidGetImageNews(this.newsImageBlobStorage, city, DateTime.Parse(date), Guid.Parse(id))))
+            {
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
+            }
         }
 
         private async Task ValidatePostOperation(string city, string date, string id)
@@ -143,6 +156,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             if (!(await this.businessValidation.IsValidGetNews(this.newsStorage, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
+            if (!(await this.businessValidation.IsValidGetImageNews(this.newsImageBlobStorage, city, DateTime.Parse(date), Guid.Parse(id))))
+            {
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
             }
         }
 

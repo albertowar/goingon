@@ -41,7 +41,21 @@ namespace GoingOn.Storage.BlobStorage
         {
             CloudBlobContainer container = this.GetCloudBlobContainer();
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0}-{1}-{2}", city, date.ToString("yy-MM-dd"), id));
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await blockBlob.DownloadToStreamAsync(memoryStream);
+
+                return Image.FromStream(memoryStream);
+            }
+        }
+
+        public async Task<Image> GetNewsThumbnailImage(string city, DateTime date, Guid id)
+        {
+            CloudBlobContainer container = this.GetCloudBlobContainer();
+
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
 
             using (var memoryStream = new MemoryStream())
             {
@@ -64,16 +78,21 @@ namespace GoingOn.Storage.BlobStorage
                 await blockBlob.UploadFromStreamAsync(memoryStream);
             }
 
-            // TODO: create thumbnail only if the image was created
-
-            blockBlob = container.GetBlockBlobReference(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
-            using (var memoryStream = new MemoryStream())
+            if (await blockBlob.ExistsAsync())
             {
-                Image thumbnail = image.GetThumbnailImage(40, 40, () => false, IntPtr.Zero);
-                thumbnail.Save(memoryStream, image.RawFormat);
-                memoryStream.Position = 0;
-                await blockBlob.UploadFromStreamAsync(memoryStream);
+                blockBlob = container.GetBlockBlobReference(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    Image thumbnail = image.GetThumbnailImage(40, 40, () => false, IntPtr.Zero);
+                    thumbnail.Save(memoryStream, image.RawFormat);
+                    memoryStream.Position = 0;
+                    await blockBlob.UploadFromStreamAsync(memoryStream);
+                }
+            }
+            else
+            {
+                // TODO: throw exception
             }
         }
 
@@ -81,7 +100,7 @@ namespace GoingOn.Storage.BlobStorage
         {
             CloudBlobContainer container = this.GetCloudBlobContainer();
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0}-{1}-{2}", city, date.ToString("yy-MM-dd"), id));
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
 
             await blockBlob.DeleteAsync();
         }
@@ -90,7 +109,7 @@ namespace GoingOn.Storage.BlobStorage
         {
             CloudBlobContainer container = this.GetCloudBlobContainer();
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0}-{1}-{2}", city, date.ToString("yy-MM-dd"), id));
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
 
             return await blockBlob.ExistsAsync();
         }

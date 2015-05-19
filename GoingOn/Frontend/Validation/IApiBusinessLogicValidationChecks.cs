@@ -37,5 +37,9 @@ namespace GoingOn.Frontend.Validation
         Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
 
         Task<bool> IsValidGetHotNews(IHotNewsStorage storage, string city, DateTime date);
+
+        Task<bool> IsValidGetImageNews(IImageStorage storage, string city, DateTime date, Guid id);
+
+        Task<bool> IsValidGetThumbnailImageNews(IImageStorage storage, string city, DateTime date, Guid id);
     }
 }
