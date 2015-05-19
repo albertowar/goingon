@@ -1,10 +1,10 @@
 ﻿// ****************************************************************************
-// <copyright file="PersistenceException.cs" company="Universidad de Malaga">
+// <copyright file="AzureTableStorageException.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Class to encapsulate error situations with Storage
 // </summary>
 // ****************************************************************************
 

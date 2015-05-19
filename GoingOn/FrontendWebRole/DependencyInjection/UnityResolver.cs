@@ -1,10 +1,10 @@
 ﻿// ****************************************************************************
-// <copyright file="WebApiConfig.cs" company="Universidad de Malaga">
+// <copyright file="UnityResolver.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Handles the resolution of the dependency injection
 // </summary>
 // ****************************************************************************
 
@@ -13,7 +13,6 @@ namespace GoingOn.FrontendWebRole.DependencyInjection
     using System;
     using System.Collections.Generic;
     using System.Web.Http.Dependencies;
-    using Microsoft.Ajax.Utilities;
     using Microsoft.Practices.Unity;
 
     public class UnityResolver : IDependencyResolver

@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Encapsulates the news information that will be stored
 // </summary>
 // ****************************************************************************
 

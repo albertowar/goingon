@@ -1,10 +1,10 @@
 ﻿// ****************************************************************************
-// <copyright file="NewsController.cs" company="Universidad de Malaga">
+// <copyright file="HotNewsController.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// HotNews controller class
 // </summary>
 // ****************************************************************************
 

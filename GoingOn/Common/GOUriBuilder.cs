@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Utility class to generate URIs
 // </summary>
 // ****************************************************************************
 

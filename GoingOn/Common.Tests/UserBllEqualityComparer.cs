@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Equality comprarer for UserBll. It checks the nickname.
 // </summary>
 // ****************************************************************************
 
@@ -24,9 +24,9 @@ namespace GoingOn.Common.Tests
                 string.Equals(user1.Nickname, user2.Nickname);
         }
 
-        public int GetHashCode(UserBll obj)
+        public int GetHashCode(UserBll user)
         {
-            throw new NotImplementedException();
+            return user.Nickname.GetHashCode();
         }
     }
 }

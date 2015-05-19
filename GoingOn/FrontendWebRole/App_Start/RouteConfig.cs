@@ -4,14 +4,13 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// RouteConfig class
 // </summary>
 // ****************************************************************************
 
 namespace GoingOn.FrontendWebRole
 {
     using System.Diagnostics.CodeAnalysis;
-    using System.Web.Http;
     using System.Web.Mvc;
     using System.Web.Routing;
 

@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Equality comparer for NewsBll. Two news are the same if they have the same author and title.
 // </summary>
 // ****************************************************************************
 
@@ -25,9 +25,10 @@ namespace GoingOn.Common.Tests
                 string.Equals(news1.Author, news2.Author, StringComparison.OrdinalIgnoreCase);
         }
 
-        public int GetHashCode(NewsBll obj)
+        public int GetHashCode(NewsBll news)
         {
-            throw new System.NotImplementedException();
+            return news.Title.GetHashCode() ^
+                news.Content.GetHashCode();
         }
     }
 }

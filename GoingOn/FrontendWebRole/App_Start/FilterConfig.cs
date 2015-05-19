@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Filter config class
 // </summary>
 // ****************************************************************************
 
@@ -13,6 +13,8 @@ namespace GoingOn.FrontendWebRole
     using System.CodeDom.Compiler;
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Mvc;
+
+    // TODO: investigate how to add input validation to filters
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]

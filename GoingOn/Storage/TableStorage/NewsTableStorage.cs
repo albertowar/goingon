@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Manages the storage of the news
 // </summary>
 // ****************************************************************************
 
@@ -38,7 +38,7 @@ namespace GoingOn.Storage.TableStorage
             }
             catch (Exception e)
             {
-                throw new AzureTableStorageException(string.Format("The storage account could not be created. Erro: {0}", e.Message));
+                throw new AzureTableStorageException(string.Format("The storage account could not be created. Error: {0}", e.Message));
             }
         }
 

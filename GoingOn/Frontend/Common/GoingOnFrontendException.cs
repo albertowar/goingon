@@ -1,10 +1,10 @@
 ﻿// ****************************************************************************
-// <copyright file="FrontendException.cs" company="Universidad de Malaga">
+// <copyright file="GoingOnFrontendException.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Class to encapsulate the exception originated in the Frontend side. Used also for validation exceptions.
 // </summary>
 // ****************************************************************************
 
@@ -13,11 +13,11 @@ namespace GoingOn.Frontend.Common
     using System;
     using System.Net;
 
-    public class FrontendException : Exception
+    public class GoingOnFrontendException : Exception
     {
         public HttpStatusCode StatusCode { get; private set; }
 
-        public FrontendException(HttpStatusCode statusCode, string message) : base(message)
+        public GoingOnFrontendException(HttpStatusCode statusCode, string message) : base(message)
         {
             this.StatusCode = statusCode;
         }

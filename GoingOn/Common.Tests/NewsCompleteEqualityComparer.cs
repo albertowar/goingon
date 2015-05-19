@@ -1,10 +1,10 @@
 ﻿// ****************************************************************************
-// <copyright file="UserCompleteEqualityComparer.cs" company="Universidad de Malaga">
+// <copyright file="NewsCompleteEqualityComparer.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Equality comparer for News. It checks title and content.
 // </summary>
 // ****************************************************************************
 
@@ -24,9 +24,10 @@ namespace GoingOn.Common.Tests
                 string.Equals(news1.Content, news2.Content);
         }
 
-        public int GetHashCode(News obj)
+        public int GetHashCode(News news)
         {
-            throw new System.NotImplementedException();
+            return news.Title.GetHashCode() ^
+                news.Content.GetHashCode();
         }
     }
 }

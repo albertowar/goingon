@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Equality comparer for User. It checks username and password.
 // </summary>
 // ****************************************************************************
 
@@ -25,9 +25,10 @@ namespace GoingOn.Common.Tests
                 string.Equals(user1.Password, user2.Password);
         }
 
-        public int GetHashCode(User obj)
+        public int GetHashCode(User user)
         {
-            throw new NotImplementedException();
+            return user.Nickname.GetHashCode() ^
+                user.Password.GetHashCode();
         }
     }
 }

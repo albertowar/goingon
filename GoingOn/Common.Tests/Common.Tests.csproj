@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertExtensions.cs" />
-    <Compile Include="AuthorizationHelper.cs" />
+    <Compile Include="Base64Helper.cs" />
     <Compile Include="NewsBllEqualityComparer.cs" />
     <Compile Include="NewsCompleteEqualityComparer.cs" />
     <Compile Include="GOUriBuilderTests.cs" />

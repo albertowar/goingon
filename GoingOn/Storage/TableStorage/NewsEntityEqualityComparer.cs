@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Equality comparer for news in the Storage. It checks title, author and partition key (city).
 // </summary>
 // ****************************************************************************
 
@@ -24,9 +24,11 @@ namespace GoingOn.Storage.TableStorage
                 && string.Equals(news1.PartitionKey, news2.PartitionKey, StringComparison.Ordinal);
         }
 
-        public int GetHashCode(NewsEntity obj)
+        public int GetHashCode(NewsEntity newsEntity)
         {
-            throw new System.NotImplementedException();
+            return newsEntity.Title.GetHashCode() ^
+                newsEntity.Author.GetHashCode() ^
+                newsEntity.PartitionKey.GetHashCode();
         }
     }
 }

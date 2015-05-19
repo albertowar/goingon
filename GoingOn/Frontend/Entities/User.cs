@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Encapsulats the user information as the user would create it
 // </summary>
 // ****************************************************************************
 

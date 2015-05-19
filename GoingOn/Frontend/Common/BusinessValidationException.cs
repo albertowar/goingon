@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Exception class to encapsulate business validation issues
 // </summary>
 // ****************************************************************************
 
@@ -12,7 +12,7 @@ namespace GoingOn.Frontend.Common
 {
     using System.Net;
 
-    public class BusinessValidationException : FrontendException
+    public class BusinessValidationException : GoingOnFrontendException
     {
         public BusinessValidationException(HttpStatusCode statusCode, string message)
             : base(statusCode, message)

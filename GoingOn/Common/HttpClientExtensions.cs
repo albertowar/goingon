@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Extension class because of the lack of functionality on the original class
 // </summary>
 // ****************************************************************************
 

@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// TODO: write a summary
+// Implementation of the basic authentication attribute using user storage
 // </summary>
 // ****************************************************************************
 
