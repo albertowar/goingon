@@ -15,27 +15,15 @@ namespace GoingOn.XStoreProxy.BlobStore
     using System.IO;
     using System.Threading.Tasks;
     using GoingOn.XStoreProxy;
-    using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
 
     public class NewsImageBlobRepository : IImageRepository
     {
-        // Configuration info
-        private readonly string blobContainerName;
-        private readonly CloudStorageAccount storageAccount;
+        private readonly IBlobStore blobStore;
 
         public NewsImageBlobRepository(string connectionString, string blobContainerName)
         {
-            this.blobContainerName = blobContainerName;
-
-            try
-            {
-                this.storageAccount = CloudStorageAccount.Parse(connectionString);
-            }
-            catch (Exception e)
-            {
-                throw new AzureTableStorageException(string.Format("The repository account could not be created. Error: {0}", e.Message));
-            }
+            this.blobStore = new BlobStore(connectionString, blobContainerName);
         }
 
         public async Task<Image> GetNewsImage(string city, DateTime date, Guid id)
@@ -68,27 +56,25 @@ namespace GoingOn.XStoreProxy.BlobStore
 
         public async Task CreateNewsImage(string city, DateTime date, Guid id, Image image)
         {
-            CloudBlobContainer container = this.GetCloudBlobContainer();
-
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
+            string blobName = string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id);
 
             using (var memoryStream = new MemoryStream())
             {
                 image.Save(memoryStream, image.RawFormat);
                 memoryStream.Position = 0;
-                await blockBlob.UploadFromStreamAsync(memoryStream);
+
+                await this.blobStore.CreateBlob(blobName, memoryStream);
             }
 
-            if (await blockBlob.ExistsAsync())
+            if (await this.blobStore.ContainsBlob(blobName))
             {
-                blockBlob = container.GetBlockBlobReference(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
                 using (var memoryStream = new MemoryStream())
                 {
                     Image thumbnail = image.GetThumbnailImage(40, 40, () => false, IntPtr.Zero);
                     thumbnail.Save(memoryStream, image.RawFormat);
                     memoryStream.Position = 0;
-                    await blockBlob.UploadFromStreamAsync(memoryStream);
+
+                    await this.blobStore.CreateBlob(string.Format("thumbnail;{0};", blobName), memoryStream);
                 }
             }
             else
@@ -99,31 +85,16 @@ namespace GoingOn.XStoreProxy.BlobStore
 
         public async Task DeleteNewsImage(string city, DateTime date, Guid id)
         {
-            CloudBlobContainer container = this.GetCloudBlobContainer();
+            string blobName = string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id);
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
-            await blockBlob.DeleteAsync();
+            await this.blobStore.DeleteBlob(blobName);
         }
 
         public async Task<bool> ContainsImage(string city, DateTime date, Guid id)
         {
-            CloudBlobContainer container = this.GetCloudBlobContainer();
+            string blobName = string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id);
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
-            return await blockBlob.ExistsAsync();
+            return await this.blobStore.ContainsBlob(blobName);
         }
-
-        #region Helper methods
-
-        private CloudBlobContainer GetCloudBlobContainer()
-        {
-            CloudBlobClient tableClient = this.storageAccount.CreateCloudBlobClient();
-
-            return tableClient.GetContainerReference(this.blobContainerName);
-        }
-
-        #endregion
     }
 }

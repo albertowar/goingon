@@ -46,6 +46,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlobStore\BlobStore.cs" />
+    <Compile Include="BlobStore\IBlobStore.cs" />
     <Compile Include="BlobStore\NewsImageBlobRepository.cs" />
     <Compile Include="IImageRepository.cs" />
     <Compile Include="TableStore\ITableStore.cs" />
