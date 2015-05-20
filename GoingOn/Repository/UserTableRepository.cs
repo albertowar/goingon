@@ -15,32 +15,31 @@ namespace GoingOn.Repository
     using GoingOn.Repository.Entities;
     using GoingOn.XStoreProxy;
     using GoingOn.XStoreProxy.TableStore;
-    using Microsoft.WindowsAzure.Storage.Table;
 
     public class UserTableRepository : IUserRepository
     {
-        private readonly ITableStore _tableStore;
+        private readonly ITableStore tableStore;
 
         public UserTableRepository(string connectionString, string tableName)
         {
-            this._tableStore = new TableStore(connectionString, tableName);
+            this.tableStore = new TableStore(connectionString, tableName);
         }
 
         public async Task AddUser(UserBll userBll)
         {
-            await this._tableStore.AddTableEntity(UserEntity.FromUserBll(userBll));
+            await this.tableStore.AddTableEntity(UserEntity.FromUserBll(userBll));
         }
 
         public async Task<UserBll> GetUser(string city, string nickname)
         {
-            return UserEntity.ToUserBll(await this._tableStore.GetTableEntity<UserEntity>(city, nickname));
+            return UserEntity.ToUserBll(await this.tableStore.GetTableEntity<UserEntity>(city, nickname));
         }
 
         public async Task<bool> ContainsUser(UserBll userBll)
         {
             try
             {
-                await this._tableStore.GetTableEntity<UserEntity>(userBll.City, userBll.Nickname);
+                await this.tableStore.GetTableEntity<UserEntity>(userBll.City, userBll.Nickname);
 
                 return true;
             }
@@ -52,17 +51,17 @@ namespace GoingOn.Repository
 
         public async Task UpdateUser(UserBll userBll)
         {
-            await this._tableStore.UpdateTableEntity(UserEntity.FromUserBll(userBll));
+            await this.tableStore.UpdateTableEntity(UserEntity.FromUserBll(userBll));
         }
 
         public async Task DeleteUser(UserBll userBll)
         {
-            await this._tableStore.DeleteTableEntity<UserEntity>(userBll.City, userBll.Nickname);
+            await this.tableStore.DeleteTableEntity<UserEntity>(userBll.City, userBll.Nickname);
         }
 
         public async Task DeleteAllUsers(string city)
         {
-            await this._tableStore.DeleteAllTableEntitiesInPartition<UserEntity>(city);
+            await this.tableStore.DeleteAllTableEntitiesInPartition<UserEntity>(city);
         }
     }
 }

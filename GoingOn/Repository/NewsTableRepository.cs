@@ -21,26 +21,26 @@ namespace GoingOn.Repository
 
     public class NewsTableRepository : INewsRepository, IHotNewsRepository
     {
-        private readonly ITableStore _tableStore;
+        private readonly ITableStore tableStore;
 
         public NewsTableRepository(string connectionString, string tableName)
         {
-            this._tableStore = new TableStore(connectionString, tableName);
+            this.tableStore = new TableStore(connectionString, tableName);
         }
 
         public async Task AddNews(NewsEntity newsEntity)
         {
-            await this._tableStore.AddTableEntity(newsEntity);
+            await this.tableStore.AddTableEntity(newsEntity);
         }
 
         public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
         {
-            return NewsEntity.ToNewsBll(await this._tableStore.GetTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString()));
+            return NewsEntity.ToNewsBll(await this.tableStore.GetTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString()));
         }
 
         public async Task<IEnumerable<NewsBll>> ListNews(string city, DateTime date)
         {
-            List<NewsEntity> newsList = (await this._tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
+            List<NewsEntity> newsList = (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
 
             if (!newsList.Any())
             {
@@ -52,7 +52,7 @@ namespace GoingOn.Repository
 
         public async Task<bool> ContainsAnyHotNews(string city, DateTime date)
         {
-            List<NewsEntity> newsList = (await this._tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
+            List<NewsEntity> newsList = (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
 
             if (!newsList.Any())
             {
@@ -85,24 +85,24 @@ namespace GoingOn.Repository
 
         public async Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity)
         {
-            IEnumerable<NewsEntity> newsEnumeration = (await this._tableStore.ListTableEntity<NewsEntity>(newsEntity.PartitionKey));
+            IEnumerable<NewsEntity> newsEnumeration = (await this.tableStore.ListTableEntity<NewsEntity>(newsEntity.PartitionKey));
 
             return newsEnumeration.Any(news => string.Equals(newsEntity.Title, news.Title) && string.Equals(newsEntity.Author, news.Author));
         }
 
         public async Task UpdateNews(NewsBll newsBll)
         {
-            await this._tableStore.UpdateTableEntity<NewsEntity>(NewsEntity.FromNewsBll(newsBll));
+            await this.tableStore.UpdateTableEntity<NewsEntity>(NewsEntity.FromNewsBll(newsBll));
         }
 
         public async Task DeleteNews(string city, DateTime date, Guid id)
         {
-            await this._tableStore.DeleteTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
+            await this.tableStore.DeleteTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date), id.ToString());
         }
 
         public async Task DeleteAllNews(string city)
         {
-            await this._tableStore.DeleteAllTableEntitiesInPartition<NewsEntity>(city);
+            await this.tableStore.DeleteAllTableEntitiesInPartition<NewsEntity>(city);
         }
     }
 }
