@@ -21,17 +21,17 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
 
     public class HotNewsController : GoingOnApiController
     {
-        private readonly IHotNewsStorage storage;
+        private readonly IHotNewsRepository repository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public HotNewsController(IHotNewsStorage hotNewsTableStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public HotNewsController(IHotNewsRepository hotNewsTableRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            this.storage = hotNewsTableStorage;
+            this.repository = hotNewsTableRepository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -54,7 +54,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             await this.ValidateGetOperation(city, day);
 
             List<NewsREST> retrievedNews =
-                        (await this.storage.GetNews(city, day)).Select(
+                        (await this.repository.ListNews(city, day)).Select(
                             news => NewsREST.FromNewsBll(news, this.Request)).Take(10).ToList();
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, retrievedNews);
@@ -73,7 +73,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The city format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidGetHotNews(this.storage, city, date))
+            if (!await this.businessValidation.IsValidGetHotNews(this.repository, city, date))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, string.Format("There are not HotNews in {0} at {1}", city, date));
             }

@@ -22,7 +22,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.FrontendWebRole.Controllers;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
@@ -31,7 +31,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     [TestClass]
     public class HotNewsControllerTests
     {
-        private Mock<IHotNewsStorage> hotNewsStorageMock;
+        private Mock<IHotNewsRepository> hotNewsStorageMock;
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
@@ -55,7 +55,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestInitialize]
         public void Initizalize()
         {
-            this.hotNewsStorageMock = new Mock<IHotNewsStorage>();
+            this.hotNewsStorageMock = new Mock<IHotNewsRepository>();
             this.inputValidation = new Mock<IApiInputValidationChecks>();
             this.businessValidation = new Mock<IApiBusinessLogicValidationChecks>();
         }
@@ -65,7 +65,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
-            this.hotNewsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(this.GenerateNews()));
+            this.hotNewsStorageMock.Setup(storage => storage.ListNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(this.GenerateNews()));
 
             var hotNewsController = new HotNewsController(this.hotNewsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
 
@@ -93,7 +93,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(false);
             this.businessValidation.Setup(validation => validation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
-            this.hotNewsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
+            this.hotNewsStorageMock.Setup(storage => storage.ListNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
 
             this.AssertGetFails(url: GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date), city: City, resultCode: HttpStatusCode.BadRequest);
         }
@@ -103,7 +103,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(false));
-            this.hotNewsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
+            this.hotNewsStorageMock.Setup(storage => storage.ListNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(new List<NewsBll>().AsEnumerable()));
 
             this.AssertGetFails(url: GOUriBuilder.BuildAbsoluteDiaryEntryUri(Scheme, Host, Port, City, Date), city: City, resultCode: HttpStatusCode.NotFound);
         }
@@ -118,7 +118,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             HttpResponseMessage response = hotNewsController.Get(city).Result;
 
             Assert.AreEqual(resultCode, response.StatusCode);
-            this.hotNewsStorageMock.Verify(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>()), Times.Never());
+            this.hotNewsStorageMock.Verify(storage => storage.ListNews(It.IsAny<string>(), It.IsAny<DateTime>()), Times.Never());
         }
 
         private IEnumerable<NewsBll> GenerateNews()

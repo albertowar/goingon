@@ -8,14 +8,14 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.Repository
 {
     using System;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository.Entities;
 
-    public interface INewsStorage : INewsStorageBase
+    public interface INewsRepository : IBaseNewsRepository
     {
         /// <summary>
         /// Retrieve a news.

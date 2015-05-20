@@ -24,8 +24,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.FrontendWebRole.Controllers;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository;
+    using GoingOn.Repository.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
@@ -34,7 +34,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     [TestClass]
     public class NewsControllerTest
     {
-        private Mock<INewsStorage> newsStorageMock;
+        private Mock<INewsRepository> newsStorageMock;
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
@@ -53,7 +53,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestInitialize]
         public void Initizalize()
         {
-            this.newsStorageMock = new Mock<INewsStorage>();
+            this.newsStorageMock = new Mock<INewsRepository>();
             this.inputValidation = new Mock<IApiInputValidationChecks>();
             this.businessValidation = new Mock<IApiBusinessLogicValidationChecks>();
         }
@@ -71,7 +71,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
 
-            newsController.ConfigureForTesting(request, "GetNews", new HttpRoute(GOUriBuilder.GetNewsTemplate));
+            newsController.ConfigureForTesting(request, "ListNews", new HttpRoute(GOUriBuilder.GetNewsTemplate));
 
             HttpResponseMessage response = newsController.Get(City, Date, guid.ToString()).Result;
 

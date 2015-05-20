@@ -4,28 +4,29 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// Tests for User Storage
+// Tests for User repository
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage.Tests
+namespace GoingOn.Repository.Tests
 {
     using System;
     using System.Configuration;
     using System.Threading.Tasks;
     using GoingOn.Common.Tests;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage.TableStorage;
+    using GoingOn.Repository;
+    using GoingOn.XStoreProxy;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Microsoft.WindowsAzure.Storage;
 
     [TestClass]
     public class UserStorageTests
     {
-        // RegistrationDate has to be initializated otherwise it will get the min value that crashes on TableStorage
+        // RegistrationDate has to be initializated otherwise it will get the min value that crashes on TableStore
         private static readonly UserBll DefaultUser = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", BirthDate = new DateTime(2014, 12, 4), RegistrationDate = new DateTime(2014, 12, 4) };
 
-        private IUserStorage storage;
+        private IUserRepository repository;
 
         [TestInitialize]
         public void Initialize()
@@ -33,22 +34,22 @@ namespace GoingOn.Storage.Tests
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string userTableName = ConfigurationManager.AppSettings["UserTableName"];
 
-            this.storage = new UserTableStorage(connectionString, userTableName);
+            this.repository = new UserTableRepository(connectionString, userTableName);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            this.storage.DeleteAllUsers(DefaultUser.City).Wait();
-            this.storage.DeleteAllUsers("Dublin").Wait();
+            this.repository.DeleteAllUsers(DefaultUser.City).Wait();
+            this.repository.DeleteAllUsers("Dublin").Wait();
         }
 
         [TestMethod]
         public void TestAddUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
-            Task<bool> containsUserTask = this.storage.ContainsUser(DefaultUser);
+            Task<bool> containsUserTask = this.repository.ContainsUser(DefaultUser);
             containsUserTask.Wait();
 
             Assert.IsTrue(containsUserTask.Result);
@@ -57,17 +58,17 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestAddExistingUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
-            AssertExtensions.Throws<StorageException>(() => this.storage.AddUser(DefaultUser).Wait());
+            AssertExtensions.Throws<StorageException>(() => this.repository.AddUser(DefaultUser).Wait());
         }
 
         [TestMethod]
         public void TestGetUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
-            UserBll actualUser = this.storage.GetUser(DefaultUser.Nickname).Result;
+            UserBll actualUser = this.repository.GetUser(DefaultUser.City, DefaultUser.Nickname).Result;
 
             Assert.IsTrue(new UserBllEqualityComparer().Equals(DefaultUser, actualUser));
         }
@@ -75,21 +76,21 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestGetNonExistingUser()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.GetUser(DefaultUser.Nickname).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.repository.GetUser(DefaultUser.City, DefaultUser.Nickname).Wait());
         }
 
         [TestMethod]
         public void TestContainsExistingUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
-            Assert.IsTrue(this.storage.ContainsUser(DefaultUser).Result);
+            Assert.IsTrue(this.repository.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
         public void TestContainsNonExistingUser()
         {
-            Assert.IsFalse(this.storage.ContainsUser(DefaultUser).Result);
+            Assert.IsFalse(this.repository.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
@@ -97,24 +98,24 @@ namespace GoingOn.Storage.Tests
         {
             var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
 
-            this.storage.AddUser(user).Wait();
+            this.repository.AddUser(user).Wait();
 
             var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
 
-            Assert.IsTrue(this.storage.ContainsUser(user).Result);
-            Assert.IsTrue(this.storage.ContainsUser(differentCityUser).Result);
+            Assert.IsTrue(this.repository.ContainsUser(user).Result);
+            Assert.IsTrue(this.repository.ContainsUser(differentCityUser).Result);
         }
 
         [TestMethod]
         public void TestUpdateUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
             var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password", City = DefaultUser.City, BirthDate = new DateTime(2015, 12, 4) };
 
-            this.storage.UpdateUser(updatedUser).Wait();
+            this.repository.UpdateUser(updatedUser).Wait();
 
-            UserBll actualUser = this.storage.GetUser(DefaultUser.Nickname).Result;
+            UserBll actualUser = this.repository.GetUser(DefaultUser.City, DefaultUser.Nickname).Result;
 
             Assert.IsNotNull(actualUser);
             Assert.AreEqual(updatedUser.Nickname, actualUser.Nickname);
@@ -127,23 +128,23 @@ namespace GoingOn.Storage.Tests
         {
             var updatedUser = new UserBll { Nickname = DefaultUser.Nickname, Password = "other password" };
 
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.UpdateUser(updatedUser).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.repository.UpdateUser(updatedUser).Wait());
         }
 
         [TestMethod]
         public void TestDeleteUser()
         {
-            this.storage.AddUser(DefaultUser).Wait();
+            this.repository.AddUser(DefaultUser).Wait();
 
-            this.storage.DeleteUser(DefaultUser).Wait();
+            this.repository.DeleteUser(DefaultUser).Wait();
 
-            Assert.IsFalse(this.storage.ContainsUser(DefaultUser).Result);
+            Assert.IsFalse(this.repository.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
         public void TestDeleteNonExistingUser()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.storage.DeleteUser(DefaultUser).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this.repository.DeleteUser(DefaultUser).Wait());
         }
 
         [TestMethod]
@@ -151,13 +152,13 @@ namespace GoingOn.Storage.Tests
         {
             var user = new UserBll { Nickname = "nickname", Password = "password", City = "Malaga", RegistrationDate = DateTime.Today };
 
-            this.storage.AddUser(user).Wait();
+            this.repository.AddUser(user).Wait();
 
             var differentCityUser = new UserBll { Nickname = "nickname", Password = "password", City = "Dublin", RegistrationDate = DateTime.Today };
 
-            this.storage.DeleteUser(differentCityUser).Wait();
+            this.repository.DeleteUser(differentCityUser).Wait();
 
-            Assert.IsFalse(this.storage.ContainsUser(user).Result);
+            Assert.IsFalse(this.repository.ContainsUser(user).Result);
         }
 
         [TestMethod]
@@ -165,11 +166,11 @@ namespace GoingOn.Storage.Tests
         {
             this.AddUsers();
 
-            this.storage.DeleteAllUsers(DefaultUser.City).Wait();
+            this.repository.DeleteAllUsers(DefaultUser.City).Wait();
 
             for (int i = 0; i < 10; ++i)
             {
-                Assert.IsFalse(this.storage.ContainsUser(new UserBll { Nickname = "nickname" + i, Password = "password" + i }).Result);
+                Assert.IsFalse(this.repository.ContainsUser(new UserBll { Nickname = "nickname" + i, Password = "password" + i }).Result);
             }
         }
 
@@ -180,7 +181,7 @@ namespace GoingOn.Storage.Tests
             for (int i = 0; i < 10; ++i)
             {
                 var user = new UserBll { Nickname = "nickname" + i, Password = "password" + i, City = "Malaga", RegistrationDate = DateTime.Today };
-                this.storage.AddUser(user).Wait();
+                this.repository.AddUser(user).Wait();
             }
         }
 

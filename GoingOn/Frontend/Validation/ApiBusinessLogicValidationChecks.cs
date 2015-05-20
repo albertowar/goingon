@@ -13,24 +13,25 @@ namespace GoingOn.Frontend.Validation
     using System;
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository;
+    using GoingOn.Repository.Entities;
+    using GoingOn.XStoreProxy;
 
     public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
     {
-        public async Task<bool> IsValidCreateUser(IUserStorage storage, User user)
+        public async Task<bool> IsValidCreateUser(IUserRepository repository, User user)
         {
-            return !await this.IsUserStored(storage, user);
+            return !await this.IsUserStored(repository, user);
         }
 
-        public async Task<bool> IsValidGetUser(IUserStorage storage, string nickname)
+        public async Task<bool> IsValidGetUser(IUserRepository repository, string nickname)
         {
-            return await this.IsUserStored(storage, new User { Nickname = nickname });
+            return await this.IsUserStored(repository, new User { Nickname = nickname });
         }
 
-        public async Task<bool> IsValidUpdateUser(IUserStorage storage, User user)
+        public async Task<bool> IsValidUpdateUser(IUserRepository repository, User user)
         {
-            return await this.IsUserStored(storage, user);
+            return await this.IsUserStored(repository, user);
         }
 
         public bool IsAuthorizedUser(string requesterNickname, string userNickname)
@@ -38,56 +39,56 @@ namespace GoingOn.Frontend.Validation
             return string.Equals(requesterNickname, userNickname);
         }
 
-        public async Task<bool> IsValidDeleteUser(IUserStorage storage, string nickname)
+        public async Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname)
         {
-            return await this.IsUserStored(storage, new User { Nickname = nickname });
+            return await this.IsUserStored(repository, new User { Nickname = nickname });
         }
 
-        public async Task<bool> IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date)
+        public async Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date)
         {
-            return !await this.IsNewsStored(storage, news, city, author, date);
+            return !await this.IsNewsStored(repository, news, city, author, date);
         }
 
-        public async Task<bool> IsValidGetImageNews(IImageStorage storage, string city, DateTime date, Guid id)
+        public async Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
-            return !await storage.ContainsImage(city, date, id);
+            return !await repository.ContainsImage(city, date, id);
         }
 
-        public Task<bool> IsValidGetThumbnailImageNews(IImageStorage storage, string city, DateTime date, Guid id)
+        public Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id)
+        public async Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id)
         {
-            return await storage.ContainsNews(city, date, id);
+            return await repository.ContainsNews(city, date, id);
         }
 
-        public async Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
+        public async Task<bool> IsValidUpdateNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
         {
-            return await storage.IsAuthorOf(city, date, id, author);
+            return await repository.IsAuthorOf(city, date, id, author);
         }
 
-        public async Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author)
+        public async Task<bool> IsValidDeleteNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
         {
-            return await storage.IsAuthorOf(city, date, id, author);
+            return await repository.IsAuthorOf(city, date, id, author);
         }
 
-        public async Task<bool> IsValidGetHotNews(IHotNewsStorage storage, string city, DateTime date)
+        public async Task<bool> IsValidGetHotNews(IHotNewsRepository repository, string city, DateTime date)
         {
-            return await storage.ContainsHotNews(city, date);
+            return await repository.ContainsAnyHotNews(city, date);
         }
 
         #region Helper methods
 
-        private async Task<bool> IsUserStored(IUserStorage storage,  User user)
+        private async Task<bool> IsUserStored(IUserRepository repository,  User user)
         {
-            return await storage.ContainsUser(User.ToUserBll(user));
+            return await repository.ContainsUser(User.ToUserBll(user));
         }
 
-        private async Task<bool> IsNewsStored(INewsStorage storage, News news, string city, string author, DateTime date)
+        private async Task<bool> IsNewsStored(INewsRepository repository, News news, string city, string author, DateTime date)
         {
-            return await storage.ContainsNewsCheckContent(NewsEntity.FromNewsBll(News.ToNewsBll(news, city, author, date)));
+            return await repository.ContainsNewsCheckContent(NewsEntity.FromNewsBll(News.ToNewsBll(news, city, author, date)));
         }
 
         #endregion

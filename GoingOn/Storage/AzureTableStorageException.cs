@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.XStoreProxy
 {
     using System;
 

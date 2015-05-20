@@ -169,9 +169,13 @@
       <Project>{73d68ff8-7f66-426f-8320-89bc224d3b09}</Project>
       <Name>Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Storage\Storage.csproj">
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{87DE0C26-CC33-4111-9756-5543ACB4CC9B}</Project>
+      <Name>Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\XStoreProxy.csproj">
       <Project>{90e34909-07f8-4eac-bf0e-285474bfd909}</Project>
-      <Name>Storage</Name>
+      <Name>XStoreProxy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\packages\StyleCop.MSBuild.4.7.49.0\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.49.0\build\StyleCop.MSBuild.Targets')" />

@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// Implementation of the basic authentication attribute using user storage
+// Implementation of the basic authentication attribute using user repository
 // </summary>
 // ****************************************************************************
 
@@ -15,17 +15,17 @@ namespace GoingOn.Frontend.Authentication
     using System.Threading.Tasks;
 
     using GoingOn.Frontend.Entities;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
     using Microsoft.Practices.Unity;
 
     public class IdentityBasicAuthenticationAttribute : BasicAuthenticationAttribute
     {
         [Dependency]
-        public IUserStorage Storage { get; set; }
+        public IUserRepository Repository { get; set; }
 
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)
         {
-            bool containsUserTask = await this.Storage.ContainsUser(User.ToUserBll(new User { Nickname = nickname, Password = password }));
+            bool containsUserTask = await this.Repository.ContainsUser(User.ToUserBll(new User { Nickname = nickname, Password = password }));
 
             if (containsUserTask)
             {

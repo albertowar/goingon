@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="INewsStorage.cs" company="Universidad de Malaga">
+// <copyright file="INewsRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,15 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.Repository
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository.Entities;
 
-    public interface INewsStorageBase
+    public interface IBaseNewsRepository
     {
         /// <summary>
         /// Add a news.
@@ -26,12 +26,12 @@ namespace GoingOn.Storage
         Task AddNews(NewsEntity newsEntity);
 
         /// <summary>
-        /// Retrieve a news.
+        /// Retrieve a collection of news.
         /// </summary>
         /// <param name="city">The city where the news happened.</param>
         /// <param name="date">The date when the news happened.</param>
         /// <returns></returns>
-        Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date);
+        Task<IEnumerable<NewsBll>> ListNews(string city, DateTime date);
 
         /// <summary>
         /// Update a news.

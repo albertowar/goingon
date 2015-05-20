@@ -22,18 +22,18 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Links;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository;
+    using GoingOn.Repository.Entities;
 
     public class NewsController : GoingOnApiController
     {
-        private readonly INewsStorage storage;
+        private readonly INewsRepository repository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public NewsController(INewsStorage newsTableStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public NewsController(INewsRepository newsTableRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            this.storage = newsTableStorage;
+            this.repository = newsTableRepository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -111,7 +111,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateGetNewsOperation(city, date, newsId);
 
-            NewsREST news = NewsREST.FromNewsBll(await this.storage.GetNews(city, DateTime.Parse(date), Guid.Parse(newsId)), this.Request);
+            NewsREST news = NewsREST.FromNewsBll(await this.repository.GetNews(city, DateTime.Parse(date), Guid.Parse(newsId)), this.Request);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, news);
 
@@ -130,7 +130,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             Guid newsId = Guid.NewGuid();
 
-            await this.storage.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
+            await this.repository.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
             response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
@@ -147,7 +147,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidatePatchNewsOperation(city, date, newsId, news);
 
-            await this.storage.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
+            await this.repository.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, "The news was added to the database");
 
@@ -162,7 +162,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateDeleteNewsOperation(city, date, newsId);
 
-            await this.storage.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
+            await this.repository.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
 
             return this.Request.CreateResponse(HttpStatusCode.NoContent, "The news was deleted");
         }
@@ -175,7 +175,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
@@ -190,7 +190,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidCreateNews(this.storage, news, city, nickname, DateTime.Parse(date)))
+            if (!await this.businessValidation.IsValidCreateNews(this.repository, news, city, nickname, DateTime.Parse(date)))
             {
                 throw new BusinessValidationException(HttpStatusCode.BadRequest, "The news is already created");
             }
@@ -205,7 +205,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidUpdateNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidUpdateNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }
@@ -215,7 +215,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!await this.businessValidation.IsValidDeleteNews(this.storage, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidDeleteNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }

@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage.Tests
+namespace GoingOn.Repository.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -16,11 +16,9 @@ namespace GoingOn.Storage.Tests
     using System.Linq;
     using GoingOn.Common.Tests;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository.Entities;
+    using GoingOn.XStoreProxy;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Moq;
 
     [TestClass]
     public class HotNewsStorageTests
@@ -37,8 +35,8 @@ namespace GoingOn.Storage.Tests
             Date = DateTime.Parse("2015-05-14")
         };
 
-        private INewsStorage storage;
-        private IHotNewsStorage hotNewsStorage;
+        private INewsRepository repository;
+        private IHotNewsRepository _hotNewsRepository;
 
         [TestInitialize]
         public void Initialize()
@@ -46,22 +44,22 @@ namespace GoingOn.Storage.Tests
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
             string newsTableName = ConfigurationManager.AppSettings["HotNewsTableName"];
 
-            this.storage = new NewsTableStorage(connectionString, newsTableName);
-            this.hotNewsStorage = new NewsTableStorage(connectionString, newsTableName);
+            this.repository = new NewsTableRepository(connectionString, newsTableName);
+            this._hotNewsRepository = new NewsTableRepository(connectionString, newsTableName);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            this.storage.DeleteAllNews(City).Wait();
+            this.repository.DeleteAllNews(City).Wait();
         }
 
         [TestMethod]
         public void TestAddHotNews()
         {
-            this.storage.AddNews(NewsEntity.FromNewsBll(DefaultHotNews)).Wait();
+            this.repository.AddNews(NewsEntity.FromNewsBll(DefaultHotNews)).Wait();
 
-            List<NewsBll> hotNews = this.hotNewsStorage.GetNews(DefaultHotNews.City, DefaultHotNews.Date).Result.ToList();
+            List<NewsBll> hotNews = this._hotNewsRepository.ListNews(DefaultHotNews.City, DefaultHotNews.Date).Result.ToList();
         
             Assert.AreEqual(1, hotNews.Count);
             Assert.IsTrue(new NewsBllEqualityComparer().Equals(DefaultHotNews, hotNews.FirstOrDefault()));
@@ -70,7 +68,7 @@ namespace GoingOn.Storage.Tests
         [TestMethod]
         public void TestGetNonExistingHotNews()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.hotNewsStorage.GetNews(City, DefaultHotNews.Date).Wait());
+            AssertExtensions.Throws<AzureTableStorageException>(() => this._hotNewsRepository.ListNews(City, DefaultHotNews.Date).Wait());
         }
     }
 }

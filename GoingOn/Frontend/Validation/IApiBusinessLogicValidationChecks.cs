@@ -14,32 +14,33 @@ namespace GoingOn.Frontend.Validation
     using System.Threading.Tasks;
 
     using GoingOn.Frontend.Entities;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
+    using GoingOn.XStoreProxy;
 
     public interface IApiBusinessLogicValidationChecks
     {
-        Task<bool> IsValidCreateUser(IUserStorage storage, User user);
+        Task<bool> IsValidCreateUser(IUserRepository repository, User user);
 
-        Task<bool> IsValidGetUser(IUserStorage storage, string nickname);
+        Task<bool> IsValidGetUser(IUserRepository repository, string nickname);
 
-        Task<bool> IsValidUpdateUser(IUserStorage storage, User user);
+        Task<bool> IsValidUpdateUser(IUserRepository repository, User user);
 
         bool IsAuthorizedUser(string requesterNickname, string userNickname);
 
-        Task<bool> IsValidDeleteUser(IUserStorage storage, string nickname);
+        Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname);
 
-        Task<bool> IsValidCreateNews(INewsStorage storage, News news, string city, string author, DateTime date);
+        Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date);
 
-        Task<bool> IsValidGetNews(INewsStorage storage, string city, DateTime date, Guid id);
+        Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id);
 
-        Task<bool> IsValidUpdateNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
+        Task<bool> IsValidUpdateNews(INewsRepository repository, string city, DateTime date, Guid id, string author);
 
-        Task<bool> IsValidDeleteNews(INewsStorage storage, string city, DateTime date, Guid id, string author);
+        Task<bool> IsValidDeleteNews(INewsRepository repository, string city, DateTime date, Guid id, string author);
 
-        Task<bool> IsValidGetHotNews(IHotNewsStorage storage, string city, DateTime date);
+        Task<bool> IsValidGetHotNews(IHotNewsRepository repository, string city, DateTime date);
 
-        Task<bool> IsValidGetImageNews(IImageStorage storage, string city, DateTime date, Guid id);
+        Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id);
 
-        Task<bool> IsValidGetThumbnailImageNews(IImageStorage storage, string city, DateTime date, Guid id);
+        Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id);
     }
 }

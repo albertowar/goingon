@@ -28,13 +28,13 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using GoingOn.Common.Tests;
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
+    using GoingOn.Repository;
     using Model.EntitiesBll;
-    using Storage;
 
     [TestClass]
     public class UserControllerTest
     {
-        private Mock<IUserStorage> userStorageMock;
+        private Mock<IUserRepository> userStorageMock;
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
@@ -47,7 +47,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestInitialize]
         public void Initizalize()
         {
-            this.userStorageMock = new Mock<IUserStorage>();
+            this.userStorageMock = new Mock<IUserRepository>();
             this.inputValidation = new Mock<IApiInputValidationChecks>();
             this.businessValidation = new Mock<IApiBusinessLogicValidationChecks>();
         }
@@ -57,7 +57,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsValidGetUser(this.userStorageMock.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
-            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(User)));
+            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(User)));
 
             var userController = new UserController(this.userStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
 
@@ -84,7 +84,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
             this.businessValidation.Setup(validation => validation.IsValidGetUser(this.userStorageMock.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
-            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
+            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.BadRequest);
         }
@@ -94,7 +94,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsValidGetUser(this.userStorageMock.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
-            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
+            this.userStorageMock.Setup(storage => storage.GetUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
         }
@@ -256,7 +256,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             HttpResponseMessage response = userController.Get(nickname).Result;
 
             Assert.AreEqual(resultCode, response.StatusCode);
-            this.userStorageMock.Verify(storage => storage.GetUser(It.IsAny<string>()), Times.Never());
+            this.userStorageMock.Verify(storage => storage.GetUser(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 
         private void AssertPostFails(string url, User user, HttpStatusCode resultCode)

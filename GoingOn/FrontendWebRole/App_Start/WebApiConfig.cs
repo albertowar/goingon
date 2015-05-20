@@ -22,8 +22,7 @@ namespace GoingOn.FrontendWebRole
     
     using GoingOn.Frontend.Validation;
     using GoingOn.FrontendWebRole.DependencyInjection;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage;
+    using GoingOn.Repository;
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
@@ -36,15 +35,15 @@ namespace GoingOn.FrontendWebRole
             string newsTableName = ConfigurationManager.AppSettings["NewsTableName"];
             string hotNewsTableName = ConfigurationManager.AppSettings["HotNewsTableName"];
 
-            var userTableStorage = new UserTableStorage(connectionString, userTableName);
-            var newsTableStorage = new NewsTableStorage(connectionString, newsTableName);
-            var hotNewsTableStorage = new NewsTableStorage(connectionString, hotNewsTableName);
+            var userTableStorage = new UserTableRepository(connectionString, userTableName);
+            var newsTableStorage = new NewsTableRepository(connectionString, newsTableName);
+            var hotNewsTableStorage = new NewsTableRepository(connectionString, hotNewsTableName);
 
             // Dependy injection configuration
             var container = new UnityContainer();
-            container.RegisterInstance<IUserStorage>(userTableStorage);
-            container.RegisterInstance<INewsStorage>(newsTableStorage);
-            container.RegisterInstance<IHotNewsStorage>(hotNewsTableStorage);
+            container.RegisterInstance<IUserRepository>(userTableStorage);
+            container.RegisterInstance<INewsRepository>(newsTableStorage);
+            container.RegisterInstance<IHotNewsRepository>(hotNewsTableStorage);
             container.RegisterInstance<IApiInputValidationChecks>(new ApiInputValidationChecks(new ApiInputValidationChecks()));
             container.RegisterInstance<IApiBusinessLogicValidationChecks>(new ApiBusinessLogicValidationChecks());
             configuration.DependencyResolver = new UnityResolver(container);

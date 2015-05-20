@@ -22,19 +22,20 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Common;
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
+    using GoingOn.XStoreProxy;
 
     public class NewsThumbnailImageController : GoingOnApiController
     {
-        private readonly INewsStorage newsStorage;
-        private readonly IImageStorage newsImageBlobStorage;
+        private readonly INewsRepository _newsRepository;
+        private readonly IImageRepository _newsImageBlobRepository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public NewsThumbnailImageController(INewsStorage newsStorage, IImageStorage newsImageBlobStorage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public NewsThumbnailImageController(INewsRepository _newsRepository, IImageRepository _newsImageBlobRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            this.newsStorage = newsStorage;
-            this.newsImageBlobStorage = newsImageBlobStorage;
+            this._newsRepository = _newsRepository;
+            this._newsImageBlobRepository = _newsImageBlobRepository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -56,7 +57,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateGetOperation(city, date, newsId);
 
-            Image image = await this.newsImageBlobStorage.GetNewsThumbnailImage(city, DateTime.Parse(date), Guid.Parse(newsId));
+            Image image = await this._newsImageBlobRepository.GetNewsThumbnailImage(city, DateTime.Parse(date), Guid.Parse(newsId));
 
             var memoryStream = new MemoryStream();
             image.Save(memoryStream, ImageFormat.Png);
@@ -77,12 +78,12 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsStorage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetNews(this._newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetImageNews(this.newsImageBlobStorage, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetImageNews(this._newsImageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
             }

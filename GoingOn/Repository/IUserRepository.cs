@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="IUserStorage.cs" company="Universidad de Malaga">
+// <copyright file="IUserRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.Repository
 {
     using System.Threading.Tasks;
-    using Model.EntitiesBll;
+    using GoingOn.Model.EntitiesBll;
 
-    public interface IUserStorage
+    public interface IUserRepository
     {
         /// <summary>
         /// Adds the user.
@@ -24,10 +24,12 @@ namespace GoingOn.Storage
 
         /// <summary>
         /// Gets the user.
+        /// TODO: fix full table scan
         /// </summary>
+        /// <param name="city"></param>
         /// <param name="nickname">The nickname.</param>
         /// /// <exception cref="AzureTableStorageException">If the user is not in the database.</exception>
-        Task<UserBll> GetUser(string nickname);
+        Task<UserBll> GetUser(string city, string nickname);
 
         /// <summary>
         /// Determines whether the specified user BLL contains user.
@@ -45,6 +47,7 @@ namespace GoingOn.Storage
         /// Deletes the user.
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
+        /// /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
         Task DeleteUser(UserBll userBll);
 
         /// <summary>

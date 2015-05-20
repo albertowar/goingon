@@ -8,11 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage.TableStorage
+namespace GoingOn.Repository
 {
     using System;
     using System.Collections.Generic;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository.Entities;
 
     public class NewsEntityEqualityComparer : IEqualityComparer<NewsEntity>
     {

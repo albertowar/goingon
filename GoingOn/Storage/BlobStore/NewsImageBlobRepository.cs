@@ -1,29 +1,30 @@
 ﻿// ****************************************************************************
-// <copyright file="NewsImageBlobStorage.cs" company="Universidad de Malaga">
+// <copyright file="NewsImageBlobRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// Class to manage the storage of images
+// Class to manage the repository of images
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage.BlobStorage
+namespace GoingOn.XStoreProxy.BlobStore
 {
     using System;
     using System.Drawing;
     using System.IO;
     using System.Threading.Tasks;
+    using GoingOn.XStoreProxy;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
 
-    public class NewsImageBlobStorage : IImageStorage
+    public class NewsImageBlobRepository : IImageRepository
     {
         // Configuration info
         private readonly string blobContainerName;
         private readonly CloudStorageAccount storageAccount;
 
-        public NewsImageBlobStorage(string connectionString, string blobContainerName)
+        public NewsImageBlobRepository(string connectionString, string blobContainerName)
         {
             this.blobContainerName = blobContainerName;
 
@@ -33,7 +34,7 @@ namespace GoingOn.Storage.BlobStorage
             }
             catch (Exception e)
             {
-                throw new AzureTableStorageException(string.Format("The storage account could not be created. Error: {0}", e.Message));
+                throw new AzureTableStorageException(string.Format("The repository account could not be created. Error: {0}", e.Message));
             }
         }
 

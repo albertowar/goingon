@@ -23,17 +23,17 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Links;
     using GoingOn.Frontend.Validation;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage;
+    using GoingOn.Repository;
 
     public class UserController : GoingOnApiController
     {
-        private readonly IUserStorage storage;
+        private readonly IUserRepository repository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public UserController(IUserStorage storage, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public UserController(IUserRepository repository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
-            this.storage = storage;
+            this.repository = repository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -49,6 +49,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.GetUserTemplate)]
         public async Task<HttpResponseMessage> Get(string userId)
         {
+            // TODO: add city to avoid table scans
             return await this.ValidateExecute(this.ExecuteGetAsync, userId);
         }
 
@@ -81,11 +82,13 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         private async Task<HttpResponseMessage> ExecuteGetAsync(params object[] parameters)
         {
-            string userId = (string) parameters[0];
+            // TODO: city will return null reference exception
+            var city = (string) parameters[0];
+            var userId = (string)parameters[1];
 
-            await this.ValidateGetOperation(userId);
+            await this.ValidateGetOperation(city, userId);
 
-            UserREST user = UserREST.FromUserBll(await this.storage.GetUser(userId), this.Request);
+            UserREST user = UserREST.FromUserBll(await this.repository.GetUser(city, userId), this.Request);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, user);
 
@@ -101,7 +104,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             UserBll userToAdd = GoingOn.Frontend.Entities.User.ToUserBll(user);
             userToAdd.RegistrationDate = DateTime.Now;
 
-            await this.storage.AddUser(userToAdd);
+            await this.repository.AddUser(userToAdd);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The user was added to the database");
             response.Headers.Location = new UserLinkFactory(this.Request).Self(user.Nickname).Href;
@@ -118,7 +121,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             UserBll userToUpdate = GoingOn.Frontend.Entities.User.ToUserBll(user);
 
-            await this.storage.UpdateUser(userToUpdate);
+            await this.repository.UpdateUser(userToUpdate);
 
             return this.Request.CreateResponse(HttpStatusCode.NoContent, "The user was updated");
         }
@@ -129,7 +132,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateDeleteNewsOperation(userId);
 
-            await this.storage.DeleteUser(GoingOn.Frontend.Entities.User.ToUserBll(new User { Nickname = userId }));
+            await this.repository.DeleteUser(GoingOn.Frontend.Entities.User.ToUserBll(new User { Nickname = userId }));
 
             return this.Request.CreateResponse(HttpStatusCode.NoContent, "The user was deleted");
         }
@@ -138,14 +141,19 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         #region Validation code
 
-        public async Task ValidateGetOperation(string userId)
+        public async Task ValidateGetOperation(string city, string userId)
         {
-            if (!this.inputValidation.IsValidNickName(userId))
+            if (!this.inputValidation.IsValidCity(city))
             {
-                throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The city is not supported");
             }
 
-            if (!await this.businessValidation.IsValidGetUser(this.storage, userId))
+            if (!this.inputValidation.IsValidNickName(userId))
+            {
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The nickname format is incorrect");
+            }
+
+            if (!await this.businessValidation.IsValidGetUser(this.repository, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not in the database");
             }
@@ -158,7 +166,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidCreateUser(this.storage, user))
+            if (!await this.businessValidation.IsValidCreateUser(this.repository, user))
             {
                 throw new BusinessValidationException(HttpStatusCode.BadRequest, "The user is already registered");
             }
@@ -181,7 +189,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
-            if (!await this.businessValidation.IsValidUpdateUser(this.storage, user))
+            if (!await this.businessValidation.IsValidUpdateUser(this.repository, user))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }
@@ -199,7 +207,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
-            if (!await this.businessValidation.IsValidDeleteUser(this.storage, userId))
+            if (!await this.businessValidation.IsValidDeleteUser(this.repository, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }

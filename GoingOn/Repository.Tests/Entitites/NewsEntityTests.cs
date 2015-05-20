@@ -8,11 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage.Tests.Entitites
+namespace GoingOn.Repository.Tests.Entitites
 {
     using System;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

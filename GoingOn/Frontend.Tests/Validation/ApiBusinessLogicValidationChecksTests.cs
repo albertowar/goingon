@@ -14,8 +14,8 @@ namespace GoingOn.Frontend.Tests.Validation
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
-    using GoingOn.Storage;
-    using GoingOn.Storage.TableStorage.Entities;
+    using GoingOn.Repository;
+    using GoingOn.Repository.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -24,9 +24,9 @@ namespace GoingOn.Frontend.Tests.Validation
     [TestClass]
     public class ApiBusinessLogicValidationChecksTests
     {
-        private Mock<IUserStorage> userStorageMock;
-        private Mock<INewsStorage> newsStorageMock;
-        private Mock<IHotNewsStorage> hotNewsStorageMock;
+        private Mock<IUserRepository> userStorageMock;
+        private Mock<INewsRepository> newsStorageMock;
+        private Mock<IHotNewsRepository> hotNewsStorageMock;
         private ApiBusinessLogicValidationChecks businessValidation;
 
         private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
@@ -36,9 +36,9 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestInitialize]
         public void Initialize()
         {
-            this.userStorageMock = new Mock<IUserStorage>();
-            this.newsStorageMock = new Mock<INewsStorage>();
-            this.hotNewsStorageMock = new Mock<IHotNewsStorage>();
+            this.userStorageMock = new Mock<IUserRepository>();
+            this.newsStorageMock = new Mock<INewsRepository>();
+            this.hotNewsStorageMock = new Mock<IHotNewsRepository>();
             this.businessValidation = new ApiBusinessLogicValidationChecks();
         }
 
@@ -77,7 +77,7 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestMethod]
         public void TestIsValidGetHotNews_SucceedsIfStorageHasNews()
         {
-            this.hotNewsStorageMock.Setup(storage => storage.ContainsHotNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
+            this.hotNewsStorageMock.Setup(storage => storage.ContainsAnyHotNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(true));
 
             Assert.IsTrue(this.businessValidation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }
@@ -85,7 +85,7 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestMethod]
         public void TestIsValidGetHotNews_FailsIfStorageDoesNotHaveNews()
         {
-            this.hotNewsStorageMock.Setup(storage => storage.ContainsHotNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(false));
+            this.hotNewsStorageMock.Setup(storage => storage.ContainsAnyHotNews(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(Task.FromResult(false));
 
             Assert.IsFalse(this.businessValidation.IsValidGetHotNews(this.hotNewsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>()).Result);
         }

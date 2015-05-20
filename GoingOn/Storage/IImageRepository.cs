@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="IImageStorage.cs" company="Universidad de Malaga">
+// <copyright file="IImageRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -8,13 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.XStoreProxy
 {
     using System;
     using System.Drawing;
     using System.Threading.Tasks;
 
-    public interface IImageStorage
+    public interface IImageRepository
     {
         /// <summary>
         /// Retrieve the news image.

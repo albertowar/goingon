@@ -8,29 +8,19 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Storage
+namespace GoingOn.Repository
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Model.EntitiesBll;
 
-    public interface IHotNewsStorage : INewsStorageBase
+    public interface IHotNewsRepository : IBaseNewsRepository
     {
-        /// <summary>
-        /// Retrieve a news.
-        /// </summary>
-        /// <param name="city">The city where the news happened.</param>
-        /// <param name="date">The date when the news happened.</param>
-        /// <returns></returns>
-        Task<IEnumerable<NewsBll>> GetNews(string city, DateTime date);
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="city"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        Task<bool> ContainsHotNews(string city, DateTime date);
+        Task<bool> ContainsAnyHotNews(string city, DateTime date);
     }
 }
