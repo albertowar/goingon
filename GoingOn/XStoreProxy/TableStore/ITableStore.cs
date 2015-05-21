@@ -21,7 +21,6 @@ namespace GoingOn.XStoreProxy.TableStore
         /// Adds the entity.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
-        /// <exception cref="AzureTableStorageException">If the entity is already in the database.</exception>
         Task AddTableEntity(ITableEntity entity);
 
         /// <summary>
@@ -43,7 +42,6 @@ namespace GoingOn.XStoreProxy.TableStore
         /// List entities inside a partition (the entire partition).
         /// </summary>
         /// <param name="partitionKey"></param>
-        /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
         Task<IEnumerable<T>> ListTableEntity<T>(string partitionKey) where T : ITableEntity, new();
 
         /// <summary>

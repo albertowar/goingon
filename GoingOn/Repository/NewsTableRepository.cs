@@ -40,14 +40,9 @@ namespace GoingOn.Repository
 
         public async Task<IEnumerable<NewsBll>> ListNews(string city, DateTime date)
         {
-            List<NewsEntity> newsList = (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
-
-            if (!newsList.Any())
-            {
-                throw new AzureTableStorageException("The news is not in the database");
-            }
-
-            return newsList.Select(NewsEntity.ToNewsBll);
+            return 
+                (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date)))
+                .Select(NewsEntity.ToNewsBll);
         }
 
         public async Task<bool> ContainsAnyHotNews(string city, DateTime date)
@@ -85,9 +80,9 @@ namespace GoingOn.Repository
 
         public async Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity)
         {
-            IEnumerable<NewsEntity> newsEnumeration = (await this.tableStore.ListTableEntity<NewsEntity>(newsEntity.PartitionKey));
-
-            return newsEnumeration.Any(news => string.Equals(newsEntity.Title, news.Title) && string.Equals(newsEntity.Author, news.Author));
+            return 
+                (await this.tableStore.ListTableEntity<NewsEntity>(newsEntity.PartitionKey))
+                .Any(news => string.Equals(newsEntity.Title, news.Title) && string.Equals(newsEntity.Author, news.Author));
         }
 
         public async Task UpdateNews(NewsBll newsBll)
