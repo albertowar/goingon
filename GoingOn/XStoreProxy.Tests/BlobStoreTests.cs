@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// ****************************************************************************
+// <copyright file="BlobStoreTests.cs" company="Universidad de Malaga">
+// Copyright (c) 2015 All Rights Reserved
+// </copyright>
+// <author>Alberto Guerra Gonzalez</author>
+// <summary>
+// News Storage base interface
+// </summary>
+// ****************************************************************************
 
 namespace GoingOn.XStoreProxy.Tests
 {
-    class BlobStoreTests
+    public class BlobStoreTests
     {
+        // TODO: write tests
     }
 }

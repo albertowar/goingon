@@ -8,14 +8,15 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.XStoreProxy.Tests
+namespace GoingOn.Repository.Tests
 {
     using System;
     using System.Configuration;
     using System.Drawing;
     using GoingOn.Repository;
-    using GoingOn.XStoreProxy.BlobStore;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    // TODO: mock Store behaviour
 
     [TestClass]
     public class NewsImageBlobStorageTests

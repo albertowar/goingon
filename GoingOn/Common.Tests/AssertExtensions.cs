@@ -31,7 +31,7 @@ namespace GoingOn.Common.Tests
             }
             catch (AggregateException aggregateException)
             {
-                var exception = aggregateException.InnerException;
+                Exception exception = aggregateException.InnerException;
                 wasExceptionThrown = exception.GetType() == typeof(T);
             }
 

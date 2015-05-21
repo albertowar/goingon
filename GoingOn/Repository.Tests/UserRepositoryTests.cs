@@ -16,6 +16,8 @@ namespace GoingOn.Repository.Tests
     using GoingOn.Repository;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    // TODO: mock Store behaviour
+
     [TestClass]
     public class UserRepositoryTests
     {

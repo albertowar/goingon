@@ -34,7 +34,7 @@ namespace GoingOn.XStoreProxy.TableStore
             }
             catch (Exception e)
             {
-                throw new AzureTableStorageException(string.Format("The repository account could not be created. Erro: {0}", e.Message));
+                throw new AzureTableStorageException(string.Format("The repository account could not be created. Error: {0}", e.Message));
             }
         }
 
@@ -49,24 +49,7 @@ namespace GoingOn.XStoreProxy.TableStore
         {
             CloudTable table = this.GetStorageTable();
 
-            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, entity.PartitionKey);
-            string rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, entity.RowKey);
-
-            string filter = TableQuery.CombineFilters(
-                partitionKeyFilter,
-                TableOperators.And,
-                rowKeyFilter);
-
-            TableQuery<T> newsQuery = new TableQuery<T>().Where(filter);
-
-            TableQuerySegment<T> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
-
-            T element = retrievedNews.FirstOrDefault();
-
-            if (element == null)
-            {
-                throw new AzureTableStorageException("The news is not in the database");
-            }
+            await this.GetTableEntity<T>(entity.PartitionKey, entity.RowKey);
 
             TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(entity);
 
@@ -93,7 +76,7 @@ namespace GoingOn.XStoreProxy.TableStore
 
             if (element == null)
             {
-                throw new AzureTableStorageException("The news is not in the database");
+                throw new AzureTableStorageException("The entity is not in the store.");
             }
 
             return element;
@@ -108,7 +91,7 @@ namespace GoingOn.XStoreProxy.TableStore
                 QueryComparisons.Equal,
                 partitionKey);
 
-            TableQuery<T> partitionKeyQuery = new TableQuery<T>().Where(partitionKeyFilter);
+            TableQuery<T> query = new TableQuery<T>().Where(partitionKeyFilter);
 
             var tableEntities = new List<T>();
 
@@ -116,7 +99,7 @@ namespace GoingOn.XStoreProxy.TableStore
 
             do
             {
-                TableQuerySegment<T> tableEntitySegment = await table.ExecuteQuerySegmentedAsync(partitionKeyQuery, token);
+                TableQuerySegment<T> tableEntitySegment = await table.ExecuteQuerySegmentedAsync(query, token);
 
                 tableEntities.AddRange(tableEntitySegment);
 
@@ -144,13 +127,13 @@ namespace GoingOn.XStoreProxy.TableStore
 
             string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey);
 
-            TableQuery<T> userQuery = new TableQuery<T>().Where(partitionKeyFilter);
+            TableQuery<T> query = new TableQuery<T>().Where(partitionKeyFilter);
 
             TableContinuationToken token = null;
 
             do
             {
-                TableQuerySegment<T> tableEntitySegment = await table.ExecuteQuerySegmentedAsync(userQuery, token);
+                TableQuerySegment<T> tableEntitySegment = await table.ExecuteQuerySegmentedAsync(query, token);
 
                 foreach (T tableEntity in tableEntitySegment)
                 {
@@ -158,7 +141,6 @@ namespace GoingOn.XStoreProxy.TableStore
                 }
 
                 token = tableEntitySegment.ContinuationToken;
-
             } while (token != null);
         }
 
