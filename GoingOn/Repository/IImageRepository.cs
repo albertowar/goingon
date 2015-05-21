@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.XStoreProxy
+namespace GoingOn.Repository
 {
     using System;
     using System.Drawing;

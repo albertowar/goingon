@@ -8,14 +8,13 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.XStoreProxy.BlobStore
+namespace GoingOn.Repository
 {
     using System;
     using System.Drawing;
     using System.IO;
     using System.Threading.Tasks;
-    using GoingOn.XStoreProxy;
-    using Microsoft.WindowsAzure.Storage.Blob;
+    using GoingOn.XStoreProxy.BlobStore;
 
     public class NewsImageBlobRepository : IImageRepository
     {
@@ -28,13 +27,9 @@ namespace GoingOn.XStoreProxy.BlobStore
 
         public async Task<Image> GetNewsImage(string city, DateTime date, Guid id)
         {
-            CloudBlobContainer container = this.GetCloudBlobContainer();
-
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
             using (var memoryStream = new MemoryStream())
             {
-                await blockBlob.DownloadToStreamAsync(memoryStream);
+                await this.blobStore.GetBlob(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
                 return Image.FromStream(memoryStream);
             }
@@ -42,13 +37,9 @@ namespace GoingOn.XStoreProxy.BlobStore
 
         public async Task<Image> GetNewsThumbnailImage(string city, DateTime date, Guid id)
         {
-            CloudBlobContainer container = this.GetCloudBlobContainer();
-
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id));
-
             using (var memoryStream = new MemoryStream())
             {
-                await blockBlob.DownloadToStreamAsync(memoryStream);
+                await this.blobStore.GetBlob(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
                 return Image.FromStream(memoryStream);
             }

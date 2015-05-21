@@ -35,6 +35,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,9 +47,14 @@
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="IBaseNewsRepository.cs" />
     <Compile Include="IHotNewsRepository.cs" />
+    <Compile Include="IImageRepository.cs" />
     <Compile Include="INewsRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="NewsEntityEqualityComparer.cs" />
+    <Compile Include="NewsImageBlobRepository.cs">
+      <SubType>
+      </SubType>
+    </Compile>
     <Compile Include="NewsTableRepository.cs" />
     <Compile Include="UserTableRepository.cs" />
   </ItemGroup>

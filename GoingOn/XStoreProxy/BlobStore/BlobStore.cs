@@ -54,6 +54,15 @@ namespace GoingOn.XStoreProxy.BlobStore
             return await blockBlob.ExistsAsync();
         }
 
+        public async Task GetBlob(string blobName, Stream target)
+        {
+            CloudBlobContainer container = this.GetCloudBlobContainer();
+
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(blobName);
+
+            await blockBlob.DownloadToStreamAsync(target);
+        }
+
         public async Task DeleteBlob(string blobName)
         {
             CloudBlobContainer container = this.GetCloudBlobContainer();

@@ -8,12 +8,12 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Repository.Tests
+namespace GoingOn.XStoreProxy.Tests
 {
     using System;
     using System.Configuration;
     using System.Drawing;
-    using GoingOn.XStoreProxy;
+    using GoingOn.Repository;
     using GoingOn.XStoreProxy.BlobStore;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

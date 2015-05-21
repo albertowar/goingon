@@ -19,6 +19,8 @@ namespace GoingOn.XStoreProxy.BlobStore
 
         Task<bool> ContainsBlob(string blobName);
 
+        Task GetBlob(string blobName, Stream target);
+
         Task DeleteBlob(string blobName);
     }
 }
