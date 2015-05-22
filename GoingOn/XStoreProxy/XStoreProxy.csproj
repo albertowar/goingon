@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="BlobStore\BlobStore.cs" />
     <Compile Include="BlobStore\IBlobStore.cs" />
+    <Compile Include="Entities\NewsEntity.cs" />
+    <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="TableStore\ITableStore.cs" />
     <Compile Include="AzureTableStorageException.cs" />
     <Compile Include="TableStore\TableStore.cs" />

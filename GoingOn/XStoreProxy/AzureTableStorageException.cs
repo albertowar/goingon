@@ -19,5 +19,9 @@ namespace GoingOn.XStoreProxy
             : base(message)
         {
         }
+
+        public AzureTableStorageException()
+        {
+        }
     }
 }

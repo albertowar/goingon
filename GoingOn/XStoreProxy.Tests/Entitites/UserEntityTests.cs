@@ -8,11 +8,11 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Repository.Tests.Entitites
+namespace GoingOn.XStoreProxy.Tests.Entitites
 {
     using System;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Repository.Entities;
+    using GoingOn.XStoreProxy.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

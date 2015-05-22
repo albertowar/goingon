@@ -13,7 +13,6 @@ namespace GoingOn.Repository
     using System;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Repository.Entities;
 
     public interface INewsRepository : IBaseNewsRepository
     {
@@ -55,6 +54,6 @@ namespace GoingOn.Repository
         /// </summary>
         /// <param name="newsEntity">The news to check</param>
         /// <returns></returns>
-        Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity);
+        Task<bool> ContainsNewsCheckContent(NewsBll newsBll);
     }
 }

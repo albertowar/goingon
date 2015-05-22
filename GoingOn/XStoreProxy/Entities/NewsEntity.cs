@@ -8,7 +8,7 @@
 // </summary>
 // ****************************************************************************
 
-namespace GoingOn.Repository.Entities
+namespace GoingOn.XStoreProxy.Entities
 {
     using System;
     using GoingOn.Model.EntitiesBll;

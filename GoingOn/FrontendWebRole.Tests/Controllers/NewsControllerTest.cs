@@ -25,7 +25,6 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using GoingOn.FrontendWebRole.Controllers;
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
-    using GoingOn.Repository.Entities;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Newtonsoft.Json;
@@ -126,7 +125,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.IsTrue(new Uri(NewsUriRoot).IsBaseOf(response.Headers.Location));
-            this.newsStorageMock.Verify(storage => storage.AddNews(It.IsAny<NewsEntity>()), Times.Once());
+            this.newsStorageMock.Verify(storage => storage.AddNews(It.IsAny<NewsBll>()), Times.Once());
         }
 
         [TestMethod]
@@ -253,7 +252,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             HttpResponseMessage response = newsController.Post(City, Date, News).Result;
 
             Assert.AreEqual(code, response.StatusCode);
-            this.newsStorageMock.Verify(storage => storage.AddNews(It.IsAny<NewsEntity>()), Times.Never());
+            this.newsStorageMock.Verify(storage => storage.AddNews(It.IsAny<NewsBll>()), Times.Never());
         }
 
         private void PatchNewsFails(HttpStatusCode code, Guid guid)

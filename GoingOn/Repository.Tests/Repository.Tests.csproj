@@ -47,15 +47,16 @@
     <Reference Include="Microsoft.WindowsAzure.Storage">
       <HintPath>..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entitites\NewsEntityTests.cs" />
-    <Compile Include="Entitites\UserEntityTests.cs" />
     <Compile Include="NewsImageBlobStorageTests.cs" />
-    <Compile Include="NewsStorageTests.cs" />
+    <Compile Include="NewsRepositoryTests.cs" />
     <Compile Include="UserRepositoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,11 +72,10 @@
       <Project>{87DE0C26-CC33-4111-9756-5543ACB4CC9B}</Project>
       <Name>Repository</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="goku.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\XStoreProxy\XStoreProxy.csproj">
+      <Project>{90E34909-07F8-4EAC-BF0E-285474BFD909}</Project>
+      <Name>XStoreProxy</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

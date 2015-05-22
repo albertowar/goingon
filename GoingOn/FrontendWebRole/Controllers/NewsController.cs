@@ -23,7 +23,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Links;
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
-    using GoingOn.Repository.Entities;
 
     public class NewsController : GoingOnApiController
     {
@@ -130,7 +129,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             Guid newsId = Guid.NewGuid();
 
-            await this.repository.AddNews(NewsEntity.FromNewsBll(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date))));
+            await this.repository.AddNews(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date)));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
             response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;

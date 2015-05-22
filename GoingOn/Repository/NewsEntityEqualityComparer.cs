@@ -12,7 +12,7 @@ namespace GoingOn.Repository
 {
     using System;
     using System.Collections.Generic;
-    using GoingOn.Repository.Entities;
+    using GoingOn.XStoreProxy.Entities;
 
     public class NewsEntityEqualityComparer : IEqualityComparer<NewsEntity>
     {

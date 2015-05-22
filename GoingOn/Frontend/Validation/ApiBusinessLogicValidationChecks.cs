@@ -14,8 +14,6 @@ namespace GoingOn.Frontend.Validation
     using System.Threading.Tasks;
     using GoingOn.Frontend.Entities;
     using GoingOn.Repository;
-    using GoingOn.Repository.Entities;
-    using GoingOn.XStoreProxy;
 
     public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
     {
@@ -88,7 +86,7 @@ namespace GoingOn.Frontend.Validation
 
         private async Task<bool> IsNewsStored(INewsRepository repository, News news, string city, string author, DateTime date)
         {
-            return await repository.ContainsNewsCheckContent(NewsEntity.FromNewsBll(News.ToNewsBll(news, city, author, date)));
+            return await repository.ContainsNewsCheckContent((News.ToNewsBll(news, city, author, date)));
         }
 
         #endregion

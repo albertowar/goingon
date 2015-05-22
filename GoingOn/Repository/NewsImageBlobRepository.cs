@@ -20,9 +20,9 @@ namespace GoingOn.Repository
     {
         private readonly IBlobStore blobStore;
 
-        public NewsImageBlobRepository(string connectionString, string blobContainerName)
+        public NewsImageBlobRepository(IBlobStore blobStore)
         {
-            this.blobStore = new BlobStore(connectionString, blobContainerName);
+            this.blobStore = blobStore;
         }
 
         public async Task<Image> GetNewsImage(string city, DateTime date, Guid id)

@@ -43,8 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\NewsEntity.cs" />
-    <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="IBaseNewsRepository.cs" />
     <Compile Include="IHotNewsRepository.cs" />
     <Compile Include="IImageRepository.cs" />

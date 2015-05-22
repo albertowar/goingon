@@ -11,10 +11,11 @@
 namespace GoingOn.Repository.Tests
 {
     using System;
-    using System.Configuration;
     using System.Drawing;
     using GoingOn.Repository;
+    using GoingOn.XStoreProxy.BlobStore;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
 
     // TODO: mock Store behaviour
 
@@ -28,20 +29,17 @@ namespace GoingOn.Repository.Tests
 
         private IImageRepository repository;
 
+        private Mock<IBlobStore> mockBlobStore;
+
         [TestInitialize]
         public void Initialize()
         {
-            string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
-            string blobContainerName = ConfigurationManager.AppSettings["ImageBlobContainerName"];
-
-            this.repository = new NewsImageBlobRepository(connectionString, blobContainerName);
+            this.repository = new NewsImageBlobRepository(this.mockBlobStore.Object);
         }
 
         [TestMethod]
         public void TestCreateImage()
         {
-            this.repository.CreateNewsImage(City, date, NewsId, Image).Wait();
-
             Assert.IsTrue(this.repository.ContainsImage(City, date, NewsId).Result);
 
             this.repository.DeleteNewsImage(City, date, NewsId).Wait();

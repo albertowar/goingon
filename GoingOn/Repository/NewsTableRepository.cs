@@ -15,22 +15,22 @@ namespace GoingOn.Repository
     using System.Linq;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Repository.Entities;
     using GoingOn.XStoreProxy;
+    using GoingOn.XStoreProxy.Entities;
     using GoingOn.XStoreProxy.TableStore;
 
     public class NewsTableRepository : INewsRepository, IHotNewsRepository
     {
         private readonly ITableStore tableStore;
 
-        public NewsTableRepository(string connectionString, string tableName)
+        public NewsTableRepository(ITableStore tableStore)
         {
-            this.tableStore = new TableStore(connectionString, tableName);
+            this.tableStore = tableStore;
         }
 
-        public async Task AddNews(NewsEntity newsEntity)
+        public async Task AddNews(NewsBll newsBll)
         {
-            await this.tableStore.AddTableEntity(newsEntity);
+            await this.tableStore.AddTableEntity(NewsEntity.FromNewsBll(newsBll));
         }
 
         public async Task<NewsBll> GetNews(string city, DateTime date, Guid id)
@@ -48,11 +48,6 @@ namespace GoingOn.Repository
         public async Task<bool> ContainsAnyHotNews(string city, DateTime date)
         {
             List<NewsEntity> newsList = (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
-
-            if (!newsList.Any())
-            {
-                throw new AzureTableStorageException("The news is not in the database");
-            }
 
             return newsList.Any();
         }
@@ -78,16 +73,16 @@ namespace GoingOn.Repository
             return string.Equals(news.Author, author);
         }
 
-        public async Task<bool> ContainsNewsCheckContent(NewsEntity newsEntity)
+        public async Task<bool> ContainsNewsCheckContent(NewsBll newsBll)
         {
             return 
-                (await this.tableStore.ListTableEntity<NewsEntity>(newsEntity.PartitionKey))
-                .Any(news => string.Equals(newsEntity.Title, news.Title) && string.Equals(newsEntity.Author, news.Author));
+                (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.FromNewsBll(newsBll).PartitionKey))
+                .Any(news => string.Equals(newsBll.Title, news.Title) && string.Equals(newsBll.Author, news.Author));
         }
 
         public async Task UpdateNews(NewsBll newsBll)
         {
-            await this.tableStore.UpdateTableEntity<NewsEntity>(NewsEntity.FromNewsBll(newsBll));
+            await this.tableStore.UpdateTableEntity(NewsEntity.FromNewsBll(newsBll));
         }
 
         public async Task DeleteNews(string city, DateTime date, Guid id)

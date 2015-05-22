@@ -61,6 +61,10 @@
       <Project>{D362A6E1-A218-4E3D-8D1F-0A8FC1822219}</Project>
       <Name>Common.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{73D68FF8-7F66-426F-8320-89BC224D3B09}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XStoreProxy\XStoreProxy.csproj">
       <Project>{90e34909-07f8-4eac-bf0e-285474bfd909}</Project>
       <Name>XStoreProxy</Name>
@@ -74,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlobStoreTests.cs" />
+    <Compile Include="Entitites\NewsEntityTests.cs" />
+    <Compile Include="Entitites\UserEntityTests.cs" />
     <Compile Include="TableStoreTests.cs" />
   </ItemGroup>
   <Choose>

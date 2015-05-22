@@ -14,7 +14,6 @@ namespace GoingOn.Repository
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
-    using GoingOn.Repository.Entities;
 
     public interface IBaseNewsRepository
     {
@@ -23,7 +22,7 @@ namespace GoingOn.Repository
         /// </summary>
         /// <param name="newsEntity">The news to add.</param>
         /// <returns></returns>
-        Task AddNews(NewsEntity newsEntity);
+        Task AddNews(NewsBll newsBll);
 
         /// <summary>
         /// Retrieve a collection of news.

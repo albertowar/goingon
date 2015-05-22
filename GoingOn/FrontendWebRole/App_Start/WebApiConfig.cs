@@ -23,6 +23,7 @@ namespace GoingOn.FrontendWebRole
     using GoingOn.Frontend.Validation;
     using GoingOn.FrontendWebRole.DependencyInjection;
     using GoingOn.Repository;
+    using GoingOn.XStoreProxy.TableStore;
 
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
@@ -35,9 +36,13 @@ namespace GoingOn.FrontendWebRole
             string newsTableName = ConfigurationManager.AppSettings["NewsTableName"];
             string hotNewsTableName = ConfigurationManager.AppSettings["HotNewsTableName"];
 
-            var userTableStorage = new UserTableRepository(connectionString, userTableName);
-            var newsTableStorage = new NewsTableRepository(connectionString, newsTableName);
-            var hotNewsTableStorage = new NewsTableRepository(connectionString, hotNewsTableName);
+            var userStore = new TableStore(connectionString, userTableName);
+            var newsStore = new TableStore(connectionString, newsTableName);
+            var hotNewsStore = new TableStore(connectionString, hotNewsTableName);
+
+            var userTableStorage = new UserTableRepository(userStore);
+            var newsTableStorage = new NewsTableRepository(newsStore);
+            var hotNewsTableStorage = new NewsTableRepository(hotNewsStore);
 
             // Dependy injection configuration
             var container = new UnityContainer();
