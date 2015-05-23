@@ -28,14 +28,14 @@ namespace GoingOn.FrontendWebRole.Controllers
     public class NewsThumbnailImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
-        private readonly IImageRepository newsImageBlobRepository;
+        private readonly INewsImageRepository _newsNewsImageBlobRepository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        public NewsThumbnailImageController(INewsRepository newsRepository, IImageRepository newsImageBlobRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public NewsThumbnailImageController(INewsRepository newsRepository, INewsImageRepository _newsNewsImageBlobRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;
-            this.newsImageBlobRepository = newsImageBlobRepository;
+            this._newsNewsImageBlobRepository = _newsNewsImageBlobRepository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -57,7 +57,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateGetOperation(city, date, newsId);
 
-            Image image = await this.newsImageBlobRepository.GetNewsThumbnailImage(city, DateTime.Parse(date), Guid.Parse(newsId));
+            Image image = await this._newsNewsImageBlobRepository.GetNewsThumbnailImage(city, DateTime.Parse(date), Guid.Parse(newsId));
 
             var memoryStream = new MemoryStream();
             image.Save(memoryStream, ImageFormat.Png);
@@ -83,7 +83,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetImageNews(this.newsImageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetImageNews(this._newsNewsImageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
             }

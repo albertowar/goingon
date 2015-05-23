@@ -22,32 +22,32 @@ namespace GoingOn.Repository.Tests
     [TestClass]
     public class UserRepositoryTests
     {
-        private static readonly UserBll DefaultUser = new UserBll();
+        private static readonly UserBll DefaultUser = new UserBll { City = string.Empty, Nickname = string.Empty };
 
         private IUserRepository repository;
 
-        private Mock<ITableStore> mockStore;
+        private Mock<ITableStore> mockUserStore;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.mockStore = new Mock<ITableStore>();
-            this.repository = new UserTableRepository(this.mockStore.Object);
+            this.mockUserStore = new Mock<ITableStore>();
+            this.repository = new UserTableRepository(this.mockUserStore.Object);
         }
 
         [TestMethod]
         public void TestContainsExistingUser()
         {
-            this.mockStore.Setup(store => store.GetTableEntity<UserEntity>(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(UserEntity.FromUserBll(DefaultUser)));
+            this.mockUserStore.Setup(store => store.GetTableEntity<UserEntity>(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(It.IsAny<UserEntity>()));
 
-            Assert.IsTrue(this.repository.ContainsUser(It.IsAny<UserBll>()).Result);
+            Assert.IsTrue(this.repository.ContainsUser(DefaultUser).Result);
         }
 
         [TestMethod]
         public void TestContainsNonExistingUser()
         {
-            this.mockStore.Setup(store => store.GetTableEntity<UserEntity>(It.IsAny<string>(), It.IsAny<string>())).Throws<AzureTableStorageException>();
+            this.mockUserStore.Setup(store => store.GetTableEntity<UserEntity>(It.IsAny<string>(), It.IsAny<string>())).Throws<AzureXStoreException>();
 
             Assert.IsFalse(this.repository.ContainsUser(DefaultUser).Result);
         }

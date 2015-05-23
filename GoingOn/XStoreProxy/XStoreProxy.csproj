@@ -51,7 +51,7 @@
     <Compile Include="Entities\NewsEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="TableStore\ITableStore.cs" />
-    <Compile Include="AzureTableStorageException.cs" />
+    <Compile Include="AzureXStoreException.cs" />
     <Compile Include="TableStore\TableStore.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ namespace GoingOn.XStoreProxy.TableStore
         /// Updates the entity.
         /// </summary>
         /// <param name="entity">The entity to update.</param>
-        /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
+        /// <exception cref="AzureXStoreException">If the entity is not in the database.</exception>
         Task UpdateTableEntity<T>(T entity) where T : ITableEntity, new();
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace GoingOn.XStoreProxy.TableStore
         /// </summary>
         /// <param name="partitionKey"></param>
         /// <param name="rowKey"></param>
-        /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
+        /// <exception cref="AzureXStoreException">If the entity is not in the database.</exception>
         Task<T> GetTableEntity<T>(string partitionKey, string rowKey) where T : ITableEntity, new();
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace GoingOn.XStoreProxy.TableStore
         /// </summary>
         /// <param name="partitionKey"></param>
         /// <param name="rowKey"></param>
-        /// /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
+        /// /// <exception cref="AzureXStoreException">If the entity is not in the database.</exception>
         Task DeleteTableEntity<T>(string partitionKey, string rowKey) where T : ITableEntity, new();
 
         /// <summary>

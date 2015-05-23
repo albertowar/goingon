@@ -57,7 +57,7 @@ namespace GoingOn.Common.Tests
             }
             catch (AggregateException aggregateException)
             {
-                var exception = aggregateException.GetBaseException();
+                Exception exception = aggregateException.GetBaseException();
                 wasExceptionThrown = 
                     exception.GetType() == typeof(T) &&
                     string.Equals(message, exception.Message);

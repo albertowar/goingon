@@ -34,7 +34,7 @@ namespace GoingOn.XStoreProxy.TableStore
             }
             catch (Exception e)
             {
-                throw new AzureTableStorageException(string.Format("The repository account could not be created. Error: {0}", e.Message));
+                throw new AzureXStoreException(string.Format("The repository account could not be created. Error: {0}", e.Message));
             }
         }
 
@@ -76,7 +76,7 @@ namespace GoingOn.XStoreProxy.TableStore
 
             if (element == null)
             {
-                throw new AzureTableStorageException("The entity is not in the store.");
+                throw new AzureXStoreException("The entity is not in the store.");
             }
 
             return element;

@@ -13,14 +13,14 @@ namespace GoingOn.XStoreProxy
     using System;
 
     [Serializable]
-    public class AzureTableStorageException : Exception
+    public class AzureXStoreException : Exception
     {
-        public AzureTableStorageException(string message)
+        public AzureXStoreException(string message)
             : base(message)
         {
         }
 
-        public AzureTableStorageException()
+        public AzureXStoreException()
         {
         }
     }

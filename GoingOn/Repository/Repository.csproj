@@ -43,13 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureRepositoryException.cs" />
     <Compile Include="IBaseNewsRepository.cs" />
     <Compile Include="IHotNewsRepository.cs" />
-    <Compile Include="IImageRepository.cs" />
+    <Compile Include="INewsImageRepository.cs" />
     <Compile Include="INewsRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="NewsEntityEqualityComparer.cs" />
-    <Compile Include="NewsImageBlobRepository.cs">
+    <Compile Include="NewsImageRepository.cs">
       <SubType>
       </SubType>
     </Compile>

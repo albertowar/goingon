@@ -76,13 +76,13 @@ namespace GoingOn.XStoreProxy.Tests
         [TestMethod]
         public void TestUpdateThrowsIfNotFound()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.store.UpdateTableEntity(new TableEntity(PartitionKey, RowKey)).Wait());
+            AssertExtensions.Throws<AzureXStoreException>(() => this.store.UpdateTableEntity(new TableEntity(PartitionKey, RowKey)).Wait());
         }
 
         [TestMethod]
         public void TestGetThrowsIfNotFound()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.store.GetTableEntity<TableEntity>(PartitionKey, RowKey).Wait());
+            AssertExtensions.Throws<AzureXStoreException>(() => this.store.GetTableEntity<TableEntity>(PartitionKey, RowKey).Wait());
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace GoingOn.XStoreProxy.Tests
         [TestMethod]
         public void TestDeleteThrowsIfNotFound()
         {
-            AssertExtensions.Throws<AzureTableStorageException>(() => this.store.DeleteTableEntity<TableEntity>(PartitionKey, RowKey).Wait());
+            AssertExtensions.Throws<AzureXStoreException>(() => this.store.DeleteTableEntity<TableEntity>(PartitionKey, RowKey).Wait());
         }
 
         [TestMethod]

@@ -43,7 +43,7 @@ namespace GoingOn.Repository
 
                 return true;
             }
-            catch (AzureTableStorageException)
+            catch (AzureXStoreException)
             {
                 return false;
             }

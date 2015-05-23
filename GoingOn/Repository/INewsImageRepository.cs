@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="IImageRepository.cs" company="Universidad de Malaga">
+// <copyright file="INewsImageRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -14,7 +14,7 @@ namespace GoingOn.Repository
     using System.Drawing;
     using System.Threading.Tasks;
 
-    public interface IImageRepository
+    public interface INewsImageRepository
     {
         /// <summary>
         /// Retrieve the news image.

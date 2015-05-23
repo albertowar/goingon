@@ -32,7 +32,7 @@ namespace GoingOn.XStoreProxy.BlobStore
             }
             catch (Exception e)
             {
-                throw new AzureTableStorageException(string.Format("The repository account could not be created. Error: {0}", e.Message));
+                throw new AzureXStoreException(string.Format("The repository account could not be created. Error: {0}", e.Message));
             }
         }
 

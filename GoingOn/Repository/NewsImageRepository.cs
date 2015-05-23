@@ -14,15 +14,19 @@ namespace GoingOn.Repository
     using System.Drawing;
     using System.IO;
     using System.Threading.Tasks;
+    using GoingOn.Model;
     using GoingOn.XStoreProxy.BlobStore;
 
-    public class NewsImageBlobRepository : IImageRepository
+    public class NewsNewsImageRepository : INewsImageRepository
     {
         private readonly IBlobStore blobStore;
 
-        public NewsImageBlobRepository(IBlobStore blobStore)
+        private readonly IImageManager imageManager;
+
+        public NewsNewsImageRepository(IBlobStore blobStore, IImageManager imageManager)
         {
             this.blobStore = blobStore;
+            this.imageManager = imageManager;
         }
 
         public async Task<Image> GetNewsImage(string city, DateTime date, Guid id)
@@ -31,7 +35,7 @@ namespace GoingOn.Repository
             {
                 await this.blobStore.GetBlob(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
-                return Image.FromStream(memoryStream);
+                return this.imageManager.CreateFromStream(memoryStream);
             }
         }
 
@@ -41,7 +45,7 @@ namespace GoingOn.Repository
             {
                 await this.blobStore.GetBlob(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
-                return Image.FromStream(memoryStream);
+                return this.imageManager.CreateFromStream(memoryStream);
             }
         }
 
@@ -51,8 +55,7 @@ namespace GoingOn.Repository
 
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, image.RawFormat);
-                memoryStream.Position = 0;
+                this.imageManager.SaveToSteam(image, memoryStream);
 
                 await this.blobStore.CreateBlob(blobName, memoryStream);
             }
@@ -61,16 +64,14 @@ namespace GoingOn.Repository
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    Image thumbnail = image.GetThumbnailImage(40, 40, () => false, IntPtr.Zero);
-                    thumbnail.Save(memoryStream, image.RawFormat);
-                    memoryStream.Position = 0;
+                    this.imageManager.SaveThumbnailToSteam(image, memoryStream, 40, 40);
 
                     await this.blobStore.CreateBlob(string.Format("thumbnail;{0};", blobName), memoryStream);
                 }
             }
             else
             {
-                // TODO: throw exception
+                throw new AzureRepositoryException("The image was not stored in the database.");
             }
         }
 
