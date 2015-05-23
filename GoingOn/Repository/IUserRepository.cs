@@ -24,7 +24,6 @@ namespace GoingOn.Repository
 
         /// <summary>
         /// Gets the user.
-        /// TODO: fix full table scan
         /// </summary>
         /// <param name="city"></param>
         /// <param name="nickname">The nickname.</param>

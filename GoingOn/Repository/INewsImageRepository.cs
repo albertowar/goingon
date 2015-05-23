@@ -57,5 +57,13 @@ namespace GoingOn.Repository
         /// <param name="date">The date when the news happened.</param>
         /// <param name="id">The id of the news.</param>
         Task<bool> ContainsImage(string city, DateTime date, Guid id);
+
+        /// <summary>
+        /// Returns true if the image exists.
+        /// </summary>
+        /// <param name="city">The city where the news happened.</param>
+        /// <param name="date">The date when the news happened.</param>
+        /// <param name="id">The id of the news.</param>
+        Task<bool> ContainsImageThumbnail(string city, DateTime date, Guid id);
     }
 }

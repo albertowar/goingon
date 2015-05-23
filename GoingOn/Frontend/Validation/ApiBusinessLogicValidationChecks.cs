@@ -52,9 +52,9 @@ namespace GoingOn.Frontend.Validation
             return !await repository.ContainsImage(city, date, id);
         }
 
-        public Task<bool> IsValidGetThumbnailImageNews(INewsImageRepository repository, string city, DateTime date, Guid id)
+        public async Task<bool> IsValidGetThumbnailImageNews(INewsImageRepository repository, string city, DateTime date, Guid id)
         {
-            throw new NotImplementedException();
+            return !await repository.ContainsImageThumbnail(city, date, id);
         }
 
         public async Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id)

@@ -88,5 +88,12 @@ namespace GoingOn.Repository
 
             return await this.blobStore.ContainsBlob(blobName);
         }
+
+        public async Task<bool> ContainsImageThumbnail(string city, DateTime date, Guid id)
+        {
+            string blobName = string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id);
+
+            return await this.blobStore.ContainsBlob(blobName);
+        }
     }
 }
