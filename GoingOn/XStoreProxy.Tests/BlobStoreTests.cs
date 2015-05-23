@@ -10,8 +10,51 @@
 
 namespace GoingOn.XStoreProxy.Tests
 {
+    using System;
+    using System.Configuration;
+    using System.IO;
+    using GoingOn.Common.Tests;
+    using GoingOn.XStoreProxy.BlobStore;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    [TestClass]
     public class BlobStoreTests
     {
-        // TODO: write tests
+        private const string BlobName = "blob";
+
+        private IBlobStore blobStore;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            string connectionString = ConfigurationManager.AppSettings.Get("StorageConnectionString");
+            string blobContainerName = ConfigurationManager.AppSettings.Get("ImageBlobContainerName");
+
+            this.blobStore = new BlobStore(connectionString, blobContainerName);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            try
+            {
+                this.blobStore.DeleteBlob(BlobName).Wait();
+            }
+            catch (AzureXStoreException)
+            {
+            }
+        }
+
+        [TestMethod]
+        public void GetBlobThrowsException_IfNonExisting()
+        {
+            AssertExtensions.Throws<AzureXStoreException>(() => this.blobStore.GetBlob(BlobName, new MemoryStream()).Wait());
+        }
+
+        [TestMethod]
+        public void DeleteBlobThrowsException_IfNonExisting()
+        {
+            AssertExtensions.Throws<AzureXStoreException>(() => this.blobStore.DeleteBlob(BlobName).Wait());
+        }
     }
 }

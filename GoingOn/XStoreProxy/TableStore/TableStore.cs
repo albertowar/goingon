@@ -82,9 +82,9 @@ namespace GoingOn.XStoreProxy.TableStore
             return element;
         }
 
-        // TODO: add tests
         public async Task<T> GetTableEntityByRowKey<T>(string rowKey) where T : ITableEntity, new()
         {
+            // TODO: add tests
             CloudTable table = this.GetStorageTable();
 
             string rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey);

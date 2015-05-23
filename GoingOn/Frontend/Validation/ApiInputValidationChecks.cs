@@ -39,7 +39,6 @@ namespace GoingOn.Frontend.Validation
                 user != null &&
                 this.inputValidation.IsValidNickName(user.Nickname) &&
                 this.inputValidation.IsValidPassword(user.Password) &&
-                this.inputValidation.IsValidCity(user.City) &&
                 this.inputValidation.IsValidName(user.Name) &&
                 this.inputValidation.IsValidEmail(user.Email) &&
                 ((user.BirthDate == null) || this.inputValidation.IsValidBirthDate((DateTime)user.BirthDate));

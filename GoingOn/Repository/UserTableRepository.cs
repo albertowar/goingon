@@ -30,9 +30,9 @@ namespace GoingOn.Repository
             await this.tableTableStore.AddTableEntity(UserEntity.FromUserBll(userBll));
         }
 
-        public async Task<UserBll> GetUser(string nickname)
+        public async Task<UserBll> GetUser(string city, string nickname)
         {
-            return UserEntity.ToUserBll(await this.tableTableStore.GetTableEntity<UserEntity>(null, nickname));
+            return UserEntity.ToUserBll(await this.tableTableStore.GetTableEntity<UserEntity>(city, nickname));
         }
 
         public async Task<bool> ContainsUser(UserBll userBll)
@@ -47,6 +47,11 @@ namespace GoingOn.Repository
             {
                 return false;
             }
+        }
+
+        public async Task<UserBll> GetUserByNickname(string nickname)
+        {
+            return UserEntity.ToUserBll(await this.tableTableStore.GetTableEntityByRowKey<UserEntity>(nickname));
         }
 
         public async Task UpdateUser(UserBll userBll)

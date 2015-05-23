@@ -40,8 +40,7 @@ namespace GoingOn.Repository
         /// Determines whether the specified user BLL contains user.
         /// </summary>
         /// <param name="nickname"></param>
-        /// <param name="password"></param>
-        Task<bool> ContainsUserInAnyCity(string nickname, string password);
+        Task<UserBll> GetUserByNickname(string nickname);
 
         /// <summary>
         /// Updates the user.

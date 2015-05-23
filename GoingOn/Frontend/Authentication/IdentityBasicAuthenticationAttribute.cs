@@ -13,7 +13,7 @@ namespace GoingOn.Frontend.Authentication
     using System.Security.Principal;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
     using Microsoft.Practices.Unity;
 
@@ -25,9 +25,9 @@ namespace GoingOn.Frontend.Authentication
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)
         {
             // TODO: improve the authentication mechanism to avoid full table scans
-            bool containsUserTask = await this.Repository.ContainsUserInAnyCity(nickname, password);
+            UserBll userBll = await this.Repository.GetUserByNickname(nickname);
 
-            if (containsUserTask)
+            if (string.Equals(password, userBll.Password))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
