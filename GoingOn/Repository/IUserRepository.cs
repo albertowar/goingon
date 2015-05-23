@@ -25,10 +25,9 @@ namespace GoingOn.Repository
         /// <summary>
         /// Gets the user.
         /// </summary>
-        /// <param name="city"></param>
         /// <param name="nickname">The nickname.</param>
         /// <exception cref="RepositoryException">If the user is not in the database.</exception>
-        Task<UserBll> GetUser(string city, string nickname);
+        Task<UserBll> GetUser(string nickname);
 
         /// <summary>
         /// Determines whether the specified user BLL contains user.

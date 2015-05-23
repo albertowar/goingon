@@ -13,7 +13,8 @@ namespace GoingOn.Common
     public class GOUriBuilder
     {
         private const string UserRootTemplate = "api/user";
-        private const string NewsRootTemplate = "api/city/{city}/date/{date}";
+        private const string CityRootTemplate = "api/city/{city}";
+        private const string NewsRootTemplate = CityRootTemplate + "/date/{date}";
         private const string HotNewsRootTemplate = "api/hot/{city}";
 
         public const string GetUserTemplate = UserRootTemplate + "/{userId}";

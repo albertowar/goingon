@@ -21,6 +21,8 @@ namespace GoingOn.Frontend.Entities
 
         public string Name { get; set; }
 
+        public string City { get; set; }
+
         public string Email { get; set; }
 
         public DateTime? BirthDate { get; set; }
@@ -44,13 +46,13 @@ namespace GoingOn.Frontend.Entities
                 BirthDate.GetHashCode();
         }
 
-        public static UserBll ToUserBll(string city, User user)
+        public static UserBll ToUserBll(User user)
         {
             return new UserBll 
             {
                 Nickname = user.Nickname,
                 Password = user.Password,
-                City = city,
+                City = user.City,
                 Name = user.Name,
                 Email = user.Email,
                 BirthDate = user.BirthDate

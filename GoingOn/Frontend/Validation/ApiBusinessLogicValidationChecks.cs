@@ -15,21 +15,21 @@ namespace GoingOn.Frontend.Validation
     using GoingOn.Frontend.Entities;
     using GoingOn.Repository;
 
-    public class ApiBusinessLogicValidationChecks :  IApiBusinessLogicValidationChecks
+    public class ApiBusinessLogicValidationChecks : IApiBusinessLogicValidationChecks
     {
-        public async Task<bool> IsValidCreateUser(IUserRepository repository, string city, User user)
+        public async Task<bool> IsValidCreateUser(IUserRepository repository, User user)
         {
-            return !await this.IsUserStored(repository, city, user);
+            return !await this.IsUserStored(repository, user);
         }
 
-        public async Task<bool> IsValidGetUser(IUserRepository repository, string city, string nickname)
+        public async Task<bool> IsValidGetUser(IUserRepository repository, string nickname)
         {
-            return await this.IsUserStored(repository, city, new User { Nickname = nickname });
+            return await this.IsUserStored(repository, new User { Nickname = nickname });
         }
 
-        public async Task<bool> IsValidUpdateUser(IUserRepository repository, string city, User user)
+        public async Task<bool> IsValidUpdateUser(IUserRepository repository, User user)
         {
-            return await this.IsUserStored(repository, city, user);
+            return await this.IsUserStored(repository, user);
         }
 
         public bool IsAuthorizedUser(string requesterNickname, string userNickname)
@@ -37,9 +37,9 @@ namespace GoingOn.Frontend.Validation
             return string.Equals(requesterNickname, userNickname);
         }
 
-        public async Task<bool> IsValidDeleteUser(IUserRepository repository, string city, string nickname)
+        public async Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname)
         {
-            return await this.IsUserStored(repository, city, new User { Nickname = nickname });
+            return await this.IsUserStored(repository, new User { Nickname = nickname });
         }
 
         public async Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date)
@@ -79,9 +79,9 @@ namespace GoingOn.Frontend.Validation
 
         #region Helper methods
 
-        private async Task<bool> IsUserStored(IUserRepository repository, string city, User user)
+        private async Task<bool> IsUserStored(IUserRepository repository, User user)
         {
-            return await repository.ContainsUser(User.ToUserBll(city, user));
+            return await repository.ContainsUser(User.ToUserBll(user));
         }
 
         private async Task<bool> IsNewsStored(INewsRepository repository, News news, string city, string author, DateTime date)

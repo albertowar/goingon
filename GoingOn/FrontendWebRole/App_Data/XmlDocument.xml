@@ -523,11 +523,10 @@
             <param name="newsId"></param>
             <returns></returns>
         </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Get(System.String,System.String)">
+        <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Get(System.String)">
             <summary>
             Get an user by its id.
             </summary>
-            <param name="city"></param>
             <param name="userId">The id.</param>
             <returns>The user.</returns>
         </member>

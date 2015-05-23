@@ -82,14 +82,14 @@ namespace GoingOn.XStoreProxy.TableStore
             return element;
         }
 
-        public async Task<T> GetTableEntityByRowKey<T>(string rowKey) where T : ITableEntity, new()
+        public async Task<T> GetTableEntityByPartitionKey<T>(string partitionKey) where T : ITableEntity, new()
         {
             // TODO: add tests
             CloudTable table = this.GetStorageTable();
 
-            string rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey);
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
 
-            TableQuery<T> newsQuery = new TableQuery<T>().Where(rowKeyFilter);
+            TableQuery<T> newsQuery = new TableQuery<T>().Where(partitionKeyFilter);
 
             TableQuerySegment<T> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
 
