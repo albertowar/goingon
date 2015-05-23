@@ -71,7 +71,7 @@ namespace GoingOn.Repository
             }
             else
             {
-                throw new AzureRepositoryException("The image was not stored in the database.");
+                throw new RepositoryException("The image was not stored in the database.");
             }
         }
 

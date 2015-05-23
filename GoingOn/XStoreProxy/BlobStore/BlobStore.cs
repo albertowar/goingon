@@ -60,7 +60,14 @@ namespace GoingOn.XStoreProxy.BlobStore
 
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(blobName);
 
-            await blockBlob.DownloadToStreamAsync(target);
+            try
+            {
+                await blockBlob.DownloadToStreamAsync(target);
+            }
+            catch (StorageException)
+            {
+                throw new AzureXStoreException("The blob is not in the database.");
+            }
         }
 
         public async Task DeleteBlob(string blobName)
@@ -69,7 +76,14 @@ namespace GoingOn.XStoreProxy.BlobStore
 
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(blobName);
 
-            await blockBlob.DeleteAsync();
+            try
+            {
+                await blockBlob.DeleteAsync();
+            }
+            catch (StorageException)
+            {
+                throw new AzureXStoreException("The blob is not in the database.");
+            }
         }
 
         #region Helper methods

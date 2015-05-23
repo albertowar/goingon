@@ -19,8 +19,6 @@ namespace GoingOn.Frontend.Entities
 
         public string Password { get; set; }
 
-        public string City { get; set; }
-
         public string Name { get; set; }
 
         public string Email { get; set; }
@@ -41,19 +39,18 @@ namespace GoingOn.Frontend.Entities
             return 
                 Nickname.GetHashCode() ^ 
                 Password.GetHashCode() ^
-                City.GetHashCode() ^
                 Name.GetHashCode() ^
                 Email.GetHashCode() ^
                 BirthDate.GetHashCode();
         }
 
-        public static UserBll ToUserBll(User user)
+        public static UserBll ToUserBll(string city, User user)
         {
             return new UserBll 
             {
                 Nickname = user.Nickname,
                 Password = user.Password,
-                City = user.City,
+                City = city,
                 Name = user.Name,
                 Email = user.Email,
                 BirthDate = user.BirthDate

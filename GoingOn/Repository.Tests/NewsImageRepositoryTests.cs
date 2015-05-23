@@ -47,7 +47,7 @@ namespace GoingOn.Repository.Tests
             this.mockBlobStore.Setup(blobStore => blobStore.ContainsBlob(It.IsAny<string>())).Returns(Task.FromResult(false));
             this.mockBlobStore.Setup(blobStore => blobStore.CreateBlob(It.IsAny<string>(), It.IsAny<Stream>())).Returns(Task.FromResult(0));
 
-            AssertExtensions.Throws<AzureRepositoryException>(
+            AssertExtensions.Throws<RepositoryException>(
                 () =>
                     this.repository.CreateNewsImage(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<Image>()).Wait());
         }

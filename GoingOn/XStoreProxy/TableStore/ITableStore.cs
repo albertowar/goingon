@@ -39,6 +39,13 @@ namespace GoingOn.XStoreProxy.TableStore
         Task<T> GetTableEntity<T>(string partitionKey, string rowKey) where T : ITableEntity, new();
 
         /// <summary>
+        /// Gets the entity.
+        /// </summary>
+        /// <param name="rowKey"></param>
+        /// <exception cref="AzureXStoreException">If the entity is not in the database.</exception>
+        Task<T> GetTableEntityByRowKey<T>(string rowKey) where T : ITableEntity, new();
+
+        /// <summary>
         /// List entities inside a partition (the entire partition).
         /// </summary>
         /// <param name="partitionKey"></param>

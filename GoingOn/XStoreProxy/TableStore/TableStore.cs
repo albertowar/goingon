@@ -82,6 +82,27 @@ namespace GoingOn.XStoreProxy.TableStore
             return element;
         }
 
+        // TODO: add tests
+        public async Task<T> GetTableEntityByRowKey<T>(string rowKey) where T : ITableEntity, new()
+        {
+            CloudTable table = this.GetStorageTable();
+
+            string rowKeyFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey);
+
+            TableQuery<T> newsQuery = new TableQuery<T>().Where(rowKeyFilter);
+
+            TableQuerySegment<T> retrievedNews = await table.ExecuteQuerySegmentedAsync(newsQuery, null);
+
+            T element = retrievedNews.FirstOrDefault();
+
+            if (element == null)
+            {
+                throw new AzureXStoreException("The entity is not in the store.");
+            }
+
+            return element;
+        }
+
         public async Task<IEnumerable<T>> ListTableEntity<T>(string partitionKey) where T : ITableEntity, new()
         {
             CloudTable table = this.GetStorageTable();

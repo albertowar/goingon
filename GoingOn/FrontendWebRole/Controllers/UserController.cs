@@ -41,21 +41,21 @@ namespace GoingOn.FrontendWebRole.Controllers
         /// <summary>
         /// Get an user by its id.
         /// </summary>
+        /// <param name="city"></param>
         /// <param name="userId">The id.</param>
         /// <returns>The user.</returns>
         [IdentityBasicAuthentication]
         [Authorize]
         [HttpGet]
         [Route(GOUriBuilder.GetUserTemplate)]
-        public async Task<HttpResponseMessage> Get(string userId)
+        public async Task<HttpResponseMessage> Get(string city, string userId)
         {
-            // TODO: add city to avoid table scans
             return await this.ValidateExecute(this.ExecuteGetAsync, userId);
         }
 
         [HttpPost]
         [Route(GOUriBuilder.PostUserTemplate)]
-        public async Task<HttpResponseMessage> Post([FromBody]User user)
+        public async Task<HttpResponseMessage> Post(string city, [FromBody]User user)
         {
             return await this.ValidateExecute(this.ExecutePostAsync, user);
         }
@@ -64,7 +64,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Authorize]
         [HttpPatch]
         [Route(GOUriBuilder.PatchUserTemplate)]
-        public async Task<HttpResponseMessage> Patch(string userId, [FromBody]User user)
+        public async Task<HttpResponseMessage> Patch(string city, string userId, [FromBody]User user)
         {
             return await this.ValidateExecute(this.ExecutePatchAsync, userId, user);
         }
@@ -73,7 +73,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Authorize]
         [HttpDelete]
         [Route(GOUriBuilder.DeleteUserTemplate)]
-        public async Task<HttpResponseMessage> Delete(string userId)
+        public async Task<HttpResponseMessage> Delete(string city, string userId)
         {
             return await this.ValidateExecute(this.ExecuteDeleteAsync, userId);
         }

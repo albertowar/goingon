@@ -19,7 +19,7 @@ namespace GoingOn.Repository
         /// Adds the user.
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
-        /// <exception cref="AzureTableStorageException">If the user is already in the database.</exception>
+        /// <exception cref="RepositoryException">If the user is already in the database.</exception>
         Task AddUser(UserBll userBll);
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace GoingOn.Repository
         /// </summary>
         /// <param name="city"></param>
         /// <param name="nickname">The nickname.</param>
-        /// /// <exception cref="AzureTableStorageException">If the user is not in the database.</exception>
+        /// <exception cref="RepositoryException">If the user is not in the database.</exception>
         Task<UserBll> GetUser(string city, string nickname);
 
         /// <summary>
@@ -35,6 +35,13 @@ namespace GoingOn.Repository
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
         Task<bool> ContainsUser(UserBll userBll);
+
+        /// <summary>
+        /// Determines whether the specified user BLL contains user.
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="password"></param>
+        Task<bool> ContainsUserInAnyCity(string nickname, string password);
 
         /// <summary>
         /// Updates the user.
@@ -46,7 +53,7 @@ namespace GoingOn.Repository
         /// Deletes the user.
         /// </summary>
         /// <param name="userBll">The user BLL.</param>
-        /// /// <exception cref="AzureTableStorageException">If the entity is not in the database.</exception>
+        /// <exception cref="RepositoryException">If the entity is not in the database.</exception>
         Task DeleteUser(UserBll userBll);
 
         /// <summary>
