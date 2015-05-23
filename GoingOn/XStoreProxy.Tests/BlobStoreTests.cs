@@ -40,15 +40,56 @@ namespace GoingOn.XStoreProxy.Tests
             {
                 this.blobStore.DeleteBlob(BlobName).Wait();
             }
-            catch (AzureXStoreException)
+            catch (Exception)
             {
             }
+        }
+
+        [TestMethod]
+        public void TestCreateBlob()
+        {
+            this.blobStore.CreateBlob(BlobName, new MemoryStream()).Wait();
+
+            Assert.IsTrue(this.blobStore.ContainsBlob(BlobName).Result);
+        }
+
+        [TestMethod]
+        public void TestCreateExistingBlob()
+        {
+            this.blobStore.CreateBlob(BlobName, new MemoryStream()).Wait();
+
+            this.blobStore.CreateBlob(BlobName, new MemoryStream()).Wait();
+
+            Assert.IsTrue(this.blobStore.ContainsBlob(BlobName).Result);
+        }
+
+        [TestMethod]
+        public void TestGetBlob()
+        {
+            var expectedStream = new MemoryStream();
+            this.blobStore.CreateBlob(BlobName, expectedStream).Wait();
+
+            var actualStream = new MemoryStream();
+            this.blobStore.GetBlob(BlobName, actualStream).Wait();
+
+            Assert.AreEqual(expectedStream.Length, actualStream.Length);
         }
 
         [TestMethod]
         public void GetBlobThrowsException_IfNonExisting()
         {
             AssertExtensions.Throws<AzureXStoreException>(() => this.blobStore.GetBlob(BlobName, new MemoryStream()).Wait());
+        }
+
+        [TestMethod]
+        public void TestDeleteBlob()
+        {
+            var expectedStream = new MemoryStream();
+            this.blobStore.CreateBlob(BlobName, expectedStream).Wait();
+
+            this.blobStore.DeleteBlob(BlobName).Wait();
+
+            Assert.IsFalse(this.blobStore.ContainsBlob(BlobName).Result);
         }
 
         [TestMethod]

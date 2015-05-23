@@ -44,7 +44,6 @@ namespace GoingOn.Frontend.Entities
                 {
                     Nickname = user.Nickname, 
                     Password = user.Password, 
-                    City = user.City, 
                     Name = user.Name,
                     Email = user.Email,
                     BirthDate = user.BirthDate

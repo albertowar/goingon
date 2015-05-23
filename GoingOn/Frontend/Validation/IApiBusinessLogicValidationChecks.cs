@@ -19,15 +19,15 @@ namespace GoingOn.Frontend.Validation
 
     public interface IApiBusinessLogicValidationChecks
     {
-        Task<bool> IsValidCreateUser(IUserRepository repository, User user);
+        Task<bool> IsValidCreateUser(IUserRepository repository, string city, User user);
 
-        Task<bool> IsValidGetUser(IUserRepository repository, string nickname);
+        Task<bool> IsValidGetUser(IUserRepository repository, string city, string nickname);
 
-        Task<bool> IsValidUpdateUser(IUserRepository repository, User user);
+        Task<bool> IsValidUpdateUser(IUserRepository repository, string city, User user);
 
         bool IsAuthorizedUser(string requesterNickname, string userNickname);
 
-        Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname);
+        Task<bool> IsValidDeleteUser(IUserRepository repository, string city, string nickname);
 
         Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date);
 

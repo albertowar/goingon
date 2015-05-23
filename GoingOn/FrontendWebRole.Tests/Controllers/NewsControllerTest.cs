@@ -37,7 +37,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         private Mock<IApiInputValidationChecks> inputValidation;
         private Mock<IApiBusinessLogicValidationChecks> businessValidation;
 
-        private static readonly User User = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+        private static readonly User User = new User { Nickname = "nickname", Password = "password" };
         private static readonly News News = new News { Title = "title", Content = "content" };
 
         private const string Scheme = "http";

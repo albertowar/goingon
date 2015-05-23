@@ -23,12 +23,14 @@ namespace GoingOn.Frontend.Tests.Validation
     [TestClass]
     public class ApiBusinessLogicValidationChecksTests
     {
+        private const string City = "Malaga";
+
         private Mock<IUserRepository> userStorageMock;
         private Mock<INewsRepository> newsStorageMock;
         private Mock<IHotNewsRepository> hotNewsStorageMock;
         private ApiBusinessLogicValidationChecks businessValidation;
 
-        private static readonly User user = new User { Nickname = "nickname", Password = "password", City = "Malaga" };
+        private static readonly User user = new User { Nickname = "nickname", Password = "password" };
 
         private static readonly News news = new News { Title = "title", Content = "content" };
 
@@ -46,7 +48,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(false));
 
-            Assert.IsTrue(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user).Result);
+            Assert.IsTrue(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, City, user).Result);
         }
 
         [TestMethod]
@@ -54,7 +56,7 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             this.userStorageMock.Setup(storage => storage.ContainsUser(It.IsAny<UserBll>())).Returns(Task.FromResult(true));
 
-            Assert.IsFalse(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, user).Result);
+            Assert.IsFalse(this.businessValidation.IsValidCreateUser(this.userStorageMock.Object, City, user).Result);
         }
 
         [TestMethod]
