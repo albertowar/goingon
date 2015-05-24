@@ -10,6 +10,7 @@
 
 namespace GoingOn.Frontend.Links
 {
+    // TODO: add rels for image and thumbnail
     public enum Rels
     {
         self,

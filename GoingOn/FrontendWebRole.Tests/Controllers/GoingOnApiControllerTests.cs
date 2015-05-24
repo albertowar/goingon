@@ -10,7 +10,11 @@
 
 namespace GoingOn.FrontendWebRole.Tests.Controllers
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    [TestClass]
     public class GoingOnApiControllerTests
     {
+        // TODO: add tests
     }
 }

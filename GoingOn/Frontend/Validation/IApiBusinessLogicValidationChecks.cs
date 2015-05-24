@@ -15,8 +15,8 @@ namespace GoingOn.Frontend.Validation
 
     using GoingOn.Frontend.Entities;
     using GoingOn.Repository;
-    using GoingOn.XStoreProxy;
 
+    // TODO: review if everything is well tested
     public interface IApiBusinessLogicValidationChecks
     {
         Task<bool> IsValidCreateUser(IUserRepository repository, User user);

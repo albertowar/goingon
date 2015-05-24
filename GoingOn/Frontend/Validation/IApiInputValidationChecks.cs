@@ -14,6 +14,7 @@ namespace GoingOn.Frontend.Validation
     using System.Net.Http.Headers;
     using GoingOn.Frontend.Entities;
 
+    // TODO: review if everything is well tested
     public interface IApiInputValidationChecks
     {
         bool IsValidUser(User user);

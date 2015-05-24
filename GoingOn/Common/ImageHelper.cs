@@ -12,9 +12,9 @@ namespace GoingOn.Common
 {
     using System;
     using System.Drawing;
-    using System.Drawing.Imaging;
     using System.IO;
 
+    // TODO: write tests
     public class ImageHelper 
     {
         public static Image CreateFromStream(Stream stream)
