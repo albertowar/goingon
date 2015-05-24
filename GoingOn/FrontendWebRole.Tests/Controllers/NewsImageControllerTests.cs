@@ -181,6 +181,9 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             var request = new HttpRequestMessage(HttpMethod.Post, GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
 
+            request.Content = new ByteArrayContent(new MemoryStream().GetBuffer());
+            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
+
             newsImageController.ConfigureForTesting(request, "PostImage", new HttpRoute(GOUriBuilder.NewsImageTemplate));
 
             HttpResponseMessage response = newsImageController.Post(City, Date, guid.ToString()).Result;
@@ -201,6 +204,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
 
             newsImageController.ConfigureForTesting(request, "PostImage", new HttpRoute(GOUriBuilder.NewsImageTemplate));
+            request.Content = new ByteArrayContent(new MemoryStream().GetBuffer());
+            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
 
             HttpResponseMessage response = newsImageController.Post(City, Date, guid.ToString()).Result;
 
@@ -221,6 +226,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
             var request = new HttpRequestMessage(HttpMethod.Post, GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
+            request.Content = new ByteArrayContent(new MemoryStream().GetBuffer());
+            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
 
             newsImageController.ConfigureForTesting(request, "PostImage", new HttpRoute(GOUriBuilder.NewsImageTemplate));
 
@@ -243,6 +250,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
             var request = new HttpRequestMessage(HttpMethod.Post, GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsImageUri(Scheme, Host, Port, City, Date, guid.ToString()));
+            request.Content = new ByteArrayContent(new MemoryStream().GetBuffer());
+            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
 
             newsImageController.ConfigureForTesting(request, "PostImage", new HttpRoute(GOUriBuilder.NewsImageTemplate));
 
