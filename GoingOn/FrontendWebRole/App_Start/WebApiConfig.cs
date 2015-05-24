@@ -41,7 +41,7 @@ namespace GoingOn.FrontendWebRole
             var newsStore = new TableStore(connectionString, newsTableName);
             var hotNewsStore = new TableStore(connectionString, hotNewsTableName);
 
-            var userTableStorage = new UserTableRepository(userStore);
+            var userTableStorage = new UserRepository(userStore);
             var newsTableStorage = new NewsTableRepository(newsStore);
             var hotNewsTableStorage = new NewsTableRepository(hotNewsStore);
 

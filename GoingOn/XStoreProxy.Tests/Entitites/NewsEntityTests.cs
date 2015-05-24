@@ -34,7 +34,7 @@ namespace GoingOn.XStoreProxy.Tests.Entitites
             NewsEntity convertedNews = NewsEntity.FromNewsBll(newsBll);
             
             Assert.AreEqual("Malaga;2015-05-04", convertedNews.PartitionKey);
-            Assert.AreEqual(newsBll.Id.ToString(), convertedNews.RowKey);
+            Assert.AreEqual(string.Format("NEWS;{0}", newsBll.Id.ToString()), convertedNews.RowKey);
             Assert.AreEqual(newsBll.Title, convertedNews.Title);
             Assert.AreEqual(newsBll.Content, convertedNews.Content);
             Assert.AreEqual(newsBll.Author, convertedNews.Author);
@@ -46,7 +46,7 @@ namespace GoingOn.XStoreProxy.Tests.Entitites
             var newsEntity = new NewsEntity
             {
                 PartitionKey = "Malaga;2015-05-04",
-                RowKey = Guid.NewGuid().ToString(),
+                RowKey = string.Format("NEWS;{0}", Guid.NewGuid()),
                 Title = "title",
                 Content = "content",
                 Author = "author"

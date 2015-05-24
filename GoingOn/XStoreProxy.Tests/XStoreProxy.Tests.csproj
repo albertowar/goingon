@@ -93,6 +93,7 @@
     <Compile Include="BlobStoreTests.cs" />
     <Compile Include="Entitites\NewsEntityTests.cs" />
     <Compile Include="Entitites\UserEntityTests.cs" />
+    <Compile Include="Entitites\VoteEntityTests.cs" />
     <Compile Include="TableStoreTests.cs" />
   </ItemGroup>
   <Choose>

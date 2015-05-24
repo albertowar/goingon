@@ -47,6 +47,7 @@
     <Compile Include="BlobStore\IBlobStore.cs" />
     <Compile Include="Entities\NewsEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
+    <Compile Include="Entities\VoteEntity.cs" />
     <Compile Include="TableStore\ITableStore.cs" />
     <Compile Include="AzureXStoreException.cs" />
     <Compile Include="TableStore\TableStore.cs" />

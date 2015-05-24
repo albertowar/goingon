@@ -63,7 +63,7 @@ namespace GoingOn.Repository
                 {
                     ImageHelper.SaveThumbnailToSteam(image, memoryStream, 40, 40);
 
-                    await this.blobStore.CreateBlob(string.Format("thumbnail;{0};", blobName), memoryStream);
+                    await this.blobStore.CreateBlob(string.Format("thumbnail;{0}", blobName), memoryStream);
                 }
             }
             else

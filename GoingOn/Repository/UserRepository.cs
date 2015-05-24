@@ -1,5 +1,5 @@
 ﻿// ****************************************************************************
-// <copyright file="UserTableRepository.cs" company="Universidad de Malaga">
+// <copyright file="UserRepository.cs" company="Universidad de Malaga">
 // Copyright (c) 2015 All Rights Reserved
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
@@ -16,11 +16,11 @@ namespace GoingOn.Repository
     using GoingOn.XStoreProxy.Entities;
     using GoingOn.XStoreProxy.TableStore;
 
-    public class UserTableRepository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ITableStore tableTableStore;
 
-        public UserTableRepository(ITableStore tableTableStore)
+        public UserRepository(ITableStore tableTableStore)
         {
             this.tableTableStore = tableTableStore;
         }

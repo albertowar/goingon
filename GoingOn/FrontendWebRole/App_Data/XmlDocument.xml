@@ -504,6 +504,11 @@
             <param name="newsId"></param>
             <returns></returns>
         </member>
+        <member name="T:GoingOn.FrontendWebRole.Controllers.VoteController">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:GoingOn.FrontendWebRole.Startup">
             <summary>
             OWIN startup class is just used for testing purposes

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IVoteRepository.cs" />
     <Compile Include="RepositoryException.cs" />
     <Compile Include="IBaseNewsRepository.cs" />
     <Compile Include="IHotNewsRepository.cs" />
@@ -55,7 +56,8 @@
       </SubType>
     </Compile>
     <Compile Include="NewsTableRepository.cs" />
-    <Compile Include="UserTableRepository.cs" />
+    <Compile Include="UserRepository.cs" />
+    <Compile Include="VoteRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
@@ -70,6 +72,11 @@
       <Project>{90E34909-07F8-4EAC-BF0E-285474BFD909}</Project>
       <Name>XStoreProxy</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="goten.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

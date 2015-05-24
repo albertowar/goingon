@@ -36,7 +36,7 @@ namespace GoingOn.XStoreProxy.Entities
             return new NewsEntity
             {
                 PartitionKey = NewsEntity.BuildPartitionkey(newsBll.City, newsBll.Date),
-                RowKey = newsBll.Id.ToString(),
+                RowKey = NewsEntity.BuildRowKey(newsBll.Id),
                 Title = newsBll.Title,
                 Content = newsBll.Content,
                 Author = newsBll.Author
@@ -46,10 +46,11 @@ namespace GoingOn.XStoreProxy.Entities
         public static NewsBll ToNewsBll(NewsEntity newsEntity)
         {
             Tuple<string, DateTime> pairCityDate = NewsEntity.ExtractFromPartitionKey(newsEntity.PartitionKey);
+            string id = NewsEntity.ExtractFromRowKey(newsEntity.RowKey);
 
             return new NewsBll
             {
-                Id = Guid.Parse(newsEntity.RowKey),
+                Id = Guid.Parse(id),
                 City = pairCityDate.Item1,
                 Title = newsEntity.Title,
                 Content = newsEntity.Content,
@@ -60,7 +61,7 @@ namespace GoingOn.XStoreProxy.Entities
 
         public override bool Equals(object anotherNewsObject)
         {
-            NewsEntity anotherNews = anotherNewsObject as NewsEntity;
+            var anotherNews = anotherNewsObject as NewsEntity;
 
             return
                 anotherNews != null 
@@ -98,9 +99,21 @@ namespace GoingOn.XStoreProxy.Entities
 
         public static Tuple<string, DateTime> ExtractFromPartitionKey(string partitionKey)
         {
-            var values = partitionKey.Split(';');
+            string[] values = partitionKey.Split(';');
 
             return new Tuple<string, DateTime>(values[0], DateTime.Parse(values[1]));
+        }
+
+        public static string BuildRowKey(Guid id)
+        {
+            return string.Format("NEWS;{0}", id);
+        }
+
+        public static string ExtractFromRowKey(string rowKey)
+        {
+            string[] values = rowKey.Split(';');
+
+            return values[1];
         }
     }
 }

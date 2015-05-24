@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="EntitiesBll\NewsBll.cs" />
     <Compile Include="EntitiesBll\UserBll.cs" />
+    <Compile Include="EntitiesBll\VoteBll.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

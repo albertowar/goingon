@@ -17,6 +17,8 @@ namespace GoingOn.XStoreProxy.TableStore
 
     public interface ITableStore
     {
+        // TODO: add list operation with RowKey range
+
         /// <summary>
         /// Adds the entity.
         /// </summary>

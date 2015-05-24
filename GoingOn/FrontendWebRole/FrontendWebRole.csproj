@@ -185,6 +185,7 @@
     <Compile Include="Controllers\HotNewsController.cs" />
     <Compile Include="Controllers\NewsImageController.cs" />
     <Compile Include="Controllers\NewsThumbnailImageController.cs" />
+    <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="DependencyInjection\UnityFilterProvider.cs" />
     <Compile Include="DependencyInjection\UnityResolver.cs" />
     <Compile Include="Global.asax.cs">

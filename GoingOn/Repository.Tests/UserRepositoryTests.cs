@@ -32,7 +32,7 @@ namespace GoingOn.Repository.Tests
         public void Initialize()
         {
             this.mockUserStore = new Mock<ITableStore>();
-            this.repository = new UserTableRepository(this.mockUserStore.Object);
+            this.repository = new UserRepository(this.mockUserStore.Object);
         }
 
         [TestMethod]
