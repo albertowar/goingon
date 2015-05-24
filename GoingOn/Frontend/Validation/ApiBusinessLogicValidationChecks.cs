@@ -47,12 +47,12 @@ namespace GoingOn.Frontend.Validation
             return !await this.IsNewsStored(repository, news, city, author, date);
         }
 
-        public async Task<bool> IsValidGetImageNews(INewsImageRepository repository, string city, DateTime date, Guid id)
+        public async Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
             return !await repository.ContainsImage(city, date, id);
         }
 
-        public async Task<bool> IsValidGetThumbnailImageNews(INewsImageRepository repository, string city, DateTime date, Guid id)
+        public async Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
             return !await repository.ContainsImageThumbnail(city, date, id);
         }

@@ -481,6 +481,29 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController.#ctor(GoingOn.Repository.INewsRepository,GoingOn.Repository.IImageRepository,GoingOn.Frontend.Validation.IApiInputValidationChecks,GoingOn.Frontend.Validation.IApiBusinessLogicValidationChecks)">
+            <summary>
+            
+            </summary>
+            <param name="newsRepository"></param>
+            <param name="imageRepository"></param>
+            <param name="inputValidation"></param>
+            <param name="businessValidation"></param>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController.Get(System.String,System.String,System.String)">
+            <summary>
+            Gets the thumbnail image of the news.
+            </summary>
+            <param name="city"></param>
+            <param name="date"></param>
+            <param name="newsId"></param>
+            <returns></returns>
+        </member>
         <member name="T:GoingOn.FrontendWebRole.Startup">
             <summary>
             OWIN startup class is just used for testing purposes

@@ -42,8 +42,8 @@ namespace GoingOn.XStoreProxy.Entities
         {
             return new UserEntity
             {
-                PartitionKey = userBll.City,
-                RowKey = userBll.Nickname,
+                PartitionKey = userBll.Nickname,
+                RowKey = userBll.City,
                 Password = userBll.Password,
                 Email = userBll.Email,
                 RegistrationDate = userBll.RegistrationDate,
@@ -55,9 +55,9 @@ namespace GoingOn.XStoreProxy.Entities
         {
             return new UserBll
             {
-                Nickname = userEntity.RowKey,
+                Nickname = userEntity.PartitionKey,
                 Password = userEntity.Password,
-                City = userEntity.PartitionKey,
+                City = userEntity.RowKey,
                 Email = userEntity.Email,
                 BirthDate = userEntity.BirthDate,
                 RegistrationDate = userEntity.RegistrationDate
@@ -70,7 +70,7 @@ namespace GoingOn.XStoreProxy.Entities
 
             return
                 anotherUser != null &&
-                string.Equals(this.RowKey, anotherUser.RowKey);
+                string.Equals(this.PartitionKey, anotherUser.PartitionKey);
         }
 
         public override int GetHashCode()

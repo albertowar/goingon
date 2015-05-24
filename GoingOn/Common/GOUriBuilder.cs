@@ -31,6 +31,8 @@ namespace GoingOn.Common
 
         public const string NewsImageTemplate = GetNewsTemplate + "/image";
 
+        public const string NewsImageThumbnailTemplate = GetNewsTemplate + "/thumbnail";
+
         private static string BuildUserUri(string userId)
         {
             return string.Format("{0}/{1}", UserRootTemplate, userId);
@@ -79,6 +81,11 @@ namespace GoingOn.Common
         public static string BuildAbsoluteNewsImageUri(string scheme, string host, int port, string city, string date, string newsId)
         {
             return string.Format("{0}/image", GOUriBuilder.BuildAbsoluteNewsUri(scheme, host, port, city, date, newsId));
+        }
+
+        public static string BuildAbsoluteNewsThumbnailImageUri(string scheme, string host, int port, string city, string date, string newsId)
+        {
+            return string.Format("{0}/thumbnail", GOUriBuilder.BuildAbsoluteNewsUri(scheme, host, port, city, date, newsId));
         }
     }
 }

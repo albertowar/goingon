@@ -33,8 +33,8 @@ namespace GoingOn.XStoreProxy.Tests.Entitites
 
             UserEntity generatedUserEntity = UserEntity.FromUserBll(userBll);
 
-            Assert.AreEqual(userBll.City, generatedUserEntity.PartitionKey);
-            Assert.AreEqual(userBll.Nickname, generatedUserEntity.RowKey);
+            Assert.AreEqual(userBll.City, generatedUserEntity.RowKey);
+            Assert.AreEqual(userBll.Nickname, generatedUserEntity.PartitionKey);
             Assert.AreEqual(userBll.Password, generatedUserEntity.Password);
             Assert.AreEqual(userBll.Email, generatedUserEntity.Email);
             Assert.AreEqual(userBll.BirthDate, generatedUserEntity.BirthDate);
@@ -56,8 +56,8 @@ namespace GoingOn.XStoreProxy.Tests.Entitites
 
             UserBll generatedUserBll = UserEntity.ToUserBll(userEntity);
 
-            Assert.AreEqual(userEntity.PartitionKey, generatedUserBll.City);
-            Assert.AreEqual(userEntity.RowKey, generatedUserBll.Nickname);
+            Assert.AreEqual(userEntity.PartitionKey, generatedUserBll.Nickname);
+            Assert.AreEqual(userEntity.RowKey, generatedUserBll.City);
             Assert.AreEqual(userEntity.Password, generatedUserBll.Password);
             Assert.AreEqual(userEntity.Email, generatedUserBll.Email);
             Assert.AreEqual(userEntity.BirthDate, generatedUserBll.BirthDate);
@@ -69,17 +69,17 @@ namespace GoingOn.XStoreProxy.Tests.Entitites
         {
             var referenceUser = new UserEntity
             {
-                RowKey = "username"
+                PartitionKey = "username"
             };
 
             var sameNameUser = new UserEntity
             {
-                RowKey = "username"
+                PartitionKey = "username"
             };
 
             var differentNameUser = new UserEntity
             {
-                RowKey = "anotherName"
+                PartitionKey = "anotherName"
             };
 
             Assert.AreEqual(referenceUser, sameNameUser);

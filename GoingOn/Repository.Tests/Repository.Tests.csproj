@@ -55,7 +55,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NewsImageRepositoryTests.cs" />
+    <Compile Include="ImageRepositoryTests.cs" />
     <Compile Include="NewsRepositoryTests.cs" />
     <Compile Include="UserRepositoryTests.cs" />
   </ItemGroup>

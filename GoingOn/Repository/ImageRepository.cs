@@ -17,13 +17,13 @@ namespace GoingOn.Repository
     using GoingOn.Model;
     using GoingOn.XStoreProxy.BlobStore;
 
-    public class NewsNewsImageRepository : INewsImageRepository
+    public class ImageRepository : IImageRepository
     {
         private readonly IBlobStore blobStore;
 
         private readonly IImageManager imageManager;
 
-        public NewsNewsImageRepository(IBlobStore blobStore, IImageManager imageManager)
+        public ImageRepository(IBlobStore blobStore, IImageManager imageManager)
         {
             this.blobStore = blobStore;
             this.imageManager = imageManager;

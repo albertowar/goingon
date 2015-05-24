@@ -24,9 +24,9 @@ namespace GoingOn.Repository.Tests
     // TODO: mock Store behaviour
 
     [TestClass]
-    public class NewsImageRepositoryTests
+    public class ImageRepositoryTests
     {
-        private INewsImageRepository repository;
+        private IImageRepository repository;
 
         private Mock<IBlobStore> mockBlobStore;
         private Mock<IImageManager> mockImageManager;
@@ -37,7 +37,7 @@ namespace GoingOn.Repository.Tests
             this.mockBlobStore = new Mock<IBlobStore>();
             this.mockImageManager = new Mock<IImageManager>();
 
-            this.repository = new NewsNewsImageRepository(this.mockBlobStore.Object, this.mockImageManager.Object);
+            this.repository = new ImageRepository(this.mockBlobStore.Object, this.mockImageManager.Object);
         }
 
         [TestMethod]

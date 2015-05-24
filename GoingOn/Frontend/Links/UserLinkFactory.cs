@@ -22,10 +22,12 @@ namespace GoingOn.Frontend.Links
 
         public override Uri GetUri(params string[] routeValues)
         {
+            Uri requestUri = this.request.Headers.Referrer ?? this.request.RequestUri;
+
             return new Uri(GOUriBuilder.BuildAbsoluteUserUri(
-                this.request.Headers.Referrer.Scheme,
-                this.request.Headers.Referrer.Host,
-                this.request.Headers.Referrer.Port,
+                requestUri.Scheme,
+                requestUri.Host,
+                requestUri.Port,
                 routeValues[0]));
         }
     }

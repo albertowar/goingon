@@ -28,17 +28,17 @@ namespace GoingOn.FrontendWebRole.Controllers
     public class NewsImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
-        private readonly INewsImageRepository _newsNewsImageBlobRepository;
+        private readonly IImageRepository _imageBlobRepository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
         // TODO: handle different formats (just PNG for now)
         // Use Image.RawFormat and compare with existing formats
 
-        public NewsImageController(INewsRepository newsRepository, INewsImageRepository _newsNewsImageBlobRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
+        public NewsImageController(INewsRepository newsRepository, IImageRepository _imageBlobRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;
-            this._newsNewsImageBlobRepository = _newsNewsImageBlobRepository;
+            this._imageBlobRepository = _imageBlobRepository;
             this.inputValidation = inputValidation;
             this.businessValidation = businessValidation;
         }
@@ -74,7 +74,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             await this.ValidateGetOperation(city, date, newsId);
 
-            Image image = await this._newsNewsImageBlobRepository.GetNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId));
+            Image image = await this._imageBlobRepository.GetNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId));
 
             var memoryStream = new MemoryStream();
             image.Save(memoryStream, ImageFormat.Png);
@@ -101,7 +101,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             Image image = Image.FromStream(memoryStream);
 
-            await this._newsNewsImageBlobRepository.CreateNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId), image);
+            await this._imageBlobRepository.CreateNewsImage(city, DateTime.Parse(date), Guid.Parse(newsId), image);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
@@ -134,7 +134,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetImageNews(this._newsNewsImageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetImageNews(this._imageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
             }
@@ -159,7 +159,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetImageNews(this._newsNewsImageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidGetImageNews(this._imageBlobRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The image news is not in the database");
             }

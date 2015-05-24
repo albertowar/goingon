@@ -67,7 +67,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
+            var request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
 
             newsController.ConfigureForTesting(request, "ListNews", new HttpRoute(GOUriBuilder.GetNewsTemplate));
@@ -238,7 +238,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
             newsController.ConfigureForTesting(HttpMethod.Get, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
 
-            var response = newsController.Get(City, Date, guid.ToString()).Result;
+            HttpResponseMessage response = newsController.Get(City, Date, guid.ToString()).Result;
 
             Assert.AreEqual(code, response.StatusCode);
         }

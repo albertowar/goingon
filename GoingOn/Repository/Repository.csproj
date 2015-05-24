@@ -46,11 +46,11 @@
     <Compile Include="RepositoryException.cs" />
     <Compile Include="IBaseNewsRepository.cs" />
     <Compile Include="IHotNewsRepository.cs" />
-    <Compile Include="INewsImageRepository.cs" />
+    <Compile Include="IImageRepository.cs" />
     <Compile Include="INewsRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="NewsEntityEqualityComparer.cs" />
-    <Compile Include="NewsImageRepository.cs">
+    <Compile Include="ImageRepository.cs">
       <SubType>
       </SubType>
     </Compile>
