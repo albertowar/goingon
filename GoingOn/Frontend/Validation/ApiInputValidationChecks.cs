@@ -11,8 +11,12 @@
 namespace GoingOn.Frontend.Validation
 {
     using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
     using System.Globalization;
+    using System.IO;
     using System.Net;
+    using System.Net.Http.Headers;
     using System.Text.RegularExpressions;
     using GoingOn.Common;
     using GoingOn.Frontend.Common;
@@ -155,6 +159,27 @@ namespace GoingOn.Frontend.Validation
             if (!this.inputValidation.IsValidNewsId(newsId))
             {
                 throw new InputValidationException(HttpStatusCode.BadRequest, string.Format("'{0}' is not a valid identifier for news.", newsId));
+            }
+        }
+
+        // TODO: write test for all Validate methods
+        public void ValidateImage(byte[] imageBytes, MediaTypeHeaderValue contentType)
+        {
+            try
+            {
+                ImageFormat format = MediaTypeHelper.ConvertToImageFormat(contentType);
+
+                MemoryStream memoryStream = new MemoryStream(imageBytes);
+                var image = Image.FromStream(memoryStream);
+
+                if (!format.Equals(image.RawFormat))
+                {
+                    throw new ArgumentException("The image format does not match the content type.");
+                }
+            }
+            catch (ArgumentException formatException)
+            {
+                throw new InputValidationException(HttpStatusCode.BadRequest, formatException.Message);
             }
         }
 

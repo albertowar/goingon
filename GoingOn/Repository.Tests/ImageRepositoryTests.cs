@@ -21,29 +21,24 @@ namespace GoingOn.Repository.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
-    // TODO: mock Store behaviour
-
     [TestClass]
     public class ImageRepositoryTests
     {
         private IImageRepository repository;
 
         private Mock<IBlobStore> mockBlobStore;
-        private Mock<IImageManager> mockImageManager;
 
         [TestInitialize]
         public void Initialize()
         {
             this.mockBlobStore = new Mock<IBlobStore>();
-            this.mockImageManager = new Mock<IImageManager>();
 
-            this.repository = new ImageRepository(this.mockBlobStore.Object, this.mockImageManager.Object);
+            this.repository = new ImageRepository(this.mockBlobStore.Object);
         }
 
         [TestMethod]
         public void TestNewsImageRepositoryThrowsIfNotFoundImageAfterCreate()
         {
-            this.mockImageManager.Setup(imageManager => imageManager.SaveToSteam(It.IsAny<Image>(), It.IsAny<Stream>()));
             this.mockBlobStore.Setup(blobStore => blobStore.ContainsBlob(It.IsAny<string>())).Returns(Task.FromResult(false));
             this.mockBlobStore.Setup(blobStore => blobStore.CreateBlob(It.IsAny<string>(), It.IsAny<Stream>())).Returns(Task.FromResult(0));
 

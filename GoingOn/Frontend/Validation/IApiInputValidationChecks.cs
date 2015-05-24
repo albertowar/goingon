@@ -11,7 +11,7 @@
 namespace GoingOn.Frontend.Validation
 {
     using System;
-
+    using System.Net.Http.Headers;
     using GoingOn.Frontend.Entities;
 
     public interface IApiInputValidationChecks
@@ -39,5 +39,7 @@ namespace GoingOn.Frontend.Validation
         void ValidateDiaryEntryParameters(string city, string date);
 
         void ValidateNewsParameters(string city, string date, string newsId);
+
+        void ValidateImage(byte[] imageBytes, MediaTypeHeaderValue contentType);
     }
 }

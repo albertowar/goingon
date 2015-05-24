@@ -41,8 +41,6 @@
   <ItemGroup>
     <Compile Include="EntitiesBll\NewsBll.cs" />
     <Compile Include="EntitiesBll\UserBll.cs" />
-    <Compile Include="IImageManager.cs" />
-    <Compile Include="ImageManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

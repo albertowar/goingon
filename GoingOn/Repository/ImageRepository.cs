@@ -14,19 +14,16 @@ namespace GoingOn.Repository
     using System.Drawing;
     using System.IO;
     using System.Threading.Tasks;
-    using GoingOn.Model;
+    using GoingOn.Common;
     using GoingOn.XStoreProxy.BlobStore;
 
     public class ImageRepository : IImageRepository
     {
         private readonly IBlobStore blobStore;
 
-        private readonly IImageManager imageManager;
-
-        public ImageRepository(IBlobStore blobStore, IImageManager imageManager)
+        public ImageRepository(IBlobStore blobStore)
         {
             this.blobStore = blobStore;
-            this.imageManager = imageManager;
         }
 
         public async Task<Image> GetNewsImage(string city, DateTime date, Guid id)
@@ -35,7 +32,7 @@ namespace GoingOn.Repository
             {
                 await this.blobStore.GetBlob(string.Format("{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
-                return this.imageManager.CreateFromStream(memoryStream);
+                return ImageHelper.CreateFromStream(memoryStream);
             }
         }
 
@@ -45,7 +42,7 @@ namespace GoingOn.Repository
             {
                 await this.blobStore.GetBlob(string.Format("thumbnail;{0};{1};{2}", city, date.ToString("yy-MM-dd"), id), memoryStream);
 
-                return this.imageManager.CreateFromStream(memoryStream);
+                return ImageHelper.CreateFromStream(memoryStream);
             }
         }
 
@@ -55,7 +52,7 @@ namespace GoingOn.Repository
 
             using (var memoryStream = new MemoryStream())
             {
-                this.imageManager.SaveToSteam(image, memoryStream);
+                ImageHelper.SaveToSteam(image, memoryStream);
 
                 await this.blobStore.CreateBlob(blobName, memoryStream);
             }
@@ -64,7 +61,7 @@ namespace GoingOn.Repository
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    this.imageManager.SaveThumbnailToSteam(image, memoryStream, 40, 40);
+                    ImageHelper.SaveThumbnailToSteam(image, memoryStream, 40, 40);
 
                     await this.blobStore.CreateBlob(string.Format("thumbnail;{0};", blobName), memoryStream);
                 }

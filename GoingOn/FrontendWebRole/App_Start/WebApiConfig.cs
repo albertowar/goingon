@@ -22,6 +22,7 @@ namespace GoingOn.FrontendWebRole
     
     using GoingOn.Frontend.Validation;
     using GoingOn.FrontendWebRole.DependencyInjection;
+    using GoingOn.Model;
     using GoingOn.Repository;
     using GoingOn.XStoreProxy.TableStore;
 

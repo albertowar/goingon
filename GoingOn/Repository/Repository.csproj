@@ -58,6 +58,10 @@
     <Compile Include="UserTableRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{73D68FF8-7F66-426F-8320-89BC224D3B09}</Project>
       <Name>Model</Name>
