@@ -17,8 +17,6 @@ namespace GoingOn.XStoreProxy.TableStore
 
     public interface ITableStore
     {
-        // TODO: add list operation with RowKey range
-
         /// <summary>
         /// Adds the entity.
         /// </summary>
@@ -51,6 +49,14 @@ namespace GoingOn.XStoreProxy.TableStore
         /// </summary>
         /// <param name="partitionKey"></param>
         Task<IEnumerable<T>> ListTableEntity<T>(string partitionKey) where T : ITableEntity, new();
+
+        /// <summary>
+        /// List entities inside a partition (the entire partition).
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="prefixStart"></param>
+        /// <param name="prefixEnd"></param>
+        Task<IEnumerable<T>> ListTableEntityInRange<T>(string partitionKey, string prefixStart, string prefixEnd) where T : ITableEntity, new();
 
         /// <summary>
         /// Deletes the entity.

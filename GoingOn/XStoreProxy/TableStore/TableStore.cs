@@ -131,6 +131,48 @@ namespace GoingOn.XStoreProxy.TableStore
             return tableEntities;
         }
 
+        public async Task<IEnumerable<T>> ListTableEntityInRange<T>(string partitionKey, string prefixStart, string prefixEnd) where T : ITableEntity, new()
+        {
+            // TODO: add tests
+            CloudTable table = this.GetStorageTable();
+
+            string partitionKeyFilter = TableQuery.GenerateFilterCondition(
+                "PartitionKey",
+                QueryComparisons.Equal,
+                partitionKey);
+
+            string rowKeyFilterStart = TableQuery.GenerateFilterCondition(
+                "RowKey",
+                QueryComparisons.GreaterThanOrEqual,
+                prefixStart);
+
+            string rowKeyFilterEnd = TableQuery.GenerateFilterCondition(
+                "RowKey",
+                QueryComparisons.LessThan,
+                prefixEnd);
+
+            string filter = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And,
+                TableQuery.CombineFilters(rowKeyFilterStart, TableOperators.And, rowKeyFilterEnd));
+
+            TableQuery<T> query = new TableQuery<T>().Where(filter);
+
+            var tableEntities = new List<T>();
+
+            TableContinuationToken token = null;
+
+            do
+            {
+                TableQuerySegment<T> tableEntitySegment = await table.ExecuteQuerySegmentedAsync(query, token);
+
+                tableEntities.AddRange(tableEntitySegment);
+
+                token = tableEntitySegment.ContinuationToken;
+
+            } while (token != null);
+
+            return tableEntities;
+        }
+
         public async Task DeleteTableEntity<T>(string partitionKey, string rowKey) where T : ITableEntity, new()
         {
             T entity = await this.GetTableEntity<T>(partitionKey, rowKey);

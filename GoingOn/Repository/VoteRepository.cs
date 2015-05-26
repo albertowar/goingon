@@ -11,8 +11,11 @@
 namespace GoingOn.Repository
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using GoingOn.Model.EntitiesBll;
+    using GoingOn.XStoreProxy.Entities;
     using GoingOn.XStoreProxy.TableStore;
 
     public class VoteRepository : IVoteRepository
@@ -24,29 +27,31 @@ namespace GoingOn.Repository
             this.tableTableStore = tableTableStore;
         }
 
-        public Task AddVote(string city, DateTime date, Guid id, string nickname, VoteBll votingBll)
+        public async Task AddVote(string city, DateTime date, Guid id, string nickname, VoteBll votingBll)
         {
-            throw new NotImplementedException();
+            await this.tableTableStore.AddTableEntity(VoteEntity.FromVoteBll(city, date, id, nickname, votingBll));
         }
 
-        public Task UpdateVote(string city, DateTime date, Guid id, string nickname, VoteBll votingBll)
+        public async Task UpdateVote(string city, DateTime date, Guid id, string nickname, VoteBll votingBll)
         {
-            throw new NotImplementedException();
+            await this.tableTableStore.UpdateTableEntity(VoteEntity.FromVoteBll(city, date, id, nickname, votingBll));
         }
 
-        public Task<bool> ContainsVote(string city, DateTime date, Guid id, string nickname)
+        public async Task<bool> ContainsVote(string city, DateTime date, Guid id, string nickname)
         {
-            throw new NotImplementedException();
+            List<VoteEntity> newsList = (await this.tableTableStore.ListTableEntity<VoteEntity>(VoteEntity.BuildPartitionkey(city, date))).ToList();
+
+            return newsList.Any();
         }
 
-        public Task<VoteBll> GetVote(string city, DateTime date, Guid id, string nickname)
+        public async Task<VoteBll> GetVote(string city, DateTime date, Guid id, string nickname)
         {
-            throw new NotImplementedException();
+            return VoteEntity.ToVoteBll(await this.tableTableStore.GetTableEntity<VoteEntity>(VoteEntity.BuildPartitionkey(city, date), VoteEntity.BuildRowKey(id, nickname)));
         }
 
-        public Task DeleteVote(string city, DateTime date, Guid id, string nickname)
+        public async Task DeleteVote(string city, DateTime date, Guid id, string nickname)
         {
-            throw new NotImplementedException();
+            await this.tableTableStore.DeleteTableEntity<VoteEntity>(VoteEntity.BuildPartitionkey(city, date), VoteEntity.BuildRowKey(id, nickname));
         }
     }
 }

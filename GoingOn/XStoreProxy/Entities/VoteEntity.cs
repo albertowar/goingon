@@ -16,19 +16,18 @@ namespace GoingOn.XStoreProxy.Entities
 
     public class VoteEntity : TableEntity
     {
-        // TODO: add tests
-
         /// <summary>
         /// The value of the vote
         /// </summary>
         public int Value { get; set; }
 
-        public static VoteEntity FromVoteBll(string city, DateTime date, Guid id, VoteBll voteBll)
+        public static VoteEntity FromVoteBll(string city, DateTime date, Guid id, string username, VoteBll voteBll)
         {
             return new VoteEntity
             {
                 PartitionKey = VoteEntity.BuildPartitionkey(city, date),
-                RowKey = VoteEntity.BuildRowKey(id, voteBll.Value)
+                RowKey = VoteEntity.BuildRowKey(id, username),
+                Value = voteBll.Value
             };
         }
 
@@ -77,16 +76,16 @@ namespace GoingOn.XStoreProxy.Entities
             return new Tuple<string, DateTime>(values[0], DateTime.Parse(values[1]));
         }
 
-        public static string BuildRowKey(Guid id, int value)
+        public static string BuildRowKey(Guid id, string username)
         {
-            return string.Format("VOTE;{0};{1}", id, value);
+            return string.Format("VOTE;{0};{1}", id, username);
         }
 
-        public static Tuple<string, int> ExtractFromRowKey(string rowKey)
+        public static Tuple<Guid, string> ExtractFromRowKey(string rowKey)
         {
             string[] values = rowKey.Split(';');
 
-            return new Tuple<string, int>(values[1], int.Parse(values[2]));
+            return new Tuple<Guid, string>(Guid.Parse(values[1]), values[2]);
         }
     }
 }
