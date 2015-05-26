@@ -36,8 +36,6 @@ namespace GoingOn.XStoreProxy.Entities
         /// </summary>
         public DateTime RegistrationDate { get; set; }
 
-        // TODO: missing Name (real name)
-
         public static UserEntity FromUserBll(UserBll userBll)
         {
             return new UserEntity

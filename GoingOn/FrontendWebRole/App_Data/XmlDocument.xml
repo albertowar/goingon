@@ -490,7 +490,7 @@
             <summary>
             
             </summary>
-            <param name="newsRepository"></param>
+            <param name="voteRepository"></param>
             <param name="imageRepository"></param>
             <param name="inputValidation"></param>
             <param name="businessValidation"></param>

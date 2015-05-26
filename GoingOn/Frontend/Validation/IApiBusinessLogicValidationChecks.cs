@@ -42,5 +42,8 @@ namespace GoingOn.Frontend.Validation
         Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id);
 
         Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id);
+
+        // TODO: implement and test
+        Task<bool> IsValidGetVote(IVoteRepository voteRepository, string city, DateTime parse, Guid id);
     }
 }

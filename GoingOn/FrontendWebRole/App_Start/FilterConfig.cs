@@ -14,8 +14,6 @@ namespace GoingOn.FrontendWebRole
     using System.Diagnostics.CodeAnalysis;
     using System.Web.Mvc;
 
-    // TODO: investigate how to add input validation to filters
-
     [ExcludeFromCodeCoverage]
     [GeneratedCode("ASP.NET", "Visual Studio 2013")]
     public class FilterConfig

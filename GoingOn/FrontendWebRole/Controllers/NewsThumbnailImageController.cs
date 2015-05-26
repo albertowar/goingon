@@ -12,7 +12,6 @@ namespace GoingOn.FrontendWebRole.Controllers
 {
     using System;
     using System.Drawing;
-    using System.Drawing.Imaging;
     using System.IO;
     using System.Net;
     using System.Net.Http;
@@ -23,6 +22,8 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
+
+    // TODO: require authentication
 
     /// <summary>
     /// 

@@ -24,6 +24,8 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
+    // TODO: require authentication
+
     public class NewsImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
