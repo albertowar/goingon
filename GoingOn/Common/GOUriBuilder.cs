@@ -33,6 +33,8 @@ namespace GoingOn.Common
 
         public const string NewsImageThumbnailTemplate = GetNewsTemplate + "/thumbnail";
 
+        public const string NewsVoteTemplate = GetNewsTemplate + "/vote";
+
         private static string BuildUserUri(string userId)
         {
             return string.Format("{0}/{1}", UserRootTemplate, userId);

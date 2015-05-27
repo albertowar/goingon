@@ -20,12 +20,14 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using GoingOn.Common;
+    using GoingOn.Frontend.Authentication;
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
-    // TODO: require authentication
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class NewsImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
@@ -35,6 +37,13 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         // TODO: handle different formats (just PNG for now)
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newsRepository"></param>
+        /// <param name="imageRepository"></param>
+        /// <param name="inputValidation"></param>
+        /// <param name="businessValidation"></param>
         public NewsImageController(INewsRepository newsRepository, IImageRepository imageRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;
@@ -43,6 +52,13 @@ namespace GoingOn.FrontendWebRole.Controllers
             this.businessValidation = businessValidation;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="date"></param>
+        /// <param name="newsId"></param>
+        /// <returns></returns>
         [Route(GOUriBuilder.NewsImageTemplate)]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
@@ -50,17 +66,39 @@ namespace GoingOn.FrontendWebRole.Controllers
             return await this.ValidateExecute(this.ExecuteGetAsync, city, date, newsId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="date"></param>
+        /// <param name="newsId"></param>
+        /// <returns></returns>
         [Route(GOUriBuilder.NewsImageTemplate)]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, string newsId)
         {
+            // TODO: validate if the user is the owner of the vote
+
             return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="date"></param>
+        /// <param name="newsId"></param>
+        /// <returns></returns>
         [Route(GOUriBuilder.NewsImageTemplate)]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
+            // TODO: validate if the user is the owner of the vote
+
             return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId);
         }
 

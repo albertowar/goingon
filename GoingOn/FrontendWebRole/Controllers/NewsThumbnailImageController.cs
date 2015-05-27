@@ -23,8 +23,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
-    // TODO: require authentication
-
     /// <summary>
     /// 
     /// </summary>
@@ -82,9 +80,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
             response.Content = new StreamContent(memoryStream);
-
-            // TODO: return ContentType according to RawFormat
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            response.Content.Headers.ContentType = MediaTypeHelper.ConvertFromImageFormat(image.RawFormat);
 
             return response;
         }

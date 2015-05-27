@@ -136,6 +136,7 @@
     <Compile Include="Entities\NewsREST.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\UserREST.cs" />
+    <Compile Include="Entities\Vote.cs" />
     <Compile Include="Links\Link.cs" />
     <Compile Include="Links\LinkFactory.cs" />
     <Compile Include="Links\NewsImageLinkFactory.cs" />

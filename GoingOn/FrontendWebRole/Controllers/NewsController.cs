@@ -24,12 +24,21 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class NewsController : GoingOnApiController
     {
         private readonly INewsRepository repository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newsTableRepository"></param>
+        /// <param name="inputValidation"></param>
+        /// <param name="businessValidation"></param>
         public NewsController(INewsRepository newsTableRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.repository = newsTableRepository;
@@ -64,6 +73,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
+            // TODO: validate if the user is the owner of the vote
+
             return await this.ValidateExecute(this.ExecutePostAsync, city, date, news);
         }
 
@@ -81,6 +92,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]News news)
         {
+            // TODO: validate if the user is the owner of the vote
+
             return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, news);
         }
 
@@ -97,6 +110,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
+            // TODO: validate if the user is the owner of the vote
+
             return await this.ValidateExecute(this.ExecuteDeleteAsync, city, date, newsId);
         }
 

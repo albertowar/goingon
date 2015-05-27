@@ -13,6 +13,7 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System;
     using System.Net;
     using System.Net.Http;
+    using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Web.Http;
 
@@ -25,6 +26,9 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class UserController : GoingOnApiController
     {
         private readonly IUserRepository repository;

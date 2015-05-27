@@ -15,12 +15,14 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.IO;
     using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Threading.Tasks;
     using System.Web.Http;
     using GoingOn.Common;
+    using GoingOn.Frontend.Authentication;
     using GoingOn.Frontend.Common;
+    using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
+    using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
 
     /// <summary>
@@ -32,8 +34,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         private readonly IVoteRepository voteRepository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
-
-        // TODO: require authentication
 
         /// <summary>
         /// 
@@ -51,59 +51,73 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// Get vote
+        /// Get vote.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
         /// <returns></returns>
-        [Route(GOUriBuilder.NewsImageTemplate)]
+        [Route(GOUriBuilder.NewsVoteTemplate)]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
-            return await this.ValidateExecute(this.ExecuteGetAsync, city, date, newsId);
+            return await this.ValidateExecute(this.ExecuteGetAsync, city, date, newsId, this.User.Identity.Name);
         }
 
         /// <summary>
-        /// Create vote
+        /// Create vote.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
+        /// <param name="vote">The vote to create.</param>
         /// <returns></returns>
-        [Route(GOUriBuilder.NewsImageTemplate)]
+        [Route(GOUriBuilder.NewsVoteTemplate)]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [HttpPost]
-        public async Task<HttpResponseMessage> Post(string city, string date, string newsId)
+        public async Task<HttpResponseMessage> Post(string city, string date, string newsId, [FromBody]Vote vote)
         {
-            return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId);
+            // TODO: validate if the user is the owner of the vote
+
+            return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId, this.User.Identity.Name, vote);
         }
 
         /// <summary>
-        /// Create vote
+        /// Update vote.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
+        /// <param name="vote">The vote to create.</param>
         /// <returns></returns>
-        [Route(GOUriBuilder.NewsImageTemplate)]
+        [Route(GOUriBuilder.NewsVoteTemplate)]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [HttpPost]
-        public async Task<HttpResponseMessage> Put(string city, string date, string newsId)
+        public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]Vote vote)
         {
-            return await this.ValidateExecute(this.ExecutePutAsync, city, date, newsId);
+            // TODO: validate if the user is the owner of the vote
+
+            return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, this.User.Identity.Name, vote);
         }
 
         /// <summary>
-        /// 
+        /// Delete vote.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
         /// <returns></returns>
-        [Route(GOUriBuilder.NewsImageTemplate)]
+        [Route(GOUriBuilder.NewsVoteTemplate)]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
-            return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId);
+            // TODO: validate if the user is the owner of the vote
+
+            return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId, this.User.Identity.Name);
         }
 
         #region Operations code
@@ -113,12 +127,13 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string)parameters[0];
             var date = (string)parameters[1];
             var newsId = (string)parameters[2];
+            var nickname = (string) parameters[3];
 
             await this.ValidateGetOperation(city, date, newsId);
 
-            // TODO: Behaviour
+            VoteBll vote = await this.voteRepository.GetVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname);
 
-            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK, Vote.FromVoteBll(vote));
 
             return response;
         }
@@ -128,25 +143,29 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string) parameters[0];
             var date = (string) parameters[1];
             var newsId = (string) parameters[2];
+            var nickname = (string)parameters[3];
+            var vote = (Vote) parameters[4];
 
             await this.ValidatePostOperation(city, date, newsId);
 
-            // TODO: Behaviour
+            await this.voteRepository.AddVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
             return response;
         }
 
-        private async Task<HttpResponseMessage> ExecutePutAsync(params object[] parameters)
+        private async Task<HttpResponseMessage> ExecutePatchAsync(params object[] parameters)
         {
             var city = (string)parameters[0];
             var date = (string)parameters[1];
             var newsId = (string)parameters[2];
+            var nickname = (string)parameters[3];
+            var vote = (Vote)parameters[4];
 
-            await this.ValidatePutOperation(city, date, newsId);
+            await this.ValidatePatchOperation(city, date, newsId);
 
-            // TODO: Behaviour
+            await this.voteRepository.UpdateVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
@@ -158,10 +177,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string)parameters[0];
             var date = (string)parameters[1];
             var newsId = (string)parameters[2];
+            var nickname = (string)parameters[3];
 
             await this.ValidateDeleteOperation(city, date, newsId);
 
-            // TODO: Behaviour
+            await this.voteRepository.DeleteVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
@@ -193,7 +213,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The vote is not in the database");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
             if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id)))
@@ -202,13 +222,13 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        private async Task ValidatePutOperation(string city, string date, string id)
+        private async Task ValidatePatchOperation(string city, string date, string id)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
             if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The vote is not in the database");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
             if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id)))
@@ -223,7 +243,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The vote is not in the database");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
             if (!(await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id))))
