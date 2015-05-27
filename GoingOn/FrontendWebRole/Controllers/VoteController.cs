@@ -11,8 +11,6 @@
 namespace GoingOn.FrontendWebRole.Controllers
 {
     using System;
-    using System.Drawing.Imaging;
-    using System.IO;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;

@@ -43,9 +43,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// Get an user by its id.
+        /// Get an user by its nickname.
         /// </summary>
-        /// <param name="userId">The id.</param>
+        /// <param name="userId">The nickname of the user.</param>
         /// <returns>The user.</returns>
         [IdentityBasicAuthentication]
         [Authorize]
@@ -56,6 +56,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             return await this.ValidateExecute(this.ExecuteGetAsync, userId);
         }
 
+        /// <summary>
+        /// Creates an user.
+        /// </summary>
+        /// <param name="user">The user information.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route(GOUriBuilder.PostUserTemplate)]
         public async Task<HttpResponseMessage> Post([FromBody]User user)
@@ -63,6 +68,12 @@ namespace GoingOn.FrontendWebRole.Controllers
             return await this.ValidateExecute(this.ExecutePostAsync, user);
         }
 
+        /// <summary>
+        /// Updates the user information.
+        /// </summary>
+        /// <param name="userId">The nickname of the user.</param>
+        /// <param name="user">The user information.</param>
+        /// <returns></returns>
         [IdentityBasicAuthentication]
         [Authorize]
         [HttpPatch]
@@ -72,6 +83,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             return await this.ValidateExecute(this.ExecutePatchAsync, userId, user);
         }
 
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        /// <param name="userId">The nickname of the user.</param>
+        /// <returns></returns>
         [IdentityBasicAuthentication]
         [Authorize]
         [HttpDelete]

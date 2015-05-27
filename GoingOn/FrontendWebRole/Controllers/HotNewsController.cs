@@ -36,6 +36,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             this.businessValidation = businessValidation;
         }
 
+        /// <summary>
+        /// The city of the hot news.
+        /// </summary>
+        /// <param name="city">The city of the news.</param>
+        /// <returns></returns>
         [Route(GOUriBuilder.GetHotNewsTemplate)]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(string city)

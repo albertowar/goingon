@@ -47,11 +47,11 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Get the news.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
         /// <returns></returns>
         [Route(GOUriBuilder.GetNewsTemplate)]
         [HttpGet]
@@ -61,11 +61,11 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Creates a news.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="news"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="news">The news to create.</param>
         /// <returns></returns>
         [IdentityBasicAuthentication]
         [Authorize]
@@ -79,12 +79,12 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Updates the news.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
-        /// <param name="news"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
+        /// <param name="news">The news to update.</param>
         /// <returns></returns>
         [IdentityBasicAuthentication]
         [Authorize]
@@ -98,11 +98,11 @@ namespace GoingOn.FrontendWebRole.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Deletes the news.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
         /// <returns></returns>
         [IdentityBasicAuthentication]
         [Authorize]

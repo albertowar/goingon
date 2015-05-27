@@ -51,9 +51,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         /// <summary>
         /// Gets the thumbnail image of the news.
         /// </summary>
-        /// <param name="city"></param>
-        /// <param name="date"></param>
-        /// <param name="newsId"></param>
+        /// <param name="city">The city of the news.</param>
+        /// <param name="date">The date when the news was published.</param>
+        /// <param name="newsId">The identifier of the news.</param>
         /// <returns></returns>
         [Route(GOUriBuilder.NewsImageThumbnailTemplate)]
         [HttpGet]

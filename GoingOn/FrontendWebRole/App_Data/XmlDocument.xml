@@ -481,6 +481,13 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.HotNewsController.Get(System.String)">
+            <summary>
+            The city of the hot news.
+            </summary>
+            <param name="city">The city of the news.</param>
+            <returns></returns>
+        </member>
         <member name="T:GoingOn.FrontendWebRole.Controllers.NewsImageController">
             <summary>
             
@@ -497,29 +504,29 @@
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsImageController.Get(System.String,System.String,System.String)">
             <summary>
-            
+            Get the image of the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsImageController.Post(System.String,System.String,System.String)">
             <summary>
-            
+            Creates the image of the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsImageController.Delete(System.String,System.String,System.String)">
             <summary>
-            
+            Deletes the image of the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="T:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController">
@@ -540,9 +547,9 @@
             <summary>
             Gets the thumbnail image of the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="T:GoingOn.FrontendWebRole.Controllers.VoteController">
@@ -561,38 +568,40 @@
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Get(System.String,System.String,System.String)">
             <summary>
-            Get vote
+            Get vote.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Post(System.String,System.String,System.String)">
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Post(System.String,System.String,System.String,GoingOn.Frontend.Entities.Vote)">
             <summary>
-            Create vote
+            Create vote.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
+            <param name="vote">The vote to create.</param>
             <returns></returns>
         </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Patch(System.String,System.String,System.String)">
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Patch(System.String,System.String,System.String,GoingOn.Frontend.Entities.Vote)">
             <summary>
-            Create vote
+            Update vote.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
+            <param name="vote">The vote to create.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Delete(System.String,System.String,System.String)">
             <summary>
-            
+            Delete vote.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="T:GoingOn.FrontendWebRole.Startup">
@@ -615,39 +624,39 @@
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.Get(System.String,System.String,System.String)">
             <summary>
-            
+            Get the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.Post(System.String,System.String,GoingOn.Frontend.Entities.News)">
             <summary>
-            
+            Creates a news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="news"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="news">The news to create.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.Patch(System.String,System.String,System.String,GoingOn.Frontend.Entities.News)">
             <summary>
-            
+            Updates the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
-            <param name="news"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
+            <param name="news">The news to update.</param>
             <returns></returns>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.Delete(System.String,System.String,System.String)">
             <summary>
-            
+            Deletes the news.
             </summary>
-            <param name="city"></param>
-            <param name="date"></param>
-            <param name="newsId"></param>
+            <param name="city">The city of the news.</param>
+            <param name="date">The date when the news was published.</param>
+            <param name="newsId">The identifier of the news.</param>
             <returns></returns>
         </member>
         <member name="T:GoingOn.FrontendWebRole.Controllers.UserController">
@@ -657,10 +666,32 @@
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Get(System.String)">
             <summary>
-            Get an user by its id.
+            Get an user by its nickname.
             </summary>
-            <param name="userId">The id.</param>
+            <param name="userId">The nickname of the user.</param>
             <returns>The user.</returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Post(GoingOn.Frontend.Entities.User)">
+            <summary>
+            Creates an user.
+            </summary>
+            <param name="user">The user information.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Patch(System.String,GoingOn.Frontend.Entities.User)">
+            <summary>
+            Updates the user information.
+            </summary>
+            <param name="userId">The nickname of the user.</param>
+            <param name="user">The user information.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Delete(System.String)">
+            <summary>
+            Deletes the user.
+            </summary>
+            <param name="userId">The nickname of the user.</param>
+            <returns></returns>
         </member>
     </members>
 </doc>
