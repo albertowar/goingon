@@ -39,7 +39,7 @@ namespace GoingOn.Repository
 
         public async Task<bool> ContainsVote(string city, DateTime date, Guid id, string nickname)
         {
-            List<VoteEntity> newsList = (await this.tableTableStore.ListTableEntity<VoteEntity>(VoteEntity.BuildPartitionkey(city, date))).ToList();
+            List<VoteEntity> newsList = (await this.tableTableStore.ListTableEntityByPartitionKey<VoteEntity>(VoteEntity.BuildPartitionkey(city, date))).ToList();
 
             return newsList.Any();
         }

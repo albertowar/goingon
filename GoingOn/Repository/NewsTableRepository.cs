@@ -41,13 +41,13 @@ namespace GoingOn.Repository
         public async Task<IEnumerable<NewsBll>> ListNews(string city, DateTime date)
         {
             return 
-                (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date)))
+                (await this.tableStore.ListTableEntityByPartitionKey<NewsEntity>(NewsEntity.BuildPartitionkey(city, date)))
                 .Select(NewsEntity.ToNewsBll);
         }
 
         public async Task<bool> ContainsAnyHotNews(string city, DateTime date)
         {
-            List<NewsEntity> newsList = (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
+            List<NewsEntity> newsList = (await this.tableStore.ListTableEntityByPartitionKey<NewsEntity>(NewsEntity.BuildPartitionkey(city, date))).ToList();
 
             return newsList.Any();
         }
@@ -76,7 +76,7 @@ namespace GoingOn.Repository
         public async Task<bool> ContainsNewsCheckContent(NewsBll newsBll)
         {
             return 
-                (await this.tableStore.ListTableEntity<NewsEntity>(NewsEntity.FromNewsBll(newsBll).PartitionKey))
+                (await this.tableStore.ListTableEntityByPartitionKey<NewsEntity>(NewsEntity.FromNewsBll(newsBll).PartitionKey))
                 .Any(news => string.Equals(newsBll.Title, news.Title) && string.Equals(newsBll.Author, news.Author));
         }
 

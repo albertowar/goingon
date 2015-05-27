@@ -84,7 +84,6 @@ namespace GoingOn.XStoreProxy.TableStore
 
         public async Task<T> GetTableEntityByPartitionKey<T>(string partitionKey) where T : ITableEntity, new()
         {
-            // TODO: add tests
             CloudTable table = this.GetStorageTable();
 
             string partitionKeyFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
@@ -103,7 +102,7 @@ namespace GoingOn.XStoreProxy.TableStore
             return element;
         }
 
-        public async Task<IEnumerable<T>> ListTableEntity<T>(string partitionKey) where T : ITableEntity, new()
+        public async Task<IEnumerable<T>> ListTableEntityByPartitionKey<T>(string partitionKey) where T : ITableEntity, new()
         {
             CloudTable table = this.GetStorageTable();
 
@@ -133,7 +132,6 @@ namespace GoingOn.XStoreProxy.TableStore
 
         public async Task<IEnumerable<T>> ListTableEntityInRange<T>(string partitionKey, string prefixStart, string prefixEnd) where T : ITableEntity, new()
         {
-            // TODO: add tests
             CloudTable table = this.GetStorageTable();
 
             string partitionKeyFilter = TableQuery.GenerateFilterCondition(

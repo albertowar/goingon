@@ -57,6 +57,12 @@ namespace GoingOn.Frontend.Validation
             return !await repository.ContainsImageThumbnail(city, date, id);
         }
 
+        public Task<bool> IsValidGetVote(IVoteRepository voteRepository, string city, DateTime parse, Guid id)
+        {
+            // TODO: implement and test
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id)
         {
             return await repository.ContainsNews(city, date, id);

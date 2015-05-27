@@ -92,13 +92,13 @@ namespace GoingOn.XStoreProxy.Tests
 
             this.store.AddTableEntity(entity).Wait();
 
-            Assert.IsTrue(this.store.ListTableEntity<TableEntity>(PartitionKey).Result.Any());
+            Assert.IsTrue(this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.Any());
         }
 
         [TestMethod]
         public void TestListEntityReturnsEmptyListIfNonExisting()
         {
-            Assert.IsFalse(this.store.ListTableEntity<TableEntity>(PartitionKey).Result.Any());
+            Assert.IsFalse(this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.Any());
         }
 
         [TestMethod]
@@ -110,7 +110,7 @@ namespace GoingOn.XStoreProxy.Tests
 
             this.store.DeleteTableEntity<TableEntity>(PartitionKey, RowKey).Wait();
 
-            Assert.IsFalse(this.store.ListTableEntity<TableEntity>(PartitionKey).Result.Any());
+            Assert.IsFalse(this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.Any());
         }
 
         [TestMethod]
@@ -126,7 +126,69 @@ namespace GoingOn.XStoreProxy.Tests
 
             this.store.DeleteAllTableEntitiesInPartition<TableEntity>(PartitionKey).Wait();
 
-            Assert.IsFalse(this.store.ListTableEntity<TableEntity>(PartitionKey).Result.Any());
+            Assert.IsFalse(this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.Any());
+        }
+
+        [TestMethod]
+        public void TestListTableEntityByPartitionKey()
+        {
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey)).Wait();
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey + 1)).Wait();
+
+            TableEntity[] existingEntities = this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.ToArray();
+
+            Assert.AreEqual(2, existingEntities.Length);
+            Assert.AreEqual(PartitionKey, existingEntities[0].PartitionKey);
+            Assert.AreEqual(RowKey, existingEntities[0].RowKey);
+            Assert.AreEqual(PartitionKey, existingEntities[1].PartitionKey);
+            Assert.AreEqual(RowKey + 1, existingEntities[1].RowKey);
+        }
+
+        [TestMethod]
+        public void TestListTableEntityByPartitionKeyReturnsEmptyList_WhenThereAreNoEntitiesInStore()
+        {
+            Assert.IsFalse(this.store.ListTableEntityByPartitionKey<TableEntity>(PartitionKey).Result.Any());
+        }
+
+        [TestMethod]
+        public void TestListTableEntityInRange()
+        {
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey)).Wait();
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey + 1)).Wait();
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey + 2)).Wait();
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey + 3)).Wait();
+
+            TableEntity[] existingEntities = this.store.ListTableEntityInRange<TableEntity>(PartitionKey, RowKey + 1, RowKey + 3).Result.ToArray();
+
+            Assert.AreEqual(2, existingEntities.Length);
+            Assert.AreEqual(PartitionKey, existingEntities[0].PartitionKey);
+            Assert.AreEqual(RowKey + 1, existingEntities[0].RowKey);
+            Assert.AreEqual(PartitionKey, existingEntities[1].PartitionKey);
+            Assert.AreEqual(RowKey + 2, existingEntities[1].RowKey);
+
+        }
+
+        [TestMethod]
+        public void TestListTableEntityInRangeReturnsEmptyList_WhenThereAreNoEntitiesInStore()
+        {
+            Assert.IsFalse(this.store.ListTableEntityInRange<TableEntity>(PartitionKey, string.Empty, RowKey).Result.Any());
+        }
+
+        [TestMethod]
+        public void TestGetTableEntityByPartitionKey()
+        {
+            this.store.AddTableEntity(new TableEntity(PartitionKey, RowKey)).Wait();
+
+            TableEntity entity = this.store.GetTableEntityByPartitionKey<TableEntity>(PartitionKey).Result;
+
+            Assert.AreEqual(PartitionKey, entity.PartitionKey);
+            Assert.AreEqual(RowKey, entity.RowKey);
+        }
+
+        [TestMethod]
+        public void TestGetTableEntityByPartitionKeyThrowsException_WhenThereAreNoEntitiesInStore()
+        {
+            AssertExtensions.Throws<AzureXStoreException>(() => this.store.GetTableEntityByPartitionKey<TableEntity>(PartitionKey).Wait());
         }
 
         #region Helper methods and classes

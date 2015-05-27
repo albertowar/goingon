@@ -48,7 +48,7 @@ namespace GoingOn.XStoreProxy.TableStore
         /// List entities inside a partition (the entire partition).
         /// </summary>
         /// <param name="partitionKey"></param>
-        Task<IEnumerable<T>> ListTableEntity<T>(string partitionKey) where T : ITableEntity, new();
+        Task<IEnumerable<T>> ListTableEntityByPartitionKey<T>(string partitionKey) where T : ITableEntity, new();
 
         /// <summary>
         /// List entities inside a partition (the entire partition).

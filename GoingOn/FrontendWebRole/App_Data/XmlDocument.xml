@@ -490,7 +490,7 @@
             <summary>
             
             </summary>
-            <param name="voteRepository"></param>
+            <param name="newsRepository"></param>
             <param name="imageRepository"></param>
             <param name="inputValidation"></param>
             <param name="businessValidation"></param>
@@ -508,6 +508,51 @@
             <summary>
             
             </summary>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.#ctor(GoingOn.Repository.INewsRepository,GoingOn.Repository.IVoteRepository,GoingOn.Frontend.Validation.IApiInputValidationChecks,GoingOn.Frontend.Validation.IApiBusinessLogicValidationChecks)">
+            <summary>
+            
+            </summary>
+            <param name="newsRepository"></param>
+            <param name="voteRepository"></param>
+            <param name="inputValidation"></param>
+            <param name="businessValidation"></param>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Get(System.String,System.String,System.String)">
+            <summary>
+            Get vote
+            </summary>
+            <param name="city"></param>
+            <param name="date"></param>
+            <param name="newsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Post(System.String,System.String,System.String)">
+            <summary>
+            Create vote
+            </summary>
+            <param name="city"></param>
+            <param name="date"></param>
+            <param name="newsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Put(System.String,System.String,System.String)">
+            <summary>
+            Create vote
+            </summary>
+            <param name="city"></param>
+            <param name="date"></param>
+            <param name="newsId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoingOn.FrontendWebRole.Controllers.VoteController.Delete(System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="city"></param>
+            <param name="date"></param>
+            <param name="newsId"></param>
+            <returns></returns>
         </member>
         <member name="T:GoingOn.FrontendWebRole.Startup">
             <summary>
