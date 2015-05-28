@@ -14,6 +14,9 @@ namespace GoingOn.Frontend.Entities
 
     public class Vote
     {
+        /// <summary>
+        /// The value of the vote.
+        /// </summary>
         public int Value { get; set; }
 
         public static VoteBll ToVoteBll(Vote vote)

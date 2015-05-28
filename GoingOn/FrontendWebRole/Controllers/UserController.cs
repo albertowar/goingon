@@ -13,10 +13,9 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System;
     using System.Net;
     using System.Net.Http;
-    using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Web.Http;
-
+    using System.Web.Http.Description;
     using GoingOn.Common;
     using GoingOn.Frontend.Authentication;
     using GoingOn.Frontend.Common;
@@ -51,6 +50,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Authorize]
         [HttpGet]
         [Route(GOUriBuilder.GetUserTemplate)]
+        [ResponseType(typeof(UserREST))]
         public async Task<HttpResponseMessage> Get(string userId)
         {
             return await this.ValidateExecute(this.ExecuteGetAsync, userId);

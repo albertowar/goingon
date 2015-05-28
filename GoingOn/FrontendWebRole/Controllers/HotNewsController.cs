@@ -17,6 +17,7 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using System.Web.Http.Description;
     using GoingOn.Common;
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Entities;
@@ -43,6 +44,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         /// <returns></returns>
         [Route(GOUriBuilder.GetHotNewsTemplate)]
         [HttpGet]
+        [ResponseType(typeof(List<NewsREST>))]
         public async Task<HttpResponseMessage> Get(string city)
         {
             return await this.ValidateExecute(this.ExecuteGetAsync, city);

@@ -19,20 +19,53 @@ namespace GoingOn.Frontend.Entities
 
     public class UserREST
     {
-        public User User { get; private set; }
+        /// <summary>
+        /// The nickname of the user.
+        /// </summary>
+        public string Nickname { get; set; }
 
-        public DateTime RegistrationDate { get; private set; }
+        /// <summary>
+        /// The password of the user.
+        /// </summary>
+        public string Password { get; set; }
 
+        /// <summary>
+        /// The name of the user.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The city where the user is registered to.
+        /// </summary>
+        public string City { get; set; }
+
+        /// <summary>
+        /// The email of the user.
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// The birthdate of the user.
+        /// </summary>
+        public DateTime? BirthDate { get; set; }
+
+        /// <summary>
+        /// Related information to the user.
+        /// </summary>
         public IList<Link> Links { get; private set; }
 
-        public UserREST(User user, DateTime registrationDate)
+        public UserREST(User user)
         {
-            this.User = user;
-            this.RegistrationDate = registrationDate;
+            this.Nickname = user.Nickname;
+            this.Password = user.Password;
+            this.Name = user.Name;
+            this.City = user.City;
+            this.Email = user.Email;
+            this.BirthDate = user.BirthDate;
             this.Links = new List<Link>();
         }
 
-        private UserREST(User user, DateTime registrationDate, HttpRequestMessage request) : this(user, registrationDate)
+        private UserREST(User user, HttpRequestMessage request) : this(user)
         {
             this.Links.Add(new UserLinkFactory(request).Self(user.Nickname));
         }
@@ -48,8 +81,19 @@ namespace GoingOn.Frontend.Entities
                     Email = user.Email,
                     BirthDate = user.BirthDate
                 }, 
-                user.RegistrationDate,
                 request);
+        }
+
+        public static User ToUser(UserREST user)
+        {
+            return new User
+            {
+                Nickname = user.Nickname,
+                Password = user.Password,
+                Name = user.Name,
+                Email = user.Email,
+                BirthDate = user.BirthDate
+            };
         }
     }
 }

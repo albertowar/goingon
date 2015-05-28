@@ -4,7 +4,7 @@
 // </copyright>
 // <author>Alberto Guerra Gonzalez</author>
 // <summary>
-// News Storage base interface
+// Helper class to deal with images
 // </summary>
 // ****************************************************************************
 
@@ -14,7 +14,6 @@ namespace GoingOn.Common
     using System.Drawing;
     using System.IO;
 
-    // TODO: write tests
     public class ImageHelper 
     {
         public static Image CreateFromStream(Stream stream)
@@ -22,7 +21,7 @@ namespace GoingOn.Common
             return Image.FromStream(stream);
         }
 
-        public static void SaveToSteam(Image image, Stream stream)
+        public static void SaveToStream(Image image, Stream stream)
         {
             image.Save(stream, image.RawFormat);
             stream.Position = 0;
@@ -30,8 +29,8 @@ namespace GoingOn.Common
 
         public static void SaveThumbnailToSteam(Image image, Stream stream, int width, int height)
         {
-            Image thumbnail = image.GetThumbnailImage(40, 40, () => false, IntPtr.Zero);
-            thumbnail.Save(stream, thumbnail.RawFormat);
+            Image thumbnail = image.GetThumbnailImage(width, height, () => false, IntPtr.Zero);
+            thumbnail.Save(stream, image.RawFormat);
             stream.Position = 0;
         }
     }

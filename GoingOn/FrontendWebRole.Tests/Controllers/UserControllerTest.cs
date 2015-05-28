@@ -73,7 +73,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             var actualUser = JsonConvert.DeserializeObject<UserREST>(jsonContent);
             
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(DefaultUser, actualUser.User));
+            Assert.IsTrue(new UserCompleteEqualityComparer().Equals(DefaultUser, UserREST.ToUser(actualUser)));
             Assert.IsTrue(actualUser.Links.Any());
             Assert.AreEqual("self", actualUser.Links.First().Rel);
             Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, DefaultUser.Nickname)), actualUser.Links.First().Href);

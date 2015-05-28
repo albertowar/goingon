@@ -33,10 +33,12 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertExtensions.cs" />
     <Compile Include="Base64Helper.cs" />
+    <Compile Include="ImageHelperTests.cs" />
     <Compile Include="NewsBllEqualityComparer.cs" />
     <Compile Include="NewsCompleteEqualityComparer.cs" />
     <Compile Include="GOUriBuilderTests.cs" />
@@ -45,10 +47,6 @@
     <Compile Include="UserCompleteEqualityComparer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client\Client.csproj">
-      <Project>{6F595F59-04E5-4500-8893-451062B142B9}</Project>
-      <Name>Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{9FA45D25-4549-4DE4-9827-0B218EBAB7CE}</Project>
       <Name>Common</Name>
@@ -67,6 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="goten.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

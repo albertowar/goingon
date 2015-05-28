@@ -14,7 +14,6 @@ namespace GoingOn.Frontend.Common
     using System.Drawing.Imaging;
     using System.Net.Http.Headers;
 
-    // TODO: write tests
     public class MediaTypeHelper
     {
         public static MediaTypeHeaderValue ConvertFromImageFormat(ImageFormat imageFormat)

@@ -52,7 +52,7 @@ namespace GoingOn.Repository
 
             using (var memoryStream = new MemoryStream())
             {
-                ImageHelper.SaveToSteam(image, memoryStream);
+                ImageHelper.SaveToStream(image, memoryStream);
 
                 await this.blobStore.CreateBlob(blobName, memoryStream);
             }
