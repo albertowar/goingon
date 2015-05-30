@@ -14,8 +14,10 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using System.Linq;
     using System.Net;
     using System.Net.Http;
+    using System.Security.Claims;
     using System.Security.Principal;
     using System.Threading.Tasks;
+    using System.Web.ClientServices;
     using System.Web.Http.Routing;
     
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -56,7 +58,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         public void TestGetUserReturns200OkWhenTheUserIsInTheDatabase()
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidGetUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
             this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(DefaultUser)));
 
             var userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
@@ -65,6 +67,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, DefaultUser.Nickname));
 
             userController.ConfigureForTesting(request, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
             HttpResponseMessage response = userController.Get(DefaultUser.Nickname).Result;
 
@@ -83,7 +86,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         public void TestGetUserReturns400BadRequestWhenInputValidationFails()
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
-            this.businessValidation.Setup(validation => validation.IsValidGetUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
             this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.BadRequest);
@@ -93,7 +96,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         public void TestGetUserReturns404NotFoundWhenBusinessValidationFails()
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidGetUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
             this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
@@ -143,7 +146,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidUpdateUser(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
 
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
             userController.ConfigureForTesting(new HttpMethod("PATCH"), "http://test.com/api/user/nickname", "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
@@ -161,7 +164,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
             this.inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidUpdateUser(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
 
             this.AssertPatchFails(nickname: "username", url: "http://test.com/api/user/nickname", user: DefaultUser, resultCode: HttpStatusCode.BadRequest);
         }
@@ -172,7 +175,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(false);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidUpdateUser(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
 
             this.AssertPatchFails(nickname: "nickname", url: "http://test.com/api/user/nickname", user: DefaultUser, resultCode: HttpStatusCode.BadRequest);
         }
@@ -183,7 +186,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidUpdateUser(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(false));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(false));
 
             this.AssertPatchFails(nickname: "nickname", url: "http://test.com/api/user/nickname", user: DefaultUser, resultCode: HttpStatusCode.NotFound);
         }
@@ -194,7 +197,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.inputValidation.Setup(validation => validation.IsValidUser(It.IsAny<User>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
-            this.businessValidation.Setup(validation => validation.IsValidUpdateUser(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<User>())).Returns(Task.FromResult(true));
 
             this.AssertPatchFails(nickname: "username", url: "http://test.com/api/user/nickname", user: DefaultUser, resultCode: HttpStatusCode.Unauthorized);
         }
@@ -204,7 +207,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidDeleteUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
 
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Delete, "http://test.com/api/user/" + DefaultUser.Nickname, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
@@ -221,7 +224,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidDeleteUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
 
             this.AssertDeleteFails(nickname: DefaultUser.Nickname, url: "http://test.com/api/user/" + DefaultUser.Nickname, resultCode: HttpStatusCode.BadRequest);
         }
@@ -231,7 +234,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
-            this.businessValidation.Setup(validation => validation.IsValidDeleteUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
 
             this.AssertDeleteFails(nickname: DefaultUser.Nickname, url: "http://test.com/api/user/" + DefaultUser.Nickname, resultCode: HttpStatusCode.Unauthorized);
         }
@@ -241,7 +244,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsValidDeleteUser(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
 
             this.AssertDeleteFails(nickname: DefaultUser.Nickname, url: "http://test.com/api/user/" + DefaultUser.Nickname, resultCode: HttpStatusCode.NotFound);
         }

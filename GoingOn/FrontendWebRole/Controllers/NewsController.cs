@@ -220,7 +220,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidUpdateNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }
@@ -230,7 +230,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!await this.businessValidation.IsValidDeleteNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }

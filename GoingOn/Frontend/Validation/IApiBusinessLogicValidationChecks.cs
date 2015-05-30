@@ -16,34 +16,28 @@ namespace GoingOn.Frontend.Validation
     using GoingOn.Frontend.Entities;
     using GoingOn.Repository;
 
-    // TODO: review if everything is well tested
     public interface IApiBusinessLogicValidationChecks
     {
         Task<bool> IsValidCreateUser(IUserRepository repository, User user);
 
-        Task<bool> IsValidGetUser(IUserRepository repository, string nickname);
-
-        Task<bool> IsValidUpdateUser(IUserRepository repository, User user);
-
-        bool IsAuthorizedUser(string requesterNickname, string userNickname);
-
-        Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname);
-
         Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date);
-
-        Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id);
-
-        Task<bool> IsValidUpdateNews(INewsRepository repository, string city, DateTime date, Guid id, string author);
-
-        Task<bool> IsValidDeleteNews(INewsRepository repository, string city, DateTime date, Guid id, string author);
 
         Task<bool> IsValidGetHotNews(IHotNewsRepository repository, string city, DateTime date);
 
+        Task<bool> IsValidGetVote(IVoteRepository repository, string city, DateTime parse, Guid id, string author);
+
+        bool IsAuthorizedUser(string requesterNickname, string userNickname);
+
+        Task<bool> IsUserCreated(IUserRepository repository, string nickname);
+
+        Task<bool> IsUserCreated(IUserRepository repository, User user);
+
+        Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id);
+
+        Task<bool> IsValidModifyNews(INewsRepository repository, string city, DateTime date, Guid id, string author);
+        
         Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id);
 
         Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id);
-
-        // TODO: implement and test
-        Task<bool> IsValidGetVote(IVoteRepository voteRepository, string city, DateTime parse, Guid id);
     }
 }

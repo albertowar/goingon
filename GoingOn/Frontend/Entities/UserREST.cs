@@ -16,6 +16,7 @@ namespace GoingOn.Frontend.Entities
 
     using GoingOn.Frontend.Links;
     using GoingOn.Model.EntitiesBll;
+    using Newtonsoft.Json;
 
     public class UserREST
     {
@@ -53,6 +54,17 @@ namespace GoingOn.Frontend.Entities
         /// Related information to the user.
         /// </summary>
         public IList<Link> Links { get; private set; }
+
+        [JsonConstructor]
+        public UserREST(string nickname, string password, string city, string email, DateTime? birthdate, IList<Link> links)
+        {
+            this.Nickname = nickname;
+            this.Password = password;
+            this.City = city;
+            this.Email = email;
+            this.BirthDate = birthdate;
+            this.Links = links;
+        }
 
         public UserREST(User user)
         {

@@ -165,7 +165,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The nickname format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidGetUser(this.repository, userId))
+            if (!await this.businessValidation.IsUserCreated(this.repository, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not in the database");
             }
@@ -201,7 +201,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
-            if (!await this.businessValidation.IsValidUpdateUser(this.repository, user))
+            if (!await this.businessValidation.IsUserCreated(this.repository, user))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }
@@ -219,7 +219,7 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to delete another user");
             }
 
-            if (!await this.businessValidation.IsValidDeleteUser(this.repository, userId))
+            if (!await this.businessValidation.IsUserCreated(this.repository, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user is not registered");
             }

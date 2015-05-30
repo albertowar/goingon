@@ -11,7 +11,6 @@
 namespace GoingOn.FrontendWebRole.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -25,9 +24,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class VoteController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
@@ -35,13 +31,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newsRepository"></param>
-        /// <param name="voteRepository"></param>
-        /// <param name="inputValidation"></param>
-        /// <param name="businessValidation"></param>
         public VoteController(INewsRepository newsRepository, IVoteRepository voteRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;
@@ -79,8 +68,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, string newsId, [FromBody]Vote vote)
         {
-            // TODO: validate if the user is the owner of the vote
-
             return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId, this.User.Identity.Name, vote);
         }
 
@@ -98,8 +85,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]Vote vote)
         {
-            // TODO: validate if the user is the owner of the vote
-
             return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, this.User.Identity.Name, vote);
         }
 
@@ -116,8 +101,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
-            // TODO: validate if the user is the owner of the vote
-
             return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId, this.User.Identity.Name);
         }
 
@@ -130,7 +113,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var newsId = (string)parameters[2];
             var nickname = (string) parameters[3];
 
-            await this.ValidateGetOperation(city, date, newsId);
+            await this.ValidateGetOperation(city, date, newsId, nickname);
 
             VoteBll vote = await this.voteRepository.GetVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname);
 
@@ -147,7 +130,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var nickname = (string)parameters[3];
             var vote = (Vote) parameters[4];
 
-            await this.ValidatePostOperation(city, date, newsId);
+            await this.ValidatePostOperation(city, date, newsId, nickname);
 
             await this.voteRepository.AddVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
@@ -164,7 +147,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var nickname = (string)parameters[3];
             var vote = (Vote)parameters[4];
 
-            await this.ValidatePatchOperation(city, date, newsId);
+            await this.ValidatePatchOperation(city, date, newsId, nickname);
 
             await this.voteRepository.UpdateVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
@@ -180,7 +163,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var newsId = (string)parameters[2];
             var nickname = (string)parameters[3];
 
-            await this.ValidateDeleteOperation(city, date, newsId);
+            await this.ValidateDeleteOperation(city, date, newsId, nickname);
 
             await this.voteRepository.DeleteVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname);
 
@@ -193,61 +176,61 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         #region Validation helpers
 
-        private async Task ValidateGetOperation(string city, string date, string id)
+        private async Task ValidateGetOperation(string city, string date, string id, string author)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id), author))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has not voted yet");
             }
         }
 
-        private async Task ValidatePostOperation(string city, string date, string id)
+        private async Task ValidatePostOperation(string city, string date, string id, string author)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id)))
+            if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id), author))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has already voted");
             }
         }
 
-        private async Task ValidatePatchOperation(string city, string date, string id)
+        private async Task ValidatePatchOperation(string city, string date, string id, string author)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id)))
+            if (!await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id), author))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has already voted");
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has not voted yet");
             }
         }
 
-        private async Task ValidateDeleteOperation(string city, string date, string id)
+        private async Task ValidateDeleteOperation(string city, string date, string id, string author)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
 
-            if (!(await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id), author))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has not voted yet");
             }

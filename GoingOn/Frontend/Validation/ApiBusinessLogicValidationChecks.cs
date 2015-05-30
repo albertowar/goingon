@@ -22,12 +22,12 @@ namespace GoingOn.Frontend.Validation
             return !await this.IsUserStored(repository, user);
         }
 
-        public async Task<bool> IsValidGetUser(IUserRepository repository, string nickname)
+        public async Task<bool> IsUserCreated(IUserRepository repository, string nickname)
         {
             return await this.IsUserStored(repository, new User { Nickname = nickname });
         }
 
-        public async Task<bool> IsValidUpdateUser(IUserRepository repository, User user)
+        public async Task<bool> IsUserCreated(IUserRepository repository, User user)
         {
             return await this.IsUserStored(repository, user);
         }
@@ -37,11 +37,6 @@ namespace GoingOn.Frontend.Validation
             return string.Equals(requesterNickname, userNickname);
         }
 
-        public async Task<bool> IsValidDeleteUser(IUserRepository repository, string nickname)
-        {
-            return await this.IsUserStored(repository, new User { Nickname = nickname });
-        }
-
         public async Task<bool> IsValidCreateNews(INewsRepository repository, News news, string city, string author, DateTime date)
         {
             return !await this.IsNewsStored(repository, news, city, author, date);
@@ -49,18 +44,17 @@ namespace GoingOn.Frontend.Validation
 
         public async Task<bool> IsValidGetImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
-            return !await repository.ContainsImage(city, date, id);
+            return await repository.ContainsImage(city, date, id);
         }
 
         public async Task<bool> IsValidGetThumbnailImageNews(IImageRepository repository, string city, DateTime date, Guid id)
         {
-            return !await repository.ContainsImageThumbnail(city, date, id);
+            return await repository.ContainsImageThumbnail(city, date, id);
         }
 
-        public Task<bool> IsValidGetVote(IVoteRepository voteRepository, string city, DateTime parse, Guid id)
+        public async Task<bool> IsValidGetVote(IVoteRepository repository, string city, DateTime parse, Guid id, string author)
         {
-            // TODO: implement and test
-            throw new NotImplementedException();
+            return await repository.ContainsVote(city, parse, id, author);
         }
 
         public async Task<bool> IsValidGetNews(INewsRepository repository, string city, DateTime date, Guid id)
@@ -68,12 +62,7 @@ namespace GoingOn.Frontend.Validation
             return await repository.ContainsNews(city, date, id);
         }
 
-        public async Task<bool> IsValidUpdateNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
-        {
-            return await repository.IsAuthorOf(city, date, id, author);
-        }
-
-        public async Task<bool> IsValidDeleteNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
+        public async Task<bool> IsValidModifyNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
         {
             return await repository.IsAuthorOf(city, date, id, author);
         }
@@ -85,7 +74,7 @@ namespace GoingOn.Frontend.Validation
 
         #region Helper methods
 
-        private async Task<bool> IsUserStored(IUserRepository repository, User user)
+        public async Task<bool> IsUserStored(IUserRepository repository, User user)
         {
             return await repository.ContainsUser(User.ToUserBll(user));
         }
