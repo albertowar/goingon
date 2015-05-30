@@ -11,6 +11,9 @@
 namespace GoingOn.Frontend.Tests.Validation
 {
     using System;
+    using System.Net.Http.Headers;
+    using GoingOn.Common.Tests;
+    using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Entities;
     using GoingOn.Frontend.Validation;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,8 +29,8 @@ namespace GoingOn.Frontend.Tests.Validation
         [TestInitialize]
         public void Initialize()
         {
-            mockInputValidation = new Mock<IApiInputValidationChecks>();
-            inputValidation = new ApiInputValidationChecks(mockInputValidation.Object);
+            this.mockInputValidation = new Mock<IApiInputValidationChecks>();
+            this.inputValidation = new ApiInputValidationChecks(mockInputValidation.Object);
         }
 
         [TestMethod]
@@ -35,12 +38,12 @@ namespace GoingOn.Frontend.Tests.Validation
         {
             User user = new User();
 
-            mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
-            mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
-            mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
-            mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
-            mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
-            mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidNickName(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidPassword(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidCity(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidName(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidEmail(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(iv => iv.IsValidBirthDate(It.IsAny<DateTime>())).Returns(true);
 
             Assert.IsTrue(inputValidation.IsValidUser(user));
         }
@@ -185,9 +188,9 @@ namespace GoingOn.Frontend.Tests.Validation
         }
 
         [TestMethod]
-        public void TestIsValidNewsFailsWithNullUser()
+        public void TestIsValidNewsFailsWithNullNews()
         {
-            Assert.IsFalse(inputValidation.IsValidNews(null));
+            Assert.IsFalse(this.inputValidation.IsValidNews(null));
         }
 
         [TestMethod]
@@ -197,9 +200,9 @@ namespace GoingOn.Frontend.Tests.Validation
             var emptyTitleNews = new News { Title = string.Empty, Content = "content" };
             var whiteSpaceTitleNews = new News { Title = " \n\t", Content = "content" };
 
-            Assert.IsFalse(inputValidation.IsValidNews(nullTitleNews));
-            Assert.IsFalse(inputValidation.IsValidNews(emptyTitleNews));
-            Assert.IsFalse(inputValidation.IsValidNews(whiteSpaceTitleNews));
+            Assert.IsFalse(this.inputValidation.IsValidNews(nullTitleNews));
+            Assert.IsFalse(this.inputValidation.IsValidNews(emptyTitleNews));
+            Assert.IsFalse(this.inputValidation.IsValidNews(whiteSpaceTitleNews));
         }
 
         [TestMethod]
@@ -212,6 +215,56 @@ namespace GoingOn.Frontend.Tests.Validation
             Assert.IsFalse(inputValidation.IsValidNews(nullContent));
             Assert.IsFalse(inputValidation.IsValidNews(emptyContentNews));
             Assert.IsFalse(inputValidation.IsValidNews(whiteSpaceContentNews));
+        }
+
+        [TestMethod]
+        public void TestIsValidNewsFailsWithWrongId()
+        {
+            Assert.IsTrue(this.inputValidation.IsValidNewsId(Guid.NewGuid().ToString()));
+            Assert.IsFalse(this.inputValidation.IsValidNewsId("not id"));
+        }
+
+        [TestMethod]
+        public void TestIsValidNewsDate()
+        {
+            Assert.IsTrue(this.inputValidation.IsValidNewsDate("2015-05-21"));
+            Assert.IsFalse(this.inputValidation.IsValidNewsDate("2015/05/21"));
+            Assert.IsFalse(this.inputValidation.IsValidNewsDate("not a date"));
+            Assert.IsFalse(this.inputValidation.IsValidNewsDate(string.Empty));
+        }
+
+        [TestMethod]
+        public void TestValidateDiaryEntryParametersThrowsException_IfCityIsInvalid()
+        {
+            this.mockInputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(false);
+            this.mockInputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(true);
+
+            AssertExtensions.Throws<InputValidationException>(() => this.inputValidation.ValidateDiaryEntryParameters(It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [TestMethod]
+        public void TestValidateDiaryEntryParametersThrowsException_IfDateIsInvalid()
+        {
+            this.mockInputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(false);
+
+            AssertExtensions.Throws<InputValidationException>(() => this.inputValidation.ValidateDiaryEntryParameters(It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [TestMethod]
+        public void TestValidateNewsParametersThrowsException_IfDateIsInvalid()
+        {
+            this.mockInputValidation.Setup(validation => validation.IsValidCity(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(validation => validation.IsValidNewsDate(It.IsAny<string>())).Returns(true);
+            this.mockInputValidation.Setup(validation => validation.IsValidNewsId(It.IsAny<string>())).Returns(false);
+
+            AssertExtensions.Throws<InputValidationException>(() => this.inputValidation.ValidateNewsParameters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [TestMethod]
+        public void TestValidateImageThrowsException_IfImageHasWrongFormat()
+        {
+            AssertExtensions.Throws<InputValidationException>(() => this.inputValidation.ValidateImage(new byte[0], new MediaTypeHeaderValue("image/png")));
         }
     }
 }

@@ -24,21 +24,12 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class NewsController : GoingOnApiController
     {
         private readonly INewsRepository repository;
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newsTableRepository"></param>
-        /// <param name="inputValidation"></param>
-        /// <param name="businessValidation"></param>
         public NewsController(INewsRepository newsTableRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.repository = newsTableRepository;
@@ -74,9 +65,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, [FromBody]News news)
         {
-            // TODO: validate if the user is the owner of the vote
-
-            return await this.ValidateExecute(this.ExecutePostAsync, city, date, news);
+            return await this.ValidateExecute(this.ExecutePostAsync, city, date, news, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -93,9 +82,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]News news)
         {
-            // TODO: validate if the user is the owner of the vote
-
-            return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, news);
+            return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, news, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -111,9 +98,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
-            // TODO: validate if the user is the owner of the vote
-
-            return await this.ValidateExecute(this.ExecuteDeleteAsync, city, date, newsId);
+            return await this.ValidateExecute(this.ExecuteDeleteAsync, city, date, newsId, this.User.Identity.Name);
         }
 
         #region Operations code
@@ -138,14 +123,13 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string)parameters[0];
             var date = (string)parameters[1];
             var news = (News)parameters[2];
+            var authenticatedUser = (string)parameters[3];
 
-            string nickname = this.User.Identity.Name;
-
-            await this.ValidatePostNewsOperation(city, date, news, nickname);
+            await this.ValidatePostNewsOperation(city, date, news, authenticatedUser);
 
             Guid newsId = Guid.NewGuid();
 
-            await this.repository.AddNews(News.ToNewsBll(newsId, news, city, nickname, DateTime.Parse(date)));
+            await this.repository.AddNews(News.ToNewsBll(newsId, news, city, authenticatedUser, DateTime.Parse(date)));
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.Created, "The news was added to the database");
             response.Headers.Location = new NewsLinkFactory(this.Request).Self(city, date, newsId.ToString()).Href;
@@ -159,8 +143,9 @@ namespace GoingOn.FrontendWebRole.Controllers
             var date = (string)parameters[1];
             var newsId = (string)parameters[2];
             var news = (News)parameters[3];
+            var authenticatedUser = (string)parameters[4];
 
-            await this.ValidatePatchNewsOperation(city, date, newsId, news);
+            await this.ValidatePatchNewsOperation(city, date, newsId, news, authenticatedUser);
 
             await this.repository.UpdateNews(News.ToNewsBll(Guid.Parse(newsId), news, city, this.User.Identity.Name, DateTime.Parse(date)));
 
@@ -171,11 +156,12 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         private async Task<HttpResponseMessage> ExecuteDeleteAsync(params object[] parameters)
         {
-            string city = (string)parameters[0];
-            string date = (string)parameters[1];
-            string newsId = (string)parameters[2];
+            var city = (string)parameters[0];
+            var date = (string)parameters[1];
+            var newsId = (string)parameters[2];
+            var authenticatedUser = (string)parameters[3];
 
-            await this.ValidateDeleteNewsOperation(city, date, newsId);
+            await this.ValidateDeleteNewsOperation(city, date, newsId, authenticatedUser);
 
             await this.repository.DeleteNews(city, DateTime.Parse(date), Guid.Parse(newsId));
 
@@ -211,7 +197,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidatePatchNewsOperation(string city, string date, string id, News news)
+        public async Task ValidatePatchNewsOperation(string city, string date, string id, News news, string authenticatedUser)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
@@ -220,17 +206,17 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
-            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }
         }
 
-        public async Task ValidateDeleteNewsOperation(string city, string date, string id)
+        public async Task ValidateDeleteNewsOperation(string city, string date, string id, string authenticatedUser)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), this.User.Identity.Name))
+            if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
             }

@@ -24,7 +24,6 @@ namespace GoingOn.Frontend.Authentication
 
         protected override async Task<IPrincipal> AuthenticateAsync(string nickname, string password, CancellationToken cancellationToken)
         {
-            // TODO: improve the authentication mechanism to avoid full table scans
             UserBll userBll = await this.Repository.GetUserByNickname(nickname);
 
             if (string.Equals(password, userBll.Password))

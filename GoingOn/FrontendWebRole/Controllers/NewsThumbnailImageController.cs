@@ -18,13 +18,11 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using GoingOn.Common;
+    using GoingOn.Frontend.Authentication;
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class NewsThumbnailImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
@@ -32,13 +30,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newsRepository"></param>
-        /// <param name="imageRepository"></param>
-        /// <param name="inputValidation"></param>
-        /// <param name="businessValidation"></param>
         public NewsThumbnailImageController(INewsRepository newsRepository, IImageRepository imageRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;

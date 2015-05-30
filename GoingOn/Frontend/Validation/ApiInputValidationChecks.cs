@@ -162,7 +162,6 @@ namespace GoingOn.Frontend.Validation
             }
         }
 
-        // TODO: write test for all Validate methods
         public void ValidateImage(byte[] imageBytes, MediaTypeHeaderValue contentType)
         {
             try

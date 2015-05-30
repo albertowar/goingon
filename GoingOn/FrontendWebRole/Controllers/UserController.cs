@@ -25,9 +25,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Model.EntitiesBll;
     using GoingOn.Repository;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class UserController : GoingOnApiController
     {
         private readonly IUserRepository repository;
@@ -53,7 +50,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [ResponseType(typeof(UserREST))]
         public async Task<HttpResponseMessage> Get(string userId)
         {
-            return await this.ValidateExecute(this.ExecuteGetAsync, userId);
+            return await this.ValidateExecute(this.ExecuteGetAsync, userId, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -65,7 +62,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.PostUserTemplate)]
         public async Task<HttpResponseMessage> Post([FromBody]User user)
         {
-            return await this.ValidateExecute(this.ExecutePostAsync, user);
+            return await this.ValidateExecute(this.ExecutePostAsync, user, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -80,7 +77,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.PatchUserTemplate)]
         public async Task<HttpResponseMessage> Patch(string userId, [FromBody]User user)
         {
-            return await this.ValidateExecute(this.ExecutePatchAsync, userId, user);
+            return await this.ValidateExecute(this.ExecutePatchAsync, userId, user, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -94,7 +91,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.DeleteUserTemplate)]
         public async Task<HttpResponseMessage> Delete(string userId)
         {
-            return await this.ValidateExecute(this.ExecuteDeleteAsync, userId);
+            return await this.ValidateExecute(this.ExecuteDeleteAsync, userId, this.User.Identity.Name);
         }
 
         #region Operations code
@@ -102,8 +99,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         private async Task<HttpResponseMessage> ExecuteGetAsync(params object[] parameters)
         {
             var userId = (string)parameters[0];
+            var authenticatedUser = (string)parameters[1];
 
-            await this.ValidateGetOperation(userId);
+            await this.ValidateGetOperation(userId, authenticatedUser);
 
             UserREST user = UserREST.FromUserBll(await this.repository.GetUser(userId), this.Request);
 
@@ -133,8 +131,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             var userId = (string) parameters[0];
             var user = (User) parameters[1];
+            var authenticatedUser = (string)parameters[2];
 
-            await this.ValidatePatchNewsOperation(userId, user);
+            await this.ValidatePatchNewsOperation(userId, user, authenticatedUser);
 
             UserBll userToUpdate = Frontend.Entities.User.ToUserBll(user);
 
@@ -146,8 +145,9 @@ namespace GoingOn.FrontendWebRole.Controllers
         private async Task<HttpResponseMessage> ExecuteDeleteAsync(params object[] parameters)
         {
             var userId = (string)parameters[0];
+            var authenticatedUser = (string)parameters[1];
 
-            await this.ValidateDeleteNewsOperation(userId);
+            await this.ValidateDeleteNewsOperation(userId, authenticatedUser);
 
             await this.repository.DeleteUser(Frontend.Entities.User.ToUserBll(new User { Nickname = userId }));
 
@@ -158,11 +158,17 @@ namespace GoingOn.FrontendWebRole.Controllers
 
         #region Validation code
 
-        public async Task ValidateGetOperation(string userId)
+        public async Task ValidateGetOperation(string userId, string authenticatedUser)
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The nickname format is incorrect");
+            }
+
+            // TODO: write tests
+            if (!this.businessValidation.IsAuthorizedUser(authenticatedUser, userId))
+            {
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not allow to retrieve the resource");
             }
 
             if (!await this.businessValidation.IsUserCreated(this.repository, userId))
@@ -184,21 +190,22 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidatePatchNewsOperation(string userId, User user)
+        public async Task ValidatePatchNewsOperation(string userId, User user, string authenticatedUser)
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
+            // TODO: write tests
+            if (!this.businessValidation.IsAuthorizedUser(authenticatedUser, userId))
+            {
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not allow to retrieve the resource");
+            }
+
             if (!this.inputValidation.IsValidUser(user))
             {
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
-            }
-
-            if (!this.businessValidation.IsAuthorizedUser(this.User.Identity.Name, userId))
-            {
-                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to update another user");
             }
 
             if (!await this.businessValidation.IsUserCreated(this.repository, user))
@@ -207,7 +214,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        public async Task ValidateDeleteNewsOperation(string userId)
+        public async Task ValidateDeleteNewsOperation(string id, string userId)
         {
             if (!this.inputValidation.IsValidNickName(userId))
             {

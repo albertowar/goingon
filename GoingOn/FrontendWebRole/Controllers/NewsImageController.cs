@@ -25,9 +25,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class NewsImageController : GoingOnApiController
     {
         private readonly INewsRepository newsRepository;
@@ -35,15 +32,6 @@ namespace GoingOn.FrontendWebRole.Controllers
         private readonly IApiInputValidationChecks inputValidation;
         private readonly IApiBusinessLogicValidationChecks businessValidation;
 
-        // TODO: handle different formats (just PNG for now)
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newsRepository"></param>
-        /// <param name="imageRepository"></param>
-        /// <param name="inputValidation"></param>
-        /// <param name="businessValidation"></param>
         public NewsImageController(INewsRepository newsRepository, IImageRepository imageRepository, IApiInputValidationChecks inputValidation, IApiBusinessLogicValidationChecks businessValidation)
         {
             this.newsRepository = newsRepository;
@@ -79,9 +67,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post(string city, string date, string newsId)
         {
-            // TODO: validate if the user is the owner of the vote
-
-            return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId);
+            return await this.ValidateExecute(this.ExecutePostAsync, city, date, newsId, this.User.Identity.Name);
         }
 
         /// <summary>
@@ -97,9 +83,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(string city, string date, string newsId)
         {
-            // TODO: validate if the user is the owner of the vote
-
-            return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId);
+            return await this.ValidateExecute(this.ExecuteDeletetAsync, city, date, newsId, this.User.Identity.Name);
         }
 
         #region Operations code
@@ -120,7 +104,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
             response.Content = new StreamContent(memoryStream);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            response.Content.Headers.ContentType = MediaTypeHelper.ConvertFromImageFormat(image.RawFormat);
 
             return response;
         }
@@ -130,11 +114,12 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string) parameters[0];
             var date = (string) parameters[1];
             var newsId = (string) parameters[2];
+            var authenticatedUser = (string)parameters[3];
 
             byte[] imageBytes = await this.Request.Content.ReadAsByteArrayAsync();
             MediaTypeHeaderValue contentType = this.Request.Content.Headers.ContentType;
 
-            await this.ValidatePostOperation(city, date, newsId, imageBytes, contentType);
+            await this.ValidatePostOperation(city, date, newsId, imageBytes, contentType, authenticatedUser);
 
             var memoryStream = new MemoryStream(imageBytes);
 
@@ -152,8 +137,9 @@ namespace GoingOn.FrontendWebRole.Controllers
             var city = (string)parameters[0];
             var date = (string)parameters[1];
             var newsId = (string)parameters[2];
+            var authenticatedUser = (string)parameters[3];
 
-            await this.ValidateDeleteOperation(city, date, newsId);
+            await this.ValidateDeleteOperation(city, date, newsId, authenticatedUser);
 
             HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 
@@ -179,13 +165,13 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        private async Task ValidatePostOperation(string city, string date, string id, byte[] imageBytes, MediaTypeHeaderValue contentType)
+        private async Task ValidatePostOperation(string city, string date, string id, byte[] imageBytes, MediaTypeHeaderValue contentType, string authenticatedUser)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
             this.inputValidation.ValidateImage(imageBytes, contentType);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }
@@ -196,11 +182,11 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        private async Task ValidateDeleteOperation(string city, string date, string id)
+        private async Task ValidateDeleteOperation(string city, string date, string id, string authenticatedUser)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
+            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
             }

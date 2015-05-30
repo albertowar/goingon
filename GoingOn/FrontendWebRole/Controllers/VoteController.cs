@@ -48,6 +48,8 @@ namespace GoingOn.FrontendWebRole.Controllers
         /// <returns></returns>
         [Route(GOUriBuilder.NewsVoteTemplate)]
         [HttpGet]
+        [IdentityBasicAuthentication]
+        [Authorize]
         [ResponseType(typeof(Vote))]
         public async Task<HttpResponseMessage> Get(string city, string date, string newsId)
         {
@@ -202,7 +204,7 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             if (await this.businessValidation.IsValidGetVote(this.voteRepository, city, DateTime.Parse(date), Guid.Parse(id), author))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The user has already voted");
+                throw new BusinessValidationException(HttpStatusCode.BadRequest, "The user has already voted");
             }
         }
 
