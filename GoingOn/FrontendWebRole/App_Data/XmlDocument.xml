@@ -488,20 +488,6 @@
             <param name="city">The city of the news.</param>
             <returns></returns>
         </member>
-        <member name="T:GoingOn.FrontendWebRole.Controllers.NewsImageController">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.NewsImageController.#ctor(GoingOn.Repository.INewsRepository,GoingOn.Repository.IImageRepository,GoingOn.Frontend.Validation.IApiInputValidationChecks,GoingOn.Frontend.Validation.IApiBusinessLogicValidationChecks)">
-            <summary>
-            
-            </summary>
-            <param name="newsRepository"></param>
-            <param name="imageRepository"></param>
-            <param name="inputValidation"></param>
-            <param name="businessValidation"></param>
-        </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsImageController.Get(System.String,System.String,System.String)">
             <summary>
             Get the image of the news.
@@ -528,20 +514,6 @@
             <param name="date">The date when the news was published.</param>
             <param name="newsId">The identifier of the news.</param>
             <returns></returns>
-        </member>
-        <member name="T:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController.#ctor(GoingOn.Repository.INewsRepository,GoingOn.Repository.IImageRepository,GoingOn.Frontend.Validation.IApiInputValidationChecks,GoingOn.Frontend.Validation.IApiBusinessLogicValidationChecks)">
-            <summary>
-            
-            </summary>
-            <param name="newsRepository"></param>
-            <param name="imageRepository"></param>
-            <param name="inputValidation"></param>
-            <param name="businessValidation"></param>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsThumbnailImageController.Get(System.String,System.String,System.String)">
             <summary>
@@ -595,19 +567,6 @@
             OWIN startup class is just used for testing purposes
             </summary>
         </member>
-        <member name="T:GoingOn.FrontendWebRole.Controllers.NewsController">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.#ctor(GoingOn.Repository.INewsRepository,GoingOn.Frontend.Validation.IApiInputValidationChecks,GoingOn.Frontend.Validation.IApiBusinessLogicValidationChecks)">
-            <summary>
-            
-            </summary>
-            <param name="newsTableRepository"></param>
-            <param name="inputValidation"></param>
-            <param name="businessValidation"></param>
-        </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.NewsController.Get(System.String,System.String,System.String)">
             <summary>
             Get the news.
@@ -644,11 +603,6 @@
             <param name="date">The date when the news was published.</param>
             <param name="newsId">The identifier of the news.</param>
             <returns></returns>
-        </member>
-        <member name="T:GoingOn.FrontendWebRole.Controllers.UserController">
-            <summary>
-            
-            </summary>
         </member>
         <member name="M:GoingOn.FrontendWebRole.Controllers.UserController.Get(System.String)">
             <summary>

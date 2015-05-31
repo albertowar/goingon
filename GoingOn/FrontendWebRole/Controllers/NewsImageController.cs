@@ -171,9 +171,14 @@ namespace GoingOn.FrontendWebRole.Controllers
 
             this.inputValidation.ValidateImage(imageBytes, contentType);
 
-            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
+            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
+            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
+            {
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to create the image");
             }
 
             if (await this.businessValidation.IsValidGetImageNews(this.imageRepository, city, DateTime.Parse(date), Guid.Parse(id)))
@@ -186,9 +191,14 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
-            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
+            if (!(await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id))))
             {
                 throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
+            if (!(await this.businessValidation.IsValidModifyNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser)))
+            {
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to delete the image");
             }
 
             if (!(await this.businessValidation.IsValidGetImageNews(this.imageRepository, city, DateTime.Parse(date), Guid.Parse(id))))

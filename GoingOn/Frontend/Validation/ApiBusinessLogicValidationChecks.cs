@@ -64,7 +64,15 @@ namespace GoingOn.Frontend.Validation
 
         public async Task<bool> IsValidModifyNews(INewsRepository repository, string city, DateTime date, Guid id, string author)
         {
-            return await repository.IsAuthorOf(city, date, id, author);
+            try
+            {
+                // TODO: test
+                return await repository.IsAuthorOf(city, date, id, author);
+            }
+            catch (RepositoryException)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> IsValidGetHotNews(IHotNewsRepository repository, string city, DateTime date)

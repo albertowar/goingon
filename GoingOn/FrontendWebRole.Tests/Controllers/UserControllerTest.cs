@@ -14,10 +14,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
     using System.Linq;
     using System.Net;
     using System.Net.Http;
-    using System.Security.Claims;
     using System.Security.Principal;
     using System.Threading.Tasks;
-    using System.Web.ClientServices;
     using System.Web.Http.Routing;
     
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -100,6 +98,15 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void TestGetUserReturns401_WhenUserTriesToGetAnotherUser()
+        {
+            this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+
+            this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
@@ -255,6 +262,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         {
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
             userController.ConfigureForTesting(HttpMethod.Get, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
             HttpResponseMessage response = userController.Get(nickname).Result;
 

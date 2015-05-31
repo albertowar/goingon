@@ -48,6 +48,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
 
         private const string City = "Malaga";
         private const string Date = "2015-05-11";
+        private static readonly Guid Id = Guid.NewGuid();
 
         [TestInitialize]
         public void Initizalize()
@@ -60,19 +61,17 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestMethod]
         public void TestGetNewsReturns200OkWhenTheNewsIsInTheDatabase()
         {
-            Guid guid = Guid.NewGuid();
-
             this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
-            this.newsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(News.ToNewsBll(guid, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))));
+            this.newsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(News.ToNewsBll(Id, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))));
 
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
-            request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString()));
+            var request = new HttpRequestMessage(HttpMethod.Get, GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, Id.ToString()));
+            request.Headers.Referrer = new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, Id.ToString()));
 
             newsController.ConfigureForTesting(request, "ListNews", new HttpRoute(GOUriBuilder.GetNewsTemplate));
 
-            HttpResponseMessage response = newsController.Get(City, Date, guid.ToString()).Result;
+            HttpResponseMessage response = newsController.Get(City, Date, Id.ToString()).Result;
 
             HttpContent content = response.Content;
             string jsonContent = content.ReadAsStringAsync().Result;
@@ -81,7 +80,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.IsTrue(new NewsCompleteEqualityComparer().Equals(DefaultNews, NewsREST.ToNews(actualNews)));
             Assert.IsTrue(actualNews.Links.Any(link => string.Equals("self", link.Rel)));
-            Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, guid.ToString())), actualNews.Links.First(link => string.Equals("self", link.Rel)).Href);
+            Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteNewsUri(Scheme, Host, Port, City, Date, Id.ToString())), actualNews.Links.First(link => string.Equals("self", link.Rel)).Href);
             Assert.IsTrue(actualNews.Links.Any(link => string.Equals("author", link.Rel)));
             Assert.AreEqual(new Uri(GOUriBuilder.BuildAbsoluteUserUri(Scheme, Host, Port, NewsControllerTest.DefaultUser.Nickname)), actualNews.Links.First(link => string.Equals("author", link.Rel)).Href);
         }
@@ -89,22 +88,18 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestMethod]
         public void TestGetNewsReturns400BadRequestWhenNewsParametersValidationFails()
         {
-            Guid guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.ValidateNewsParameters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws(new InputValidationException(HttpStatusCode.BadRequest, string.Empty));
 
-            this.GetNewsFails(HttpStatusCode.BadRequest, guid);
+            this.GetNewsFails(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
         public void TestGetNewsReturns404NotFoundWhenBusinessValidationFails()
         {
-            Guid guid = Guid.NewGuid();
-
             this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(false));
-            this.newsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(News.ToNewsBll(guid, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))));
+            this.newsStorageMock.Setup(storage => storage.GetNews(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(News.ToNewsBll(Id, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))));
 
-            this.GetNewsFails(HttpStatusCode.NotFound, guid);
+            this.GetNewsFails(HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -147,16 +142,15 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestMethod]
         public void TestPatchNewsReturns200OkWhenUpdatesUser()
         {
-            Guid guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             this.businessValidation.Setup(validation => validation.IsValidModifyNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(Task.FromResult(true));
 
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            newsController.ConfigureForTesting(new HttpMethod("PATCH"), string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
+            newsController.ConfigureForTesting(new HttpMethod("PATCH"), string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, Id));
             newsController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
-            HttpResponseMessage response = newsController.Patch(City, Date, guid.ToString(), DefaultNews).Result;
+            HttpResponseMessage response = newsController.Patch(City, Date, Id.ToString(), DefaultNews).Result;
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             this.newsStorageMock.Verify(storage => storage.UpdateNews(It.IsAny<NewsBll>()), Times.Once());
@@ -165,80 +159,88 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         [TestMethod]
         public void TestPatchNewsReturns400BadRequestWhenNewsParametersValidationFails()
         {
-            Guid guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.ValidateNewsParameters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws(new InputValidationException(HttpStatusCode.BadRequest, string.Empty));
 
-            this.PatchNewsFails(HttpStatusCode.BadRequest, guid);
+            this.PatchNewsFails(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
         public void TestPatchNewsReturns400BadRequestWhenNewsValidationFails()
         {
-            var guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(false);
             this.businessValidation.Setup(validation => validation.IsValidModifyNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(Task.FromResult(true));
 
-            this.PatchNewsFails(HttpStatusCode.BadRequest, guid);
+            this.PatchNewsFails(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
         public void TestPatchNewsReturns404NotFoundWhenBusinessValidationFails()
         {
-            Guid guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(false));
+
+            this.PatchNewsFails(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void TestPatchNewsReturns401_IfUserIsNotAuthorizedToUpdateNews()
+        {
+            this.inputValidation.Setup(validation => validation.IsValidNews(It.IsAny<News>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             this.businessValidation.Setup(validation => validation.IsValidModifyNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(Task.FromResult(false));
 
-            this.PatchNewsFails(HttpStatusCode.NotFound, guid);
+            this.PatchNewsFails(HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
         public void TestDeleteNewsReturns204NoContentWhenDeletesUser()
         {
-            Guid guid = Guid.NewGuid();
-
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             this.businessValidation.Setup(validation => validation.IsValidModifyNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(Task.FromResult(true));
 
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            newsController.ConfigureForTesting(HttpMethod.Delete, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
+            newsController.ConfigureForTesting(HttpMethod.Delete, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, Id));
             newsController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null); 
 
-            HttpResponseMessage response = newsController.Delete(City, Date, guid.ToString()).Result;
+            HttpResponseMessage response = newsController.Delete(City, Date, Id.ToString()).Result;
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
-            this.newsStorageMock.Verify(storage => storage.DeleteNews(City, DateTime.Parse(Date), guid), Times.Once());
+            this.newsStorageMock.Verify(storage => storage.DeleteNews(City, DateTime.Parse(Date), Id), Times.Once());
         }
 
         [TestMethod]
         public void TestDeleteNewsReturns400BadRequestWhenNewsParametersValidationFails()
         {
-            Guid guid = Guid.NewGuid();
-
             this.inputValidation.Setup(validation => validation.ValidateNewsParameters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws(new InputValidationException(HttpStatusCode.BadRequest, string.Empty));
 
-            this.DeleteNewsFails(HttpStatusCode.BadRequest, guid);
+            this.DeleteNewsFails(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
-        public void TestDeleteNewsReturns404NotFoundWhenBusinessValidationFails()
+        public void TestDeleteNewsReturns404_IfNewsIsNotInDatabase()
         {
-            Guid guid = Guid.NewGuid();
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(false));
 
+            this.DeleteNewsFails(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void TestDeleteNewsReturns401_IfUserIsNotAuthorized()
+        {
+            this.businessValidation.Setup(validation => validation.IsValidGetNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             this.businessValidation.Setup(validation => validation.IsValidModifyNews(this.newsStorageMock.Object, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(Task.FromResult(false));
 
-            this.DeleteNewsFails(HttpStatusCode.NotFound, guid);
+            this.DeleteNewsFails(HttpStatusCode.Unauthorized);
         }
 
         #region Test utils
 
-        private void GetNewsFails(HttpStatusCode code, Guid guid)
+        private void GetNewsFails(HttpStatusCode code)
         {
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            newsController.ConfigureForTesting(HttpMethod.Get, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
+            newsController.ConfigureForTesting(HttpMethod.Get, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, Id));
 
-            HttpResponseMessage response = newsController.Get(City, Date, guid.ToString()).Result;
+            HttpResponseMessage response = newsController.Get(City, Date, Id.ToString()).Result;
 
             Assert.AreEqual(code, response.StatusCode);
         }
@@ -255,28 +257,28 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.newsStorageMock.Verify(storage => storage.AddNews(It.IsAny<NewsBll>()), Times.Never());
         }
 
-        private void PatchNewsFails(HttpStatusCode code, Guid guid)
+        private void PatchNewsFails(HttpStatusCode code)
         {
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            newsController.ConfigureForTesting(new HttpMethod("PATCH"), string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
+            newsController.ConfigureForTesting(new HttpMethod("PATCH"), string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, Id));
             newsController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
-            HttpResponseMessage response = newsController.Patch(City, Date, guid.ToString(), DefaultNews).Result;
+            HttpResponseMessage response = newsController.Patch(City, Date, Id.ToString(), DefaultNews).Result;
 
             Assert.AreEqual(code, response.StatusCode);
-            this.newsStorageMock.Verify(storage => storage.UpdateNews(News.ToNewsBll(guid, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))), Times.Never());
+            this.newsStorageMock.Verify(storage => storage.UpdateNews(News.ToNewsBll(Id, DefaultNews, City, DefaultUser.Nickname, DateTime.Parse(Date))), Times.Never());
         }
 
-        private void DeleteNewsFails(HttpStatusCode code, Guid guid)
+        private void DeleteNewsFails(HttpStatusCode code)
         {
             var newsController = new NewsController(this.newsStorageMock.Object, this.inputValidation.Object, this.businessValidation.Object);
-            newsController.ConfigureForTesting(HttpMethod.Delete, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, guid));
+            newsController.ConfigureForTesting(HttpMethod.Delete, string.Format("{0}/{1}/{2}/{3}", NewsUriRoot, City, Date, Id));
             newsController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
-            HttpResponseMessage response = newsController.Delete(City, Date, guid.ToString()).Result;
+            HttpResponseMessage response = newsController.Delete(City, Date, Id.ToString()).Result;
 
             Assert.AreEqual(code, response.StatusCode);
-            this.newsStorageMock.Verify(storage => storage.DeleteNews(City, DateTime.Parse(Date), guid), Times.Never());
+            this.newsStorageMock.Verify(storage => storage.DeleteNews(City, DateTime.Parse(Date), Id), Times.Never());
         }
 
         #endregion

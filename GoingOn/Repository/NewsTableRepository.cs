@@ -68,9 +68,17 @@ namespace GoingOn.Repository
 
         public async Task<bool> IsAuthorOf(string city, DateTime date, Guid id, string author)
         {
-            NewsBll news = await this.GetNews(city, date, id);
+            try
+            {
+                // TODO: test
+                NewsBll news = await this.GetNews(city, date, id);
 
-            return string.Equals(news.Author, author);
+                return string.Equals(news.Author, author);
+            }
+            catch (AzureXStoreException)
+            {
+                throw new RepositoryException("The news is not in the database.");
+            }
         }
 
         public async Task<bool> ContainsNewsCheckContent(NewsBll newsBll)

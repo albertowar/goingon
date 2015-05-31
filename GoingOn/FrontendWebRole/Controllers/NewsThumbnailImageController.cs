@@ -18,7 +18,6 @@ namespace GoingOn.FrontendWebRole.Controllers
     using System.Threading.Tasks;
     using System.Web.Http;
     using GoingOn.Common;
-    using GoingOn.Frontend.Authentication;
     using GoingOn.Frontend.Common;
     using GoingOn.Frontend.Validation;
     using GoingOn.Repository;

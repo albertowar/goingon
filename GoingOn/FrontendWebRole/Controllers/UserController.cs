@@ -165,7 +165,6 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The nickname format is incorrect");
             }
 
-            // TODO: write tests
             if (!this.businessValidation.IsAuthorizedUser(authenticatedUser, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not allow to retrieve the resource");
@@ -197,7 +196,6 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The user format is incorrect");
             }
 
-            // TODO: write tests
             if (!this.businessValidation.IsAuthorizedUser(authenticatedUser, userId))
             {
                 throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not allow to retrieve the resource");

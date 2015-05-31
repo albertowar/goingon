@@ -206,9 +206,14 @@ namespace GoingOn.FrontendWebRole.Controllers
                 throw new InputValidationException(HttpStatusCode.BadRequest, "The news format is incorrect");
             }
 
+            if (!await this.businessValidation.IsValidGetNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id)))
+            {
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
             if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to update the news");
             }
         }
 
@@ -216,9 +221,14 @@ namespace GoingOn.FrontendWebRole.Controllers
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
 
+            if (!await this.businessValidation.IsValidGetNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id)))
+            {
+                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news is not in the database");
+            }
+
             if (!await this.businessValidation.IsValidModifyNews(this.repository, city, DateTime.Parse(date), Guid.Parse(id), authenticatedUser))
             {
-                throw new BusinessValidationException(HttpStatusCode.NotFound, "The news does not exist");
+                throw new BusinessValidationException(HttpStatusCode.Unauthorized, "The user is not authorized to delete the news");
             }
         }
 
