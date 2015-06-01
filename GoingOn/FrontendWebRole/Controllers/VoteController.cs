@@ -84,7 +84,7 @@ namespace GoingOn.FrontendWebRole.Controllers
         [Route(GOUriBuilder.NewsVoteTemplate)]
         [IdentityBasicAuthentication]
         [Authorize]
-        [HttpPost]
+        [HttpPatch]
         public async Task<HttpResponseMessage> Patch(string city, string date, string newsId, [FromBody]Vote vote)
         {
             return await this.ValidateExecute(this.ExecutePatchAsync, city, date, newsId, this.User.Identity.Name, vote);
