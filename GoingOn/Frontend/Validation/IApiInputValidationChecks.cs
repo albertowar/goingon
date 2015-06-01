@@ -32,6 +32,8 @@ namespace GoingOn.Frontend.Validation
 
         bool IsValidNews(News news);
 
+        bool IsValidVote(Vote vote);
+
         bool IsValidNewsId(string id);
 
         bool IsValidNewsDate(string date);

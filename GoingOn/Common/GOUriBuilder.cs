@@ -89,5 +89,10 @@ namespace GoingOn.Common
         {
             return string.Format("{0}/thumbnail", GOUriBuilder.BuildAbsoluteNewsUri(scheme, host, port, city, date, newsId));
         }
+
+        public static string BuildAbsoluteVoteUri(string scheme, string host, int port, string city, string date, string newsId)
+        {
+            return string.Format("{0}/vote", GOUriBuilder.BuildAbsoluteNewsUri(scheme, host, port, city, date, newsId));
+        }
     }
 }

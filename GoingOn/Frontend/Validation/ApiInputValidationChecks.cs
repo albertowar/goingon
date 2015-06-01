@@ -126,6 +126,12 @@ namespace GoingOn.Frontend.Validation
                 news.Content != null && this.IsValidContent(news.Content);
         }
 
+        public bool IsValidVote(Vote vote)
+        {
+            // TODO: add tests
+            return vote.Value > 0 && vote.Value <= 5;
+        }
+
         public bool IsValidNewsId(string id)
         {
             Guid guid;

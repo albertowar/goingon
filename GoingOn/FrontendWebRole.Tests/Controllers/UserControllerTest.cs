@@ -56,6 +56,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         public void TestGetUserReturns200OkWhenTheUserIsInTheDatabase()
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
             this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(User.ToUserBll(DefaultUser)));
 
@@ -84,20 +85,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         public void TestGetUserReturns400BadRequestWhenInputValidationFails()
         {
             this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(false);
-            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(true));
-            this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll{ Nickname = "username", Password = "password" }));
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.BadRequest);
-        }
-
-        [TestMethod]
-        public void TestGetUserReturns404NotFoundWhenBusinessValidationFails()
-        {
-            this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
-            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
-            this.mockUserRepository.Setup(storage => storage.GetUser(It.IsAny<string>())).Returns(Task.FromResult(new UserBll { Nickname = "username", Password = "password" }));
-
-            this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -107,6 +96,16 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
             this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.Unauthorized);
+        }
+
+        [TestMethod]
+        public void TestGetUserReturns404NotFoundWhenBusinessValidationFails()
+        {
+            this.inputValidation.Setup(validation => validation.IsValidNickName(It.IsAny<string>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsAuthorizedUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+            this.businessValidation.Setup(validation => validation.IsUserCreated(this.mockUserRepository.Object, It.IsAny<string>())).Returns(Task.FromResult(false));
+
+            this.AssertGetFails(url: "http://test.com/api/user/nickname", nickname: "username", resultCode: HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -120,7 +119,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
             request.Headers.Referrer = new Uri(GOUriBuilder.BuildCreateAbsoluteUserUri(Scheme, Host, Port));
 
-            userController.ConfigureForTesting(request, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.ConfigureForTesting(request, "PostUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
             HttpResponseMessage response = userController.Post(DefaultUser).Result;
 
@@ -273,7 +273,8 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         private void AssertPostFails(string url, User user, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Post, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.ConfigureForTesting(HttpMethod.Post, url, "PostUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
             HttpResponseMessage response = userController.Post(user).Result;
 
@@ -284,7 +285,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         private void AssertPatchFails(string nickname, string url, User user, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(new HttpMethod("PATCH"), url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.ConfigureForTesting(new HttpMethod("PATCH"), url, "PatchUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
             userController.User = new GenericPrincipal(new GenericIdentity(user.Nickname), null);
 
             HttpResponseMessage response = userController.Patch(nickname, user).Result;
@@ -296,7 +297,7 @@ namespace GoingOn.FrontendWebRole.Tests.Controllers
         private void AssertDeleteFails(string nickname, string url, HttpStatusCode resultCode)
         {
             UserController userController = new UserController(this.mockUserRepository.Object, this.inputValidation.Object, this.businessValidation.Object);
-            userController.ConfigureForTesting(HttpMethod.Delete, url, "GetUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
+            userController.ConfigureForTesting(HttpMethod.Delete, url, "DeleteUser", new HttpRoute(GOUriBuilder.GetUserTemplate));
             userController.User = new GenericPrincipal(new GenericIdentity(DefaultUser.Nickname), null);
 
             HttpResponseMessage response = userController.Delete(nickname).Result;

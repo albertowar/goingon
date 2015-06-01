@@ -132,7 +132,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var nickname = (string)parameters[3];
             var vote = (Vote) parameters[4];
 
-            await this.ValidatePostOperation(city, date, newsId, nickname);
+            await this.ValidatePostOperation(city, date, newsId, nickname, vote);
 
             await this.voteRepository.AddVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
@@ -149,7 +149,7 @@ namespace GoingOn.FrontendWebRole.Controllers
             var nickname = (string)parameters[3];
             var vote = (Vote)parameters[4];
 
-            await this.ValidatePatchOperation(city, date, newsId, nickname);
+            await this.ValidatePatchOperation(city, date, newsId, nickname, vote);
 
             await this.voteRepository.UpdateVote(city, DateTime.Parse(date), Guid.Parse(newsId), nickname, Vote.ToVoteBll(vote));
 
@@ -193,9 +193,14 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        private async Task ValidatePostOperation(string city, string date, string id, string author)
+        private async Task ValidatePostOperation(string city, string date, string id, string author, Vote vote)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
+
+            if (!this.inputValidation.IsValidVote(vote))
+            {
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The vote must be a value between 1 and 5");
+            }
 
             if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
@@ -208,9 +213,14 @@ namespace GoingOn.FrontendWebRole.Controllers
             }
         }
 
-        private async Task ValidatePatchOperation(string city, string date, string id, string author)
+        private async Task ValidatePatchOperation(string city, string date, string id, string author, Vote vote)
         {
             this.inputValidation.ValidateNewsParameters(city, date, id);
+
+            if (!this.inputValidation.IsValidVote(vote))
+            {
+                throw new InputValidationException(HttpStatusCode.BadRequest, "The vote must be a value between 1 and 5");
+            }
 
             if (!await this.businessValidation.IsValidGetNews(this.newsRepository, city, DateTime.Parse(date), Guid.Parse(id)))
             {
